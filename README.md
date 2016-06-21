@@ -14,9 +14,15 @@ Agents compare different potential portfolios of income layers by constructing f
 Future versions of the code will include a batch-run script.  At present, a single simulation run can be made from **runMigrationModel.m**.  Current configurations include a few layers whose income potential increases down and to the right, leading to a mass migration toward the bottom right corner along the course of the simulation.
 
 Input data to develop different scenarios can be added to the following routines:
+
 1. **setupLandscape.m**:  all agent preference parameters, random network parameters, landscape size and timestep parameters
+
 2. **createUtilityLayers.m**: all specifications for utility layers, including the income generation function, time constraint, and access restrictions
+
 3. **createMap.m**: currently takes data from setupLandscape.m, but could be modified to be fed a specific map
+
 4. **assignInitialLayers.m**: assigns the initial distribution of income layer use/access ... could be informed by census data
+
 5. **createMovingCosts.m**: specifies the cost of moving from one place to another in the map
+
 6. **createRemittanceCosts.m**: specifies the cost of sharing income with others in the social network, across space in the map
