@@ -17,6 +17,7 @@ mapParameters.colorSpacing = 10;
 mapParameters.numDivisionMean = [2 8 9];
 mapParameters.numDivisionSD = [0 2 1];
 mapParameters.r1 = []; %this will be the spatial reference if we are pulling from a shape file
+mapParameters.filePath = './MexUS Data/MEX_ContUS.shp';
 agentParameters.incomeShareFractionMean = 0.4;
 agentParameters.incomeShareFractionSD = 0;
 agentParameters.shareCostThresholdMean = 0.3;
@@ -48,8 +49,11 @@ agentParameters.rValueSD = 0;
 
 %create a map based on the defined administrative structure in
 %mapParameters
-%[locations, map, borders] = createMap( modelParameters, mapParameters);
-[locations, map, borders, mapParameters] = createMapFromSHP( mapParameters, './MexUS Data/MEX_ContUS.shp');
+if(isempty(mapParameters.filePath))
+    [locations, map, borders] = createMap( modelParameters, mapParameters);
+else
+    [locations, map, borders, mapParameters] = createMapFromSHP( mapParameters);
+end
 
 %define remittance costs based on these locations
 [ remittanceFee, remittanceRate ] = createRemittanceCosts(locations);

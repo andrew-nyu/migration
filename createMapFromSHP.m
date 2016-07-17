@@ -1,4 +1,4 @@
-function [ locations, map, borders, mapParameters ] = createMapFromSHP( mapParameters, shapeFileName )
+function [ locations, map, borders, mapParameters ] = createMapFromSHP( mapParameters )
 %createMapFromSHP - creates a raster map of administrative units defined by the
 %input shapefile and associated attribute table
 
@@ -21,7 +21,7 @@ function [ locations, map, borders, mapParameters ] = createMapFromSHP( mapParam
 
 %read in the shapefile if necessary
 
-shapeFileName = regexprep(shapeFileName,'.shp','');
+shapeFileName = regexprep(mapParameters.filePath,'.shp','');
 
 try
     load([shapeFileName '.mat']);
