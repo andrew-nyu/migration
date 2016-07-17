@@ -1,4 +1,4 @@
-function [ network, distanceMatrix, listX, listY ] = createNetwork( locations, modelParameters, agentList, networkParameters )
+function [ network, distanceMatrix, listX, listY ] = createNetwork( locations, mapParameters, agentList, networkParameters )
 %createNetwork creates a network among agents living in different locations
 
 %returns a sparse matrix network of all connected agents, with (i,j) ==1
@@ -22,8 +22,8 @@ network = speye(numAgents, numAgents);
 %and then draw from a normal pdf to get the 'weighting' applied to each
 %entry; their own city will have the highest density, thus highest
 %weighting.
-sizeX = modelParameters.sizeX;
-sizeY = modelParameters.sizeY;
+sizeX = mapParameters.sizeX;
+sizeY = mapParameters.sizeY;
 
 locations = sortrows(locations,'cityID');
 [listX, listY] = ind2sub([sizeX sizeY],locations.LocationIndex);

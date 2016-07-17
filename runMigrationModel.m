@@ -45,7 +45,7 @@ for indexT = 1:modelParameters.timeSteps
         %draw number to see if agent updates preferences on where to
         %be/what to do
         if(rand() < currentAgent.pChoose && indexT > modelParameters.spinupTime)
-            [currentAgent, moved] = choosePortfolio(currentAgent, utilityVariables, indexT, modelParameters, mapVariables);
+            [currentAgent, moved] = choosePortfolio(currentAgent, utilityVariables, indexT, modelParameters, mapParameters, mapVariables);
             migrations(indexT) = migrations(indexT) + moved;
         end
         
@@ -123,7 +123,7 @@ for indexT = 1:modelParameters.timeSteps
     if (mod(indexT, modelParameters.visualizeInterval) == 0)
         
         %visualize the map
-        [mapHandle] = visualizeMap(agentList, mapVariables);
+        [mapHandle] = visualizeMap(agentList, mapVariables, mapParameters);
         drawnow();
     end
     

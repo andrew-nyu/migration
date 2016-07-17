@@ -3,8 +3,8 @@ function [agentList, modelParameters, networkParameters, mapParameters, utilityV
 %All model parameters go here
 modelParameters.spinupTime = 12;
 modelParameters.numAgents = 400;
-modelParameters.sizeX = 600;
-modelParameters.sizeY = 600;
+mapParameters.sizeX = 600;
+mapParameters.sizeY = 600;
 modelParameters.timeSteps = 120;
 modelParameters.cycleLength = 4;
 modelParameters.incomeInterval = 1;
@@ -12,9 +12,11 @@ modelParameters.visualizeInterval = 12;
 networkParameters.networkDistanceSD = 30;
 networkParameters.connectionsMean = 3;
 networkParameters.connectionsSD = 2;
+mapParameters.density = 10; %pixels per degree Lat/Long, if using .shp input
 mapParameters.colorSpacing = 10;
 mapParameters.numDivisionMean = [2 8 9];
 mapParameters.numDivisionSD = [0 2 1];
+mapParameters.r1 = []; %this will be the spatial reference if we are pulling from a shape file
 agentParameters.incomeShareFractionMean = 0.4;
 agentParameters.incomeShareFractionSD = 0;
 agentParameters.shareCostThresholdMean = 0.3;
@@ -46,7 +48,8 @@ agentParameters.rValueSD = 0;
 
 %create a map based on the defined administrative structure in
 %mapParameters
-[locations, map, borders] = createMap( modelParameters, mapParameters);
+%[locations, map, borders] = createMap( modelParameters, mapParameters);
+[locations, map, borders, mapParameters] = createMapFromSHP( mapParameters, './MexUS Data/MEX_ContUS.shp');
 
 %define remittance costs based on these locations
 [ remittanceFee, remittanceRate ] = createRemittanceCosts(locations);
@@ -117,19 +120,31 @@ end
 cityMap = map(:,:,end);
 for indexI = 1:size(locations,1)
    locationMapIndex = find(cityMap == locations(indexI,1).cityID); 
-   [locationX, locationY] = ind2sub([modelParameters.sizeX modelParameters.sizeY],locationMapIndex);
    locationAgents = agentList([agentList(:).location] == locations(indexI,1).cityID);
-   for indexJ = 1:length(locationAgents)
-      visLocation = randperm(length(locationMapIndex),1);
-      locationAgents(indexJ).visX = locationX(visLocation) + rand() - 0.5;
-      locationAgents(indexJ).visY = locationY(visLocation) + rand() - 0.5;
+   if(isempty(locationMapIndex))
+       %this particular city is either sub-pixel size or shares all pixels with other cities and lost each one
+       %SO, just set visLocation to the established location of the city
+       %centroid
+       visLocation = locations.LocationIndex(indexI);
+       [locationX, locationY] = ind2sub([mapParameters.sizeX mapParameters.sizeY],visLocation);
+       for indexJ = 1:length(locationAgents)
+           locationAgents(indexJ).visX = locationX + rand() - 0.5;
+           locationAgents(indexJ).visY = locationY + rand() - 0.5;
+       end
+   else
+       [locationX, locationY] = ind2sub([mapParameters.sizeX mapParameters.sizeY],locationMapIndex);
+       for indexJ = 1:length(locationAgents)
+           visLocation = randperm(length(locationMapIndex),1);
+           locationAgents(indexJ).visX = locationX(visLocation) + rand() - 0.5;
+           locationAgents(indexJ).visY = locationY(visLocation) + rand() - 0.5;
+       end
    end
 end
 
 %construct a network among agents according to parameters specified in
 %networkParameters.  Any change in network structure should modify/replace
 %the createNetwork function
-[network, distanceMatrix ] = createNetwork(locations, modelParameters, agentList, networkParameters);
+[network, distanceMatrix ] = createNetwork(locations, mapParameters, agentList, networkParameters);
 
 
 %create the set of moving costs, now that we have a distance matrix made
@@ -157,7 +172,7 @@ mapVariables.movingCosts = movingCosts;
 
 
 %visualize the map
-[mapHandle] = visualizeMap(agentList, mapVariables);
+[mapHandle] = visualizeMap(agentList, mapVariables, mapParameters);
 
 mapVariables.mapHandle = mapHandle;
 
