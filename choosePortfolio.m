@@ -1,4 +1,4 @@
-function [ agent, moved ] = choosePortfolio( agent, utilityVariables, currentT, modelParameters, mapVariables )
+function [ agent, moved ] = choosePortfolio( agent, utilityVariables, currentT, modelParameters, mapParameters, mapVariables )
 %choosePortfolio.m is the main engine for agents to select an income
 %portfolio (and possibly, to move)
 
@@ -339,8 +339,15 @@ if(currentLocation ~= bestLocation)
     agent.matrixLocation = locationList(indexSorted(1));
     agent.location = mapVariables.locations(agent.matrixLocation,:).cityID;
     locationMapIndex = find(mapVariables.map(:,:,end) == agent.location);
-    visLocation = locationMapIndex(randperm(length(locationMapIndex),1));
-    [locationX, locationY] = ind2sub([modelParameters.sizeX modelParameters.sizeY],visLocation);
+    if(isempty(locationMapIndex))
+        %this particular city is either sub-pixel size or shares all pixels with other cities and lost each one
+        %SO, just set visLocation to the established location of the city
+        %centroid
+        visLocation = mapVariables.locations.LocationIndex(agent.matrixLocation);
+    else
+        visLocation = locationMapIndex(randperm(length(locationMapIndex),1));
+    end
+    [locationX, locationY] = ind2sub([mapParameters.sizeX mapParameters.sizeY],visLocation);
     agent.visX = locationX + rand() - 0.5;
     agent.visY = locationY + rand() - 0.5;
     
