@@ -15,7 +15,7 @@ Future versions of the code will include a batch-run script.  At present, a sing
 
 Input data to develop different scenarios can be added to the following routines:
 
-1. **setupLandscape.m**:  all agent preference parameters, random network parameters, landscape size and timestep parameters
+1. **setupLandscape.m**:  all agent preference parameters, random network parameters, landscape size and timestep parameters, as well as shapefiles for specific landscapes
 
 2. **createUtilityLayers.m**: all specifications for utility layers, including the income generation function, time constraint, and access restrictions
 
