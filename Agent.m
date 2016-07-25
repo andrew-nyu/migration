@@ -29,6 +29,8 @@ classdef Agent < handle
        knowledgeShareFrac
        pInteract
        pChoose
+       pRandomLearn
+       countRandomLearn
        numBestLocation
        numBestPortfolio
        numRandomLocation

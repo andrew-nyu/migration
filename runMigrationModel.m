@@ -12,6 +12,8 @@ tic;
 numLocations = size(mapVariables.locations,1);
 numLayers = size(utilityVariables.utilityLayerFunctions,1);
 
+sizeArray = size(utilityVariables.utilityHistory);
+
 %create any other outcome variables of interest
 countAgentsPerLayer = zeros(numLocations, numLayers, modelParameters.timeSteps);
 averageWealth = zeros(modelParameters.timeSteps ,1);
@@ -42,6 +44,13 @@ for indexT = 1:modelParameters.timeSteps
             end
         end
         
+        %draw number to see if agent learns anything randomly new about
+        %income in the world around it
+        if(rand() < currentAgent.pRandomLearn)
+            currentAgent.incomeLayersHistory(randperm(prod([sizeArray(1:2) indexT]),currentAgent.countRandomLearn)) = true;
+        end
+        
+
         %draw number to see if agent updates preferences on where to
         %be/what to do
         if(rand() < currentAgent.pChoose && indexT > modelParameters.spinupTime)
