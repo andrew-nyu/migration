@@ -37,8 +37,8 @@ numLevels = length(mapParameters.numDivisionMean);
 
 %just remember that in this algorithm, indexI+1 refers to the map layer
 %corresponding to administrative layer indexI
-sizeX = modelParameters.sizeX;
-sizeY = modelParameters.sizeY;
+sizeX = mapParameters.sizeX;
+sizeY = mapParameters.sizeY;
 
 map = zeros(sizeX, sizeY, numLevels + 1);
 map(:,:,1) = 1;  %this to say, the starting condition is that the map is all in one piece
