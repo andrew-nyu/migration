@@ -13,9 +13,11 @@ Agents compare different potential portfolios of income layers by constructing f
 
 This model fits the 'push-pull-mooring' model of migration as follows:
 
-**Push:** Layers accessed by agent in current location shift to lower utility (e.g., economic downturn, climate shift, etc.)
-**Pull:** Layers known by agent in different location offer better utility; benefits from sharing over social network in different location offer better utility than current location
-**Mooring:** Layers accessed by agent in current location maintain utility (e.g., assets, secure employment, etc.); benefits from sharing over social network in current location are preferable to expected benefits in other locations
+i. **Push:** Layers accessed by agent in current location shift to lower utility (e.g., economic downturn, climate shift, etc.).
+
+ii. **Pull:** Layers known by agent in different location offer better utility; benefits from sharing over social network in different location offer better utility than current location.
+
+iii. **Mooring:** Layers accessed by agent in current location maintain utility (e.g., assets, secure employment, etc.); benefits from sharing over social network in current location are preferable to expected benefits in other locations
 
 Future versions of the code will include a batch-run script.  At present, a single simulation run can be made from **runMigrationModel.m**.  Current configurations include a few layers whose income potential increases down and to the right, leading to a mass migration toward the bottom right corner along the course of the simulation.
 
