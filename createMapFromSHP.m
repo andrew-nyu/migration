@@ -42,6 +42,17 @@ catch
     
     numLevels = size(levels,1);
     
+    %make sure each record has the same number of levels ... where some
+    %areas lack lower-level admin, just copy IDs down to the bottom.
+    %structs are a pain to work with so just do this one as a for loop
+    for indexI = 1:length(shapeData)
+       for indexJ = 2:length(levels)
+           if shapeData(indexI).(levels{indexJ}) == 0
+               shapeData(indexI).(levels{indexJ}) = shapeData(indexI).(levels{indexJ-1});
+           end
+       end
+    end
+    
     %The algorithm reads 'units' as areas in a 2D grid that all have the same
     %value.  For each unit it sees at one scale, it will subdivide into m
     %different areas at the next scale.
@@ -83,7 +94,7 @@ catch
     
     %add a field for the 'matrixID' ... this will be the column/row number of
     %the city in all calculations
-    shapeData().matrixID = [];
+    [shapeData(1).matrixID] = [];
     
     %start at the bottom
     totalShapes = length(shapeData);
