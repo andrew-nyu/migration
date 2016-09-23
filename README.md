@@ -1,4 +1,4 @@
-# migration
+# Migration, Intensification, and Diversification as Adaptive Strategies (MIDAS)
 Agent-based model of income selection/migration
 
 Initial set up of project June 21 2016, Andrew Bell
