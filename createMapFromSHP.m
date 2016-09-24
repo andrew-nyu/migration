@@ -40,18 +40,42 @@ catch
     [levels,indexOrder] = sort(levels);
     levelIndices = levelIndices(indexOrder);
     
+    %shapeData = nestedSortStruct(shapeData, {levels{:}});
+    
     numLevels = size(levels,1);
     
     %make sure each record has the same number of levels ... where some
     %areas lack lower-level admin, just copy IDs down to the bottom.
     %structs are a pain to work with so just do this one as a for loop
-    for indexI = 1:length(shapeData)
+    
+    idMat = struct2cell(shapeData);
+    idMat = idMat';
+    idMat = idMat(:,levelIndices);
+    idMat = cell2mat(idMat);
+
+    for indexI = 1:length(idMat)
        for indexJ = 2:length(levels)
-           if shapeData(indexI).(levels{indexJ}) == 0
-               shapeData(indexI).(levels{indexJ}) = shapeData(indexI).(levels{indexJ-1});
+           if idMat(indexI,indexJ) == 0
+               
+               %identify how many other records are in the same
+               %higher-level group
+               sameGroup = ismember(idMat(:,1:indexJ-1), idMat(indexI,1:indexJ-1),'rows');
+               
+               %find the next unused identifier
+               nextID = max(idMat(:,indexJ)) + 1;
+               
+               
+               idMat(sameGroup,indexJ) = nextID;
+              
            end
        end
+        end
+    for indexI = 1:length(shapeData)
+       for indexJ = 2:length(levels)
+           shapeData(indexI).(levels{indexJ}) = idMat(indexI,indexJ);
+       end
     end
+    
     
     %The algorithm reads 'units' as areas in a 2D grid that all have the same
     %value.  For each unit it sees at one scale, it will subdivide into m
@@ -119,18 +143,33 @@ catch
     adminUnits = zeros(size(shapeData,1),numLevels);
     
     %now assign maps, moving up
+    lastRoundJ = zeros(length(shapeData),1);
     for indexI = 2:numLevels+1
         currentLevelIDs = [shapeData(:).(levels{indexI-1})];
         [bLevel,~,jLevel] = unique(currentLevelIDs);
         temp = idCount + (1:length(bLevel));
-        adminUnits(:,indexI-1) = temp(jLevel);
+        tempIDs = temp(jLevel);
+%         for indexK = 2:(indexI-1)
+%             prevLevelIDs = [shapeData(:).(levels{indexK-1})];
+%             [~,prevBreaks,~] = unique(prevLevelIDs);
+%             for indexU = 2:length(prevBreaks)
+%                tempIDs(prevBreaks(indexU):end) = tempIDs(prevBreaks(indexU):end) + (numLevels+1 - indexK) * mapParameters.colorSpacing;
+%             end
+%         end
+        adminUnits(:,indexI-1) = tempIDs; %temp(jLevel);
         tempLayer = map(:,:,indexI);
+        
         for indexJ = 1:length(shapeData)
-            tempLayer(tempMap == indexJ) = temp(jLevel(indexJ));
+            tempLayer(tempMap == indexJ) = tempIDs((indexJ));% + lastRoundJ(indexJ) * mapParameters.colorSpacing;
         end
-        map(:,:,indexI) = tempLayer;
+        lastRoundJ = jLevel;
+
+        map(:,:,indexI) = tempLayer ;
+    
+        
+        
         layerNames{end+1} = ['AdminUnit' num2str(indexI-1)];
-        idCount = max(temp) + mapParameters.colorSpacing;
+        idCount = max(max(tempLayer)) + mapParameters.colorSpacing;
     end
     
     [listY,listX] = setpostn(tempMap,r1,[shapeData(:).Latitude],[shapeData(:).Longitude]);
