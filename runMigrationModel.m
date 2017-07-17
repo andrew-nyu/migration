@@ -57,6 +57,7 @@ for indexT = 1:modelParameters.timeSteps
             [currentAgent, moved] = choosePortfolio(currentAgent, utilityVariables, indexT, modelParameters, mapParameters, mapVariables);
             migrations(indexT) = migrations(indexT) + moved;
         end
+       
         
     end %for indexA = 1:modelParameters.numAgents
     
@@ -76,7 +77,11 @@ for indexT = 1:modelParameters.timeSteps
         %matches appropriately
         for indexL = 1:numLayers
             utilityVariables.utilityHistory(:,indexL, indexT) = arrayfun(utilityVariables.utilityLayerFunctions{indexL}, ...
-                mapVariables.locations.locationX, mapVariables.locations.locationY, ones(numLocations,1)*indexT, countAgentsPerLayer(:,indexL));
+                mapVariables.locations.locationX, ...
+                mapVariables.locations.locationY, ...
+                ones(numLocations,1)*indexT, ...
+                countAgentsPerLayer(:,indexL), ...
+                utilityVariables.utilityBaseLayers(:,indexL,indexT));
         end
         
         %make payments and transfers as appropriate to all agents, and
@@ -134,10 +139,19 @@ for indexT = 1:modelParameters.timeSteps
         %visualize the map
         [mapHandle] = visualizeMap(agentList, mapVariables, mapParameters);
         drawnow();
+        fprintf('Map updated.\n');
+        if(modelParameters.saveImg)
+           print('-dpng','-painters','-r300', [modelParameters.shortName num2str(indexT) '.png']); 
+           fprintf('Map saved.\n');
+                   
+        end
+
     end
     
     averageWealth(indexT) = mean([agentList(:).wealth]);
-    migrations(indexT)
+    
+    fprintf(['Time step ' num2str(indexT) ' of ' num2str(modelParameters.timeSteps) ' - ' num2str(migrations(indexT)) ' migrations.\n']);
+
 end %for indexT = 1:modelParameters.timeSteps
 
 toc;

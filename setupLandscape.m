@@ -2,22 +2,24 @@ function [agentList, modelParameters, networkParameters, mapParameters, utilityV
 
 %All model parameters go here
 modelParameters.spinupTime = 12;
-modelParameters.numAgents = 400;
+modelParameters.numAgents = 500;
 mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
-modelParameters.timeSteps = 120;
+modelParameters.timeSteps = 240;
 modelParameters.cycleLength = 4;
 modelParameters.incomeInterval = 1;
 modelParameters.visualizeInterval = 12;
-networkParameters.networkDistanceSD = 30;
-networkParameters.connectionsMean = 3;
+networkParameters.networkDistanceSD = 7;
+networkParameters.connectionsMean = 2;
 networkParameters.connectionsSD = 2;
-mapParameters.density = 10; %pixels per degree Lat/Long, if using .shp input
-mapParameters.colorSpacing = 10;
+mapParameters.density = 20; %pixels per degree Lat/Long, if using .shp input
+mapParameters.colorSpacing = 20;
 mapParameters.numDivisionMean = [2 8 9];
 mapParameters.numDivisionSD = [0 2 1];
 mapParameters.r1 = []; %this will be the spatial reference if we are pulling from a shape file
-mapParameters.filePath = './MexUS Data/MEX_ContUS.shp';
+mapParameters.filePath = './MexUS Data/Mex_ContUS.shp';
+modelParameters.saveImg = true;
+modelParameters.shortName = 'MexUS_test';
 agentParameters.incomeShareFractionMean = 0.4;
 agentParameters.incomeShareFractionSD = 0;
 agentParameters.shareCostThresholdMean = 0.3;
@@ -69,7 +71,7 @@ end
 %they experienced or learned.  This structure allows an arbitrarily large
 %landscape with an arbitrarily large number of agents, without wasting
 %memory
-[utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat] = createUtilityLayers(locations, modelParameters.timeSteps);
+[utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat, utilityBaseLayers] = createUtilityLayers(locations, modelParameters.timeSteps);
 
 %create agents and randomly allocate them to 'cities' - the term we use
 %here for the lowest administrative level
@@ -169,6 +171,7 @@ utilityVariables.utilityHistory = utilityHistory;
 utilityVariables.utilityAccessCosts = utilityAccessCosts;
 utilityVariables.utilityTimeConstraints = utilityTimeConstraints;
 utilityVariables.utilityAccessCodesMat = utilityAccessCodesMat;
+utilityVariables.utilityBaseLayers = utilityBaseLayers;
 
 mapVariables.map = map;
 mapVariables.locations = locations;

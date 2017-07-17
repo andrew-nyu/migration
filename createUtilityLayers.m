@@ -1,4 +1,4 @@
-function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat ] = createUtilityLayers(locations, timeSteps )
+function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat, utilityBaseLayers ] = createUtilityLayers(locations, timeSteps )
 %createUtilityLayers defines the different income/utility layers (and the
 %functions that generate them)
 
@@ -18,18 +18,19 @@ function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTim
 %that can be fed to a single-line version of the layer function OR revisit
 %this anonymous function structure.
 
-utilityLayerFunctions{1,1} = @(x, y, t, n, varargin) 1000;   %some income layer
+utilityLayerFunctions{1,1} = @(x, y, t, n, varargin) varargin{1};   %some income layer
 
 
-utilityLayerFunctions{2,1} = @(x, y, t, n, varargin) 50*x + 2000;   %some income layer
+utilityLayerFunctions{2,1} = @(x, y, t, n, varargin) varargin{1};   %some income layer
 
 
-utilityLayerFunctions{3,1} = @(x, y, t, n, varargin) 30 *y + 3000;   %some income layer
+utilityLayerFunctions{3,1} = @(x, y, t, n, varargin) varargin{1};   %some income layer
 
 
 %prepare the additional arrays necessary to describe the utility layers 
 
 utilityHistory = zeros(length(locations),length(utilityLayerFunctions),timeSteps);
+utilityBaseLayers = zeros(length(locations),length(utilityLayerFunctions),timeSteps);
 utilityAccessCosts = zeros(length(utilityLayerFunctions),2);
 
 %define the cost of access for utility layers ... payments may provide
@@ -51,8 +52,22 @@ utilityTimeConstraints = ...
 
 utilityAccessCodesMat = false(length(locations),length(utilityLayerFunctions),size(utilityAccessCosts,1));
 
-utilityAccessCodesMat(:,2:3,1) = true; %code 1: licence in country 1 gives access to 2 and 3
-utilityAccessCodesMat(locations.AdminUnit1 == 12, 2:3,2) = true; %code 2: country 2 requires licence for 2 and 3
-utilityAccessCodesMat(locations.AdminUnit1 == 12, 3,3) = true; %code 3: country 2 requires certification for 3
+utilityAccessCodesMat(:,2:3,1) = true; %code 1: all locations require 'licence 1' to access layers 2 and 3
+utilityAccessCodesMat(locations.AdminUnit1 == 2, 2:3,2) = true; %code 2: country 2 requires 'licence 2' for layers 2 and 3
+utilityAccessCodesMat(locations.AdminUnit1 == 2, 3,3) = true; %code 3: country 2 requires 'licence 3' for layer 3
 
+
+%define base layer for utility function (i.e., 'averages' from which to
+%work)
+
+utilityBaseLayers(locations.AdminUnit1 == 2, 1,1:timeSteps/3) = 700000;
+utilityBaseLayers(locations.AdminUnit1 == 2, 1,timeSteps/3:end) = 0;
+utilityBaseLayers(locations.AdminUnit1 == 1, 1,1:timeSteps/3) = 0;
+utilityBaseLayers(locations.AdminUnit1 == 1, 1,timeSteps/3:end) = 700000;
+
+utilityBaseLayers(locations.AdminUnit1 == 2, 2,:) = 50000;
+utilityBaseLayers(locations.AdminUnit1 == 1, 2,:) = 200000;
+
+utilityBaseLayers(locations.AdminUnit1 == 2, 3,:) = 10000;
+utilityBaseLayers(locations.AdminUnit1 == 1, 3,:) = 10000;
 end
