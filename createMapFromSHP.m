@@ -91,16 +91,16 @@ catch
     %just remember that in this algorithm, indexI+1 refers to the map layer
     %corresponding to administrative layer indexI
     
-    minX = min([shapeData(:).Longitude]);
-    maxX = max([shapeData(:).Longitude]);
-    minY = min([shapeData(:).Latitude]);
-    maxY = max([shapeData(:).Latitude]);
+    minX = min([shapeData(:).X]);
+    maxX = max([shapeData(:).X]);
+    minY = min([shapeData(:).Y]);
+    maxY = max([shapeData(:).Y]);
     
     xMargin = (maxX-minX)*0.02;
     yMargin = (maxY-minY)*0.02;
     
-    sizeX = round((maxX - minX) + 3 * xMargin) * mapParameters.density;
-    sizeY = round((maxY - minY) + 3 * yMargin) * mapParameters.density;
+    sizeX = ceil((maxX - minX) + 3 * xMargin) * mapParameters.density;
+    sizeY = ceil((maxY - minY) + 3 * yMargin) * mapParameters.density;
     
     r1 = [mapParameters.density  maxY + yMargin minX - xMargin];
     
@@ -144,9 +144,10 @@ catch
     
     %now assign maps, moving up
     lastRoundJ = zeros(length(shapeData),1);
+    currentLevelIDs = num2str(lastRoundJ);
     for indexI = 2:numLevels+1
-        currentLevelIDs = [shapeData(:).(levels{indexI-1})];
-        [bLevel,~,jLevel] = unique(currentLevelIDs);
+        currentLevelIDs = strcat(currentLevelIDs,'_', num2str([shapeData(:).(levels{indexI-1})]'));
+        [bLevel,~,jLevel] = unique(currentLevelIDs,'rows');
         temp = idCount + (1:length(bLevel));
         tempIDs = temp(jLevel);
 %         for indexK = 2:(indexI-1)
@@ -198,6 +199,18 @@ catch
     cityCenterLocations = [adminUnits(:,end) indexLocations'];
     %store locations in a dataset array
     locations = dataset({[cityCenterLocations listX' listY' adminUnits],'cityID','LocationIndex','locationX','locationY',layerNames{:}});
+    
+    fieldNameList = fieldnames(shapeData);
+    fields_ID = contains(fieldnames(shapeData),'ID');
+    fields_NAME = contains(fieldnames(shapeData),'NAME');
+    
+    fields_keep = fields_ID | fields_NAME;
+    
+    addFields = struct2dataset(rmfield(shapeData,fieldNameList(~fields_keep)));
+    addFields.Properties.VarNames = strcat('source_',addFields.Properties.VarNames);
+    
+    locations = horzcat(locations, addFields);
+    
     locations.matrixID = (1:length(listX))';
     
     mapParameters.sizeX = sizeY;

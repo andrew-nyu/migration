@@ -5,7 +5,7 @@ modelParameters.spinupTime = 12;
 modelParameters.numAgents = 500;
 mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
-modelParameters.timeSteps = 240;
+modelParameters.timeSteps = 100;
 modelParameters.cycleLength = 4;
 modelParameters.incomeInterval = 1;
 modelParameters.visualizeInterval = 12;
@@ -17,7 +17,8 @@ mapParameters.colorSpacing = 20;
 mapParameters.numDivisionMean = [2 8 9];
 mapParameters.numDivisionSD = [0 2 1];
 mapParameters.r1 = []; %this will be the spatial reference if we are pulling from a shape file
-mapParameters.filePath = './MexUS Data/Mex_ContUS.shp';
+mapParameters.filePath = './MexUS Data/Mex_ContUS_StatesOnly.shp';
+modelParameters.popFile = './MexUS Data/MEX_pop.csv';
 modelParameters.saveImg = true;
 modelParameters.shortName = 'MexUS_test';
 agentParameters.incomeShareFractionMean = 0.4;
@@ -64,6 +65,22 @@ end
 %define remittance costs based on these locations
 [ remittanceFee, remittanceRate ] = createRemittanceCosts(locations);
 
+%establish population density and likelihood of agent locations
+if(~isempty(modelParameters.popFile))
+    popTable = readtable(modelParameters.popFile);
+    popTable = join(popTable,dataset2table(locations),'LeftKeys',{'id_0','id_1'},'RightKeys',{'source_ID_0','source_ID_1'});
+    popTable = popTable(:,{'TotalEmployedPopulation','matrixID'});
+    
+    locationLikelihood = zeros(length(locations),1);
+    locationLikelihood(popTable.matrixID) = popTable.TotalEmployedPopulation;
+    locationLikelihood = locationLikelihood / sum(locationLikelihood);
+    locationLikelihood = cumsum(locationLikelihood);
+else
+    locationLikelihood = ones(length(locations),1) / length(locations);
+    locationLikelihood = cumsum(locationLikelihood);
+end
+
+
 %create utility layers from the set of layers and functions defined in
 %createUtilityLayers.m.  Utility is city-specific, not agent-specific, and
 %history is stored in one place only, utilityHistory.  Individual agents
@@ -82,12 +99,13 @@ knowsIncomeLocation = sparse(size(locations,1),size(utilityAccessCosts,1));
 % for indexI = 1:size(utilityAccessCosts,1)
 %    incomeLayersHistory{indexI} = sparse(size(locations,1),modelParameters.timeSteps); 
 % end
-incomeLayersHistory = false(size(locations,1),size(utilityAccessCosts,1),modelParameters.timeSteps);
+incomeLayersHistory = false(size(utilityBaseLayers));
 
 %create agents, assigning agent-specific properties as appropriate from
 %input data
 for indexI = 1:modelParameters.numAgents
-    locationID = randi(numLocations);
+    temp = find(locationLikelihood > rand());
+    locationID = temp(1);
     knowledgeShareFrac = min(1,max(0,agentParameters.knowledgeShareFracMean + randn() * agentParameters.knowledgeShareFracSD));
     shareCostThreshold = min(1,max(0,agentParameters.shareCostThresholdMean + randn() * agentParameters.shareCostThresholdSD));
     incomeShareFraction = min(1,max(0,agentParameters.incomeShareFractionMean + randn() * agentParameters.incomeShareFractionSD));    

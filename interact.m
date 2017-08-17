@@ -5,6 +5,7 @@ function [agent, partner] = interact(agent, partner)
 %categorize data in the income layers knowledge of the two agents.  in the
 %operation below, data known only to agent get a 1, data known only to
 %partner get a 2, and data known by both of them get a 3
+
 overlap = agent.incomeLayersHistory + 2 * partner.incomeLayersHistory;
 
 %agent communicates a fraction of overlap == 1 with partner
