@@ -1,4 +1,4 @@
-function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat, utilityBaseLayers ] = createUtilityLayers(locations, timeSteps )
+function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat, utilityBaseLayers ] = createUtilityLayers(locations, timeSteps, dataPath )
 %createUtilityLayers defines the different income/utility layers (and the
 %functions that generate them)
 
@@ -68,7 +68,7 @@ utilityAccessCodesMat(locations.AdminUnit1 == 2, 3,3) = true; %code 3: country 2
 %define base layer for utility function (i.e., 'averages' from which to
 %work)
 
-baseLayer = readtable('./MexUS Data/Base_layer_v1.csv');
+baseLayer = readtable(dataPath);
 
 %establish the overlap between the points in the map, and the points in the
 %data provided.  points not in the data will be -9999

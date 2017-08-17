@@ -19,6 +19,7 @@ mapParameters.numDivisionSD = [0 2 1];
 mapParameters.r1 = []; %this will be the spatial reference if we are pulling from a shape file
 mapParameters.filePath = './MexUS Data/Mex_ContUS_StatesOnly.shp';
 modelParameters.popFile = './MexUS Data/MEX_pop.csv';
+modelParameters.utilityDataPath = './MexUS Data/Base_layer_v1.csv';
 modelParameters.saveImg = true;
 modelParameters.shortName = 'MexUS_test';
 agentParameters.incomeShareFractionMean = 0.4;
@@ -88,7 +89,7 @@ end
 %they experienced or learned.  This structure allows an arbitrarily large
 %landscape with an arbitrarily large number of agents, without wasting
 %memory
-[utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat, utilityBaseLayers] = createUtilityLayers(locations, modelParameters.timeSteps);
+[utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat, utilityBaseLayers] = createUtilityLayers(locations, modelParameters.timeSteps, modelParameters.utilityDataPath);
 
 %create agents and randomly allocate them to 'cities' - the term we use
 %here for the lowest administrative level
