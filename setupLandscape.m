@@ -1,13 +1,14 @@
-function [agentList, modelParameters, networkParameters, mapParameters, utilityVariables, mapVariables] = setupLandscape()
+function [agentList, modelParameters, networkParameters, mapParameters, utilityVariables, mapVariables] = setupLandscape(inputs)
 
 %All model parameters go here
 modelParameters.spinupTime = 12;
 modelParameters.numAgents = 500;
 mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
-modelParameters.timeSteps = 100;
+modelParameters.timeSteps = 130;
 modelParameters.cycleLength = 4;
 modelParameters.incomeInterval = 1;
+modelParameters.visualizeYN = 0;
 modelParameters.visualizeInterval = 12;
 networkParameters.networkDistanceSD = 7;
 networkParameters.connectionsMean = 2;
@@ -19,7 +20,7 @@ mapParameters.numDivisionSD = [0 2 1];
 mapParameters.r1 = []; %this will be the spatial reference if we are pulling from a shape file
 mapParameters.filePath = './MexUS Data/Mex_ContUS_StatesOnly.shp';
 modelParameters.popFile = './MexUS Data/MEX_pop.csv';
-modelParameters.utilityDataPath = './MexUS Data/Base_layer_v1.csv';
+modelParameters.utilityDataPath = './MexUS Data/BASE_LAYER_V2.csv';
 modelParameters.saveImg = true;
 modelParameters.shortName = 'MexUS_test';
 agentParameters.incomeShareFractionMean = 0.4;
@@ -54,6 +55,14 @@ agentParameters.discountRateMean = 0.04;
 agentParameters.discountRateSD = 0;
 agentParameters.rValueMean = 0.8;
 agentParameters.rValueSD = 0;
+
+%override any input variables. 'inputs' should be a dataset with two columns,
+%one with the parameter name and one with the value
+if(~isempty(inputs))
+   for indexI = 1:size(inputs,1)
+       eval([inputs.parameterNames{indexI} ' = ' num2str(inputs.parameterValues(indexI)) ';']);
+   end
+end
 
 %create a map based on the defined administrative structure in
 %mapParameters
@@ -206,9 +215,11 @@ mapVariables.movingCosts = movingCosts;
 
 
 %visualize the map
-[mapHandle] = visualizeMap(agentList, mapVariables, mapParameters);
+if(modelParameters.visualizeYN)
+    [mapHandle] = visualizeMap(agentList, mapVariables, mapParameters);
+    mapVariables.mapHandle = mapHandle;
+end
 
-mapVariables.mapHandle = mapHandle;
 
 
 end

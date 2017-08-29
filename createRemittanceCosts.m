@@ -34,8 +34,8 @@ baseCosts = [0 0; ... %same subsubdistrict
 %   pair that will supercede a country-country exception, put it after the
 %   country-country exception that it supercedes
 
-exceptions = [1 2 20 9; ... %transfers between unit 1 and 2 (country 1 and 2) have a rate of 9
-    116 117 100 0]; % transfers between cities 116 and 117 are more expensive (if these cities exist!!)
+exceptions = [];% 1 2 20 9; ... %transfers between unit 1 and 2 (country 1 and 2) have a rate of 9
+    %116 117 100 0]; % transfers between cities 116 and 117 are more expensive (if these cities exist!!)
 
 %   From here, matrices are created for fees and rates, with indices
 %   ordered according to the 'cityID' variable in locations

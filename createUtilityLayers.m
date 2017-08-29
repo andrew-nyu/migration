@@ -81,7 +81,7 @@ temp = -9999 * ones(height(b_baseLayerLocation),1);
 temp(i_baseLayer) = i_location;
 mapLocationInBaseLayer = temp(j_baseLayerLocation);
 
-[b_EconomicActivity,i,j_EconomicActivity] = unique(baseLayer.Economic_Activity);
+[b_EconomicActivity,i,j_EconomicActivity] = unique(baseLayer.id_00);
 timeStepColumns = find(startsWith(baseLayer.Properties.VariableNames,'ts'));
 timeStepColumnNames = baseLayer.Properties.VariableNames(timeStepColumns);
 timeStepPoints = str2double(regexprep(timeStepColumnNames,'ts',''));
@@ -105,15 +105,19 @@ for indexI = 1:length(timeStepColumns)
             
         else
             numSteps = max(0,min(timeSteps,timeStepPoints(indexI+1)) - timeStepPoints(indexI));
-            temp = table2array(baseLayer(j_EconomicActivity == indexJ,timeStepColumnNames(indexI))) * ones(1,numSteps);
-            
-            temp(currentMapLocs < 0,:) = [];
-            currentMapLocs(currentMapLocs < 0) = [];
-            utilityBaseLayers(currentMapLocs, indexJ, timeStepPoints(indexI):min(timeSteps,timeStepPoints(indexI+1)-1)) = temp;
+            if(numSteps > 0)
+                temp = table2array(baseLayer(j_EconomicActivity == indexJ,timeStepColumnNames(indexI))) * ones(1,numSteps);
+
+                temp(currentMapLocs < 0,:) = [];
+                currentMapLocs(currentMapLocs < 0) = [];
+                utilityBaseLayers(currentMapLocs, indexJ, timeStepPoints(indexI):min(timeSteps,timeStepPoints(indexI+1)-1)) = temp;
+            end
         end
         
     end
 end
+
+utilityBaseLayers(locations.AdminUnit1 == 2, :,:) = utilityBaseLayers(locations.AdminUnit1 == 2, :,:) * 100000;
 
 %utilityBaseLayers has dimensions of (location, activity, time)
 

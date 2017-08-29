@@ -302,7 +302,11 @@ for indexL = 1:length(locationList)
         
         %convert each element to utility using the risk coefficient, and
         %then discount all elements forward to get NPV in utility units
-        portfolioValues(indexP) = (1/riskCoeff) * (currentPortfolio .^ riskCoeff) * discountFactor;
+        
+        %prospect theory hack - check!!!!
+        vSign = sign(currentPortfolio);
+        vSign(vSign < 0) = -2;
+        portfolioValues(indexP) = (1/riskCoeff) * (vSign .* (abs(currentPortfolio) .^ riskCoeff)) * discountFactor;
         
     end
     
@@ -330,6 +334,7 @@ bestPortfolio = locationPortfolio{indexSorted(1)};
 if(currentLocation ~= bestLocation) 
     %pay moving costs
     agent.wealth = agent.wealth - locationMovingCosts(indexSorted(1));
+    
     %update location - this includes i) the matrixLocation (which is the
     %location's index in the location vector, ii) the cityID, which is the
     %unique identifier for the city (used in mapping and in distinguishing
@@ -338,6 +343,7 @@ if(currentLocation ~= bestLocation)
     %lowest-level unit for visualization purposes
     agent.matrixLocation = locationList(indexSorted(1));
     agent.location = mapVariables.locations(agent.matrixLocation,:).cityID;
+
     locationMapIndex = find(mapVariables.map(:,:,end) == agent.location);
     if(isempty(locationMapIndex))
         %this particular city is either sub-pixel size or shares all pixels with other cities and lost each one

@@ -1,13 +1,14 @@
-function [  ] = runMigrationModel(  )
+function [outputs] = runMigrationModel(inputs, runName)
 %runMigrationModel.m main time loop of migration model
 
 
-clear all;
+%clear all;
 close all;
 
 tic;
 
-[agentList, modelParameters, networkParameters, mapParameters, utilityVariables, mapVariables] = setupLandscape();
+outputs = [];
+[agentList, modelParameters, networkParameters, mapParameters, utilityVariables, mapVariables] = setupLandscape(inputs);
 
 numLocations = size(mapVariables.locations,1);
 numLayers = size(utilityVariables.utilityLayerFunctions,1);
@@ -134,15 +135,15 @@ for indexT = 1:modelParameters.timeSteps
         end
     end %if (mod(indexT, modelParameters.incomeInterval) == 0)
     
-    if (mod(indexT, modelParameters.visualizeInterval) == 0)
+    if (modelParameters.visualizeYN & mod(indexT, modelParameters.visualizeInterval) == 0)
         
         %visualize the map
         [mapHandle] = visualizeMap(agentList, mapVariables, mapParameters);
         drawnow();
-        fprintf('Map updated.\n');
+        fprintf([runName ' - Map updated.\n']);
         if(modelParameters.saveImg)
            print('-dpng','-painters','-r300', [modelParameters.shortName num2str(indexT) '.png']); 
-           fprintf('Map saved.\n');
+           fprintf([runName ' - Map saved.\n']);
                    
         end
 
@@ -150,9 +151,14 @@ for indexT = 1:modelParameters.timeSteps
     
     averageWealth(indexT) = mean([agentList(:).wealth]);
     
-    fprintf(['Time step ' num2str(indexT) ' of ' num2str(modelParameters.timeSteps) ' - ' num2str(migrations(indexT)) ' migrations.\n']);
+    fprintf([runName ' - Time step ' num2str(indexT) ' of ' num2str(modelParameters.timeSteps) ' - ' num2str(migrations(indexT)) ' migrations.\n']);
 
 end %for indexT = 1:modelParameters.timeSteps
+
+%prepare outputs
+outputs.averageWealth = averageWealth;
+outputs.countAgentsPerLayer = countAgentsPerLayer;
+outputs.migrations = migrations;
 
 toc;
 end

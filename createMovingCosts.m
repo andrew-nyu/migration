@@ -29,7 +29,21 @@ baseMovingCosts = [1000; ... %same district
 
 %   Note any distance-specific costs
 
-distanceCost = 10;  %per unit distance
+%distanceCost = 10;  %per unit distance
+distanceCost = 10000;  %maximum moving cost by distance
+
+%parameters for beta distribution
+beta1 = 5;
+beta2 = 2;
+betaDistanceCommuter = 0.5;
+betaDistanceMax = 1;
+distanceCommuter = 200;
+distanceMax = 2000;
+
+%translate actual distances into their beta distribution equivalent, then
+%calculate the distance costs
+Db = distanceMatrix * betaDistanceCommuter / (distanceMax-distanceCommuter) + betaDistanceCommuter * (1 - distanceCommuter/(distanceMax-distanceCommuter));
+distanceCost = betacdf(Db,beta1,beta2) * distanceCost;
 
 %   Next, make any unit-specific exceptions in an x by 3 array called exceptions, of the form:
 %   [unit1 unit2 rate; ...].  The unit IDs should correspond to the
@@ -40,8 +54,8 @@ distanceCost = 10;  %per unit distance
 %   pair that will supercede a country-country exception, put it after the
 %   country-country exception that it supercedes
 
-exceptions = [1 2 8000; ... %transfers between unit 1 and 2 (country 1 and 2) have a rate of 9
-    116 117 3000]; % transfers between cities 116 and 117 are more expensive (if these cities exist!!)
+exceptions = []; %1 2 8000; ... %transfers between unit 1 and 2 (country 1 and 2) have a rate of 9
+    %116 117 3000]; % transfers between cities 116 and 117 are more expensive (if these cities exist!!)
 
 %   From here, matrices are created for fees and rates, with indices
 %   ordered according to the 'cityID' variable in locations
@@ -93,7 +107,10 @@ for indexI = 1:size(exceptions,1)
 end
 
 %now add in the distance-specific costs
-movingCosts = movingCosts + distanceMatrix * distanceCost;
+%movingCosts = movingCosts + distanceMatrix * distanceCost; %use this line
+%if distance cost is a scalar multiple of actual distance, otherwise use the one below
+
+movingCosts = movingCosts +  distanceCost;
 movingCosts = movingCosts .* ~eye(size(movingCosts));
 end
 
