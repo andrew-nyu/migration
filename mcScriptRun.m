@@ -43,7 +43,7 @@ mcParams = [mcParams; {'agentParameters.discountRateSD', 0, 0.02, 0}];
 mcParams = [mcParams; {'agentParameters.rValueMean', 0.5, 1, 0}];
 mcParams = [mcParams; {'agentParameters.rValueSD', 0, 0.2, 0}];
 
-%make the full factorial design
+%make the full design
 
 for indexI = 1:modelRuns
     experiment = table([],[],'VariableNames',{'parameterNames','parameterValues'});
@@ -65,4 +65,4 @@ for indexI = 1:length(experimentList)
     outputList{indexI} = runMigrationModel(experimentList{indexI}, ['Run ' num2str(indexI)]);
 end
 
-save experiment_August_25 experimentList outputList fullDesign parameterNames parameterLimits roundValYN
+save experiment_August_25 experimentList outputList mcParams
