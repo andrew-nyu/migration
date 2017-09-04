@@ -4,9 +4,9 @@ outputList = {};
 repeats = 5;
 parameterNames = {  'modelParameters.numAgents'; ...
     'networkParameters.networkDistanceSD'};
-parameterValues = { [100 500 1000]; ...
-    [3 7 13]};
-parameterLevels = [3 3 repeats];
+parameterValues = { [5000]; ...
+    [7]};
+parameterLevels = [1 1 repeats];
 
 %make the full factorial design
 fullDesign = fullfact(parameterLevels);
@@ -23,7 +23,7 @@ for indexI = 1:size(fullDesign,1)
     experimentList{indexI} = experiment;
 end
 
-parfor indexI = 1:length(experimentList)
+for indexI = 1:length(experimentList)
 %for indexI = 1:length(experimentList)
     outputList{indexI} = runMigrationModel(experimentList{indexI}, ['Run ' num2str(indexI)]);
 end

@@ -19,6 +19,8 @@ sizeArray = size(utilityVariables.utilityHistory);
 countAgentsPerLayer = zeros(numLocations, numLayers, modelParameters.timeSteps);
 averageWealth = zeros(modelParameters.timeSteps ,1);
 migrations = zeros(modelParameters.timeSteps,1);
+outMigrations = zeros(numLocations, modelParameters.timeSteps);
+inMigrations = zeros(numLocations, modelParameters.timeSteps);
 
 for indexT = 1:modelParameters.timeSteps
    
@@ -56,7 +58,12 @@ for indexT = 1:modelParameters.timeSteps
         %be/what to do
         if(rand() < currentAgent.pChoose && indexT > modelParameters.spinupTime)
             [currentAgent, moved] = choosePortfolio(currentAgent, utilityVariables, indexT, modelParameters, mapParameters, mapVariables);
-            migrations(indexT) = migrations(indexT) + moved;
+            if(~isempty(moved))
+                migrations(indexT) = migrations(indexT) + 1;
+                inMigrations(moved(2), indexT) = inMigrations(moved(2), indexT) + 1;
+                outMigrations(moved(1), indexT) = outMigrations(moved(1), indexT) + 1;
+                
+            end
         end
        
         
@@ -151,7 +158,9 @@ for indexT = 1:modelParameters.timeSteps
     
     averageWealth(indexT) = mean([agentList(:).wealth]);
     
-    fprintf([runName ' - Time step ' num2str(indexT) ' of ' num2str(modelParameters.timeSteps) ' - ' num2str(migrations(indexT)) ' migrations.\n']);
+    if(modelParameters.listTimeStepYN)
+        fprintf([runName ' - Time step ' num2str(indexT) ' of ' num2str(modelParameters.timeSteps) ' - ' num2str(migrations(indexT)) ' migrations.\n']);
+    end
 
 end %for indexT = 1:modelParameters.timeSteps
 
@@ -159,6 +168,47 @@ end %for indexT = 1:modelParameters.timeSteps
 outputs.averageWealth = averageWealth;
 outputs.countAgentsPerLayer = countAgentsPerLayer;
 outputs.migrations = migrations;
+outputs.locations = mapVariables.locations;
+outputs.inMigrations = inMigrations;
+outputs.outMigrations = outMigrations;
+
+agentSummary = table([agentList(:).id]','VariableNames',{'id'});
+agentSummary.wealth = [agentList(:).wealth]';
+agentSummary.location = [agentList(:).location]';
+agentSummary.pInteract = [agentList(:).pInteract]';
+agentSummary.pChoose = [agentList(:).pChoose]';
+agentSummary.pRandomLearn = [agentList(:).pRandomLearn]';
+agentSummary.countRandomLearn = [agentList(:).countRandomLearn]';
+agentSummary.numBestLocation = [agentList(:).numBestLocation]';
+agentSummary.numBestPortfolio = [agentList(:).numBestPortfolio]';
+agentSummary.numRandomLocation = [agentList(:).numRandomLocation]';
+agentSummary.numRandomPortfolio = [agentList(:).numRandomPortfolio]';
+agentSummary.numPeriodsEvaluate = [agentList(:).numPeriodsEvaluate]';
+agentSummary.numPeriodsMemory = [agentList(:).numPeriodsMemory]';
+agentSummary.discountRate = [agentList(:).discountRate]';
+agentSummary.rValue = [agentList(:).rValue]';
+
+tempCurrentPortfolio = cell(length(agentList),1);
+tempNetwork = cell(length(agentList),1);
+for indexI = 1:length(agentList)
+    tempCurrentPortfolio{indexI} = agentList(indexI).currentPortfolio;
+    tempNetwork{indexI} = [agentList(indexI).network(:).id];
+end
+agentSummary.currentPortfolio = tempCurrentPortfolio;
+agentSummary.network = tempNetwork;
+
+outputs.agentSummary = agentSummary;
+
+for indexI = length(agentList):-1:1
+    delete(agentList(indexI));
+end
+clear agentList;
+clear mapVariables;
+clear utilityVariables;
+clear *Parameters;
+pack;
+
+fprintf([runName '- completed.\n']);
 
 toc;
 end

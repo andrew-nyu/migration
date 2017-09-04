@@ -21,13 +21,6 @@ function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTim
 utilityLayerFunctions{1,1} = @(x, y, t, n, varargin) varargin{1};   %some income layer
 utilityLayerFunctions{2,1} = @(x, y, t, n, varargin) varargin{1};   %some income layer
 utilityLayerFunctions{3,1} = @(x, y, t, n, varargin) varargin{1};   %some income layer
-utilityLayerFunctions{4,1} = @(x, y, t, n, varargin) varargin{1};   %some income layer
-utilityLayerFunctions{5,1} = @(x, y, t, n, varargin) varargin{1};   %some income layer
-utilityLayerFunctions{6,1} = @(x, y, t, n, varargin) varargin{1};   %some income layer
-utilityLayerFunctions{7,1} = @(x, y, t, n, varargin) varargin{1};   %some income layer
-utilityLayerFunctions{8,1} = @(x, y, t, n, varargin) varargin{1};   %some income layer
-utilityLayerFunctions{9,1} = @(x, y, t, n, varargin) varargin{1};   %some income layer
-
 
 %prepare the additional arrays necessary to describe the utility layers 
 
@@ -43,26 +36,19 @@ utilityAccessCosts = zeros(length(utilityLayerFunctions),2);
 %placeholders as examples
 
 utilityAccessCosts = ...
-    [1 100; %code 1 expense is 100
-    2 75; %code 2 expense is 75
-    3 200]; 
+    [1 1223; %visa type 1 fee is 1223
+    ]; 
 
 utilityTimeConstraints = ...
     [1 0.5; %accessing layer 1 is a 25% FTE commitment
     2 0.5; %accessing layer 2 is a 50% FTE commitment
-    3 0.5; %accessing layer 2 is a 50% FTE commitment
-    4 0.5; %accessing layer 2 is a 50% FTE commitment
-    5 0.5; %accessing layer 2 is a 50% FTE commitment
-    6 0.5; %accessing layer 2 is a 50% FTE commitment
-    7 0.5; %accessing layer 2 is a 50% FTE commitment
-    8 0.5; %accessing layer 2 is a 50% FTE commitment
-    9 0.5]; %accessing layer 3 is a 50% FTE commitment
+    3 0.5]; %accessing layer 3 is a 50% FTE commitment
 
 utilityAccessCodesMat = false(length(locations),length(utilityLayerFunctions),size(utilityAccessCosts,1));
 
-utilityAccessCodesMat(:,2:3,1) = true; %code 1: all locations require 'licence 1' to access layers 2 and 3
-utilityAccessCodesMat(locations.AdminUnit1 == 2, 2:3,2) = true; %code 2: country 2 requires 'licence 2' for layers 2 and 3
-utilityAccessCodesMat(locations.AdminUnit1 == 2, 3,3) = true; %code 3: country 2 requires 'licence 3' for layer 3
+%utilityAccessCodesMat(:,2:3,1) = true; %code 1: all locations require 'licence 1' to access layers 2 and 3
+utilityAccessCodesMat(locations.AdminUnit1 == 2, 2:3,1) = true; %code 2: country 2 requires 'licence 2' for layers 2 and 3
+%utilityAccessCodesMat(locations.AdminUnit1 == 2, 3,3) = true; %code 3: country 2 requires 'licence 3' for layer 3
 
 
 %define base layer for utility function (i.e., 'averages' from which to
@@ -117,7 +103,6 @@ for indexI = 1:length(timeStepColumns)
     end
 end
 
-utilityBaseLayers(locations.AdminUnit1 == 2, :,:) = utilityBaseLayers(locations.AdminUnit1 == 2, :,:) * 100000;
 
 %utilityBaseLayers has dimensions of (location, activity, time)
 

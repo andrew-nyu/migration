@@ -53,7 +53,7 @@ function [ agent, moved ] = choosePortfolio( agent, utilityVariables, currentT, 
 %algorithm begins below
 
 %as of now, the agent has not decided to move
-moved = 0;
+moved = [];
 
 %choose a set of locations to evaluate - the current location, some other
 %good locations from past searches, and a few random new ones.  note that
@@ -176,9 +176,13 @@ for indexL = 1:length(locationList)
             portfolioData(:,(indexI-1)*modelParameters.cycleLength+1:indexI*modelParameters.cycleLength) = fullHistory(:, startSamples(indexI):startSamples(indexI)+modelParameters.cycleLength-1);
             
         end
+        try
         if(extraPeriods > 0)
             endSample = startingPoints(ceil(rand() * length(startingPoints)));
-            portfolioData(:,end-extraPeriods:end) = fullHistory(:, endSample:endSample+extraPeriods);
+            portfolioData(:,(end-extraPeriods+1):end) = fullHistory(:, (endSample+1):endSample+extraPeriods);
+        end
+        catch
+            f=1;
         end
     end
     %now go through and fill in the blanks, trying to preserve sequence if
@@ -332,6 +336,8 @@ bestPortfolio = locationPortfolio{indexSorted(1)};
 
 %if the best portfolio isn't where we currently are, we have to move
 if(currentLocation ~= bestLocation) 
+    
+    moved = agent.matrixLocation;
     %pay moving costs
     agent.wealth = agent.wealth - locationMovingCosts(indexSorted(1));
     
@@ -358,7 +364,7 @@ if(currentLocation ~= bestLocation)
     agent.visY = locationY + rand() - 0.5;
     
     %mark the agent as having moved
-    moved = 1;
+    moved = [moved; agent.matrixLocation];
 end
 
 %pay any access costs necessary to make use of this layer

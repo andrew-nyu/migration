@@ -1,7 +1,11 @@
+function mcScriptRun()
+
+rng('shuffle');
+
 outputList = {};
 
 %number of runs
-modelRuns = 100;
+modelRuns = 10;
 
 %define the levels and parameters you will explore, as below
 mcParams = table([],[],[],[],'VariableNames',{'Name','Lower','Upper','RoundYN'});
@@ -45,6 +49,7 @@ mcParams = [mcParams; {'agentParameters.rValueSD', 0, 0.2, 0}];
 
 %make the full design
 
+fprintf(['Building Experiment List.\n']);
 for indexI = 1:modelRuns
     experiment = table([],[],'VariableNames',{'parameterNames','parameterValues'});
     for indexJ = 1:(height(mcParams))
@@ -60,9 +65,23 @@ for indexI = 1:modelRuns
     experimentList{indexI} = experiment;
 end
 
+fprintf(['Saving Experiment List.\n']);
+save(['experiment_' date '_input_summary'], 'experimentList', 'mcParams');
+
+runList = zeros(length(experimentList),1);
+%run the model
 for indexI = 1:length(experimentList)
-%for indexI = 1:length(experimentList)
-    outputList{indexI} = runMigrationModel(experimentList{indexI}, ['Run ' num2str(indexI)]);
+    if(runList(indexI) == 0)
+        input = experimentList{indexI};
+        output = runMigrationModel(input, ['Run ' num2str(indexI)]);
+        currentFile = ['MC_Run_' num2str(length(dir('MC_Run_*'))) '_' datestr(now) '.mat'];
+        saveToFile(input, output, currentFile);
+        runList(indexI) = 1;
+    end
 end
 
-save experiment_August_25 experimentList outputList mcParams
+end
+
+function saveToFile(input, output, filename);
+    save(filename,'input', 'output');
+end
