@@ -54,6 +54,9 @@ for indexT = 1:modelParameters.timeSteps
             continue;
         end
         
+        %update any age-specific agent parameters
+        
+        
         %draw number to see if (for female agents) agent gives birth
         if(currentAgent.gender == 2 && currentAgent.age >= modelParameters.ageDecision)
             agentGivesBirth = rand() < interp1(demographicVariables.agePointsFertility, demographicVariables.fertilityRate(currentAgent.matrixLocation,:), currentAgent.age);
@@ -165,7 +168,7 @@ for indexT = 1:modelParameters.timeSteps
         %draw number to see if agent updates preferences on where to
         %be/what to do
         if(rand() < currentAgent.pChoose && indexT > modelParameters.spinupTime && currentAgent.age >= modelParameters.ageDecision)
-            [currentAgent, moved] = choosePortfolio(currentAgent, utilityVariables, indexT, modelParameters, mapParameters, mapVariables);
+            [currentAgent, moved] = choosePortfolio(currentAgent, utilityVariables, indexT, modelParameters, mapParameters, demographicVariables, mapVariables);
             if(~isempty(moved))
                 migrations(indexT) = migrations(indexT) + 1;
                 inMigrations(moved(2), indexT) = inMigrations(moved(2), indexT) + 1;

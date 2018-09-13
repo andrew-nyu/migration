@@ -82,13 +82,9 @@ periodInCycleData = mod(1:currentT,modelParameters.cycleLength);
 periodInCycleEvaluation = mod(1:agent.numPeriodsEvaluate,modelParameters.cycleLength);
 
 %set up the discount and risk factors
+disinterp1(demographicVariables.agePointsPref, demographicVariables.ageDiscountRateFactor, agent.age);
 
-%this next line builds in a scaling (in practice) of the discount rate
-%based on age.  note that this doesn't modify the underlying discount rate,
-%but instead scales it based on any input data.  possibly change
-discountAgeScaling = interp1(demographicVariables.agePointsPref, demographicVariables.ageDiscountRateFactor, agent.age);
-
-discountFactor = 1./((1+agent.discountRate * discountAgeScaling).^(0:agent.numPeriodsEvaluate-1)');
+discountFactor = 1./((1+agent.discountRate).^(0:agent.numPeriodsEvaluate-1)');
 riskCoeff = 1 - agent.rValue;
 
 %initialize vectors to hold the best-case portfolios and values for each

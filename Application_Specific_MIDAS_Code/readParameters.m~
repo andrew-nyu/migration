@@ -39,7 +39,7 @@ mapParameters.saveDirectory = './Outputs/';
 modelParameters.popFile = './Data/Bangladesh Data/ban_pop_estimate_ipums.xls';
 modelParameters.survivalFile = './Data/Bangladesh Data/mortality_ban.xls';
 modelParameters.fertilityFile = './Data/Bangladesh Data/fert_age_ban.xls';
-modelParameters.agePreferencesFile = './Data/Bangladesh Data/age_specific_params.xls';
+
 modelParameters.utilityDataPath = './Data/Bangladesh Data';
 modelParameters.saveImg = false;
 modelParameters.shortName = 'Bangladesh_test';

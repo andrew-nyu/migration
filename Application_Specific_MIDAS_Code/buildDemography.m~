@@ -1,4 +1,4 @@
-function [locationLikelihood, genderLikelihood, ageLikelihood, survivalRate, fertilityRate, ageDiscountRateFactor, agePointsPopulation, agePointsSurvival, agePointsFertility, agePointsPref] = buildDemography(modelParameters, locations)
+function [locationLikelihood, genderLikelihood, ageLikelihood, survivalRate, fertilityRate, agePointsPopulation, agePointsSurvival, agePointsFertility] = buildDemography(modelParameters, locations)
 
 %this function can be set up however you like, but is used by MIDAS to
 %establish initial distributions of agents and per-period survival in a
@@ -127,14 +127,13 @@ else
     fertilityRate = rand(length(locations),length(agePointsFertility)) / 10;  %this gives annual likelihood of birth up to 10%
 end
 
-%any additional age-specific factors ought to be handled here
 if(~isempty(modelParameters.agePreferencesFile))
     agePrefTable = readtable(modelParameters.agePreferencesFile);
     agePointsPref = (agePrefTable.MaxAge)';
 
-    ageDiscountRateFactor = agePrefTable.discRateAge;
+    ageDiscountRateFactor = agePrefTable.discountRateAgeFactor;
     
 else
     agePointsPref = [0 100];
-    ageDiscountRateFactor = [1 1];  %no change in discount rate with age
+    ageDiscountRateFactor = [1 1];  
 end

@@ -12,7 +12,7 @@ end
 [ remittanceFee, remittanceRate ] = createRemittanceCosts(locations);
 
 %establish population density and likelihood of agent locations
-[locationLikelihood, genderLikelihood, ageLikelihood, survivalRate, fertilityRate, agePointsPopulation, agePointsSurvival, agePointsFertility] = buildDemography(modelParameters, locations);
+[locationLikelihood, genderLikelihood, ageLikelihood, survivalRate, fertilityRate, ageDiscountRateFactor, agePointsPopulation, agePointsSurvival, agePointsFertility, agePointsPref] = buildDemography(modelParameters, locations);
 
 %survival and fertility rates are generated annually and must be recalibrated for current
 %timestep
@@ -27,6 +27,8 @@ demographicVariables.fertilityRate = fertilityRate;
 demographicVariables.agePointsPopulation = agePointsPopulation;
 demographicVariables.agePointsSurvival = agePointsSurvival;
 demographicVariables.agePointsFertility = agePointsFertility;
+demographicVariables.agePointsPref = agePointsPref;
+demographicVariables.ageDiscountRateFactor = ageDiscountRateFactor;
 
 
 %create utility layers from the set of layers and functions defined in
