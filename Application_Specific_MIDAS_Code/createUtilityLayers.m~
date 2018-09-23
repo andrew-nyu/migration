@@ -1,4 +1,4 @@
-function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat, utilityPrereqs, utilityBaseLayers, utilityForms, incomeForms, nExpected ] = createUtilityLayers(locations, modelParameters, demographicVariables )
+function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat, utilityPrereqs, utilityBaseLayers, utilityForms, incomeForms ] = createUtilityLayers(locations, modelParameters, demographicVariables )
 %createUtilityLayers defines the different income/utility layers (and the
 %functions that generate them)
 
@@ -194,7 +194,7 @@ timeSteps = years * quantiles;  %2005 to 2015 inclusive
 
 utilityLayerFunctions = [];
 for indexI = 1:(size(incomeMean,1)*quantiles)  %16 different sources, with 4 levels
-    utilityLayerFunctions{indexI,1} = @(k,m,nExpected,n_actual, base) base * (m * nExpected) / (max(0, n_actual - m * nExpected) * k + m * nExpected);   %some income layer - base layer input times density-dependent extinction
+    utilityLayerFunctions{indexI,1} = @(k,m,n_expected,n_actual, base) base * (m * n_expected) / (max(0, n_actual - m * n_expected) * k + m * n_expected);   %some income layer - base layer input times density-dependent extinction
 end
 
 
@@ -204,25 +204,24 @@ utilityBaseLayers = -9999 * ones(length(locations),length(utilityLayerFunctions)
 
 %estimate expected number of agents for each layer, for use in the utility
 %layer function input
-locationProb = demographicVariables.locationLikelihood;
+locationProb = locationLikelihood;
 locationProb(2:end) = locationProb(2:end) - locationProb(1:end-1);
-numAgentsModel = locationProb * modelParameters.numAgents;
 
-nExpected = zeros(length(locations),length(utilityLayerFunctions));
+n_expected = zeros(length(locations),length(utilityLayerFunctions));
 for indexI = 1:size(incomeCounts,1) %income layer loop
     for indexJ = 1:size(incomeCounts,2) %location loop
         [~,yearPick1] = max(incomeMean(indexI,indexJ, 1,:));
         [~,yearPick2] = max(incomeMean(indexI,indexJ, 2,:));
         [~,yearPick3] = max(incomeMean(indexI,indexJ, 3,:));
         [~,yearPick4] = max(incomeMean(indexI,indexJ, 4,:));
-        nExpected(indexJ,(indexI - 1)*4 + 1) = numAgentsModel(indexJ) * incomeCounts(indexI, indexJ, 1, yearPick1) / peopleCounts(indexI, indexJ, 1, yearPick1);
-        nExpected(indexJ,(indexI - 1)*4 + 2) = numAgentsModel(indexJ) * incomeCounts(indexI, indexJ, 2, yearPick2) / peopleCounts(indexI, indexJ, 2, yearPick2);
-        nExpected(indexJ,(indexI - 1)*4 + 3) = numAgentsModel(indexJ) * incomeCounts(indexI, indexJ, 3, yearPick3) / peopleCounts(indexI, indexJ, 3, yearPick3);
-        nExpected(indexJ,(indexI - 1)*4 + 4) = numAgentsModel(indexJ) * incomeCounts(indexI, indexJ, 4, yearPick4) / peopleCounts(indexI, indexJ, 4, yearPick4);
+        n_expected(indexJ,(indexI - 1)*4 + 1) = incomeCounts(indexI, indexJ, 1, yearPick1) / peopleCounts(indexI, indexJ, 1, yearPick1);
+        n_expected(indexJ,(indexI - 1)*4 + 2) = incomeCounts(indexI, indexJ, 1, yearPick2) / peopleCounts(indexI, indexJ, 1, yearPick2);
+        n_expected(indexJ,(indexI - 1)*4 + 3) = incomeCounts(indexI, indexJ, 1, yearPick3) / peopleCounts(indexI, indexJ, 1, yearPick3);
+        n_expected(indexJ,(indexI - 1)*4 + 4) = incomeCounts(indexI, indexJ, 1, yearPick4) / peopleCounts(indexI, indexJ, 1, yearPick4);
     end
 end
-%nExpected(isnan(nExpected)) = 0;
-%nExpected(isinf(nExpected)) = 0;
+n_expected(isnan(n_expected)) = 0;
+n_expected(isinf(n_expected)) = 0;
 
 %utility layers may be income, use value, etc.  identify what form of
 %utility it is, so that they get added and weighted appropriately in

@@ -38,7 +38,7 @@ demographicVariables.ageDiscountRateFactor = ageDiscountRateFactor;
 %they experienced or learned.  This structure allows an arbitrarily large
 %landscape with an arbitrarily large number of agents, without wasting
 %memory
-[utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat, utilityPrereqs, utilityBaseLayers, utilityForms, incomeForms] = createUtilityLayers(locations, modelParameters.timeSteps, modelParameters.utilityDataPath);
+[utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat, utilityPrereqs, utilityBaseLayers, utilityForms, incomeForms, nExpected] = createUtilityLayers(locations, modelParameters, demographicVariables);
 
 utilityVariables.numForms = max(utilityForms);
 utilityVariables.utilityLayerFunctions = utilityLayerFunctions;
@@ -50,6 +50,7 @@ utilityVariables.utilityBaseLayers = utilityBaseLayers;
 utilityVariables.utilityForms = utilityForms;
 utilityVariables.incomeForms = incomeForms;
 utilityVariables.utilityPrereqs = utilityPrereqs;
+utilityVariables.nExpected = nExpected;
 
 
 %create agents and randomly allocate them to 'cities' - the term we use

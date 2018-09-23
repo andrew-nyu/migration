@@ -69,3 +69,19 @@ set(gca,'GridColor','white');
 temp = ylabel('ORIGIN','FontSize',16);
 xlabel('DESTINATION','FontSize',16);
 set(temp,'Position', [-.1 .5 0])
+
+temp = dir('MC*');
+load(temp(end).name);
+%close all;
+figure;
+imagesc(output.migrationMatrix);
+set(gca,'YTick',1:64, 'XTick',1:64, 'YTickLabel',midasLocations.source_ADMIN_NAME, 'XTickLabel',midasLocations.source_ADMIN_NAME);
+xticklabel_rotate;
+colorbar;
+title(['MIDAS Sample - Interdistrict moves (n = ' num2str(sum(sum(output.migrationMatrix))) ')']);
+grid on;
+colormap hot;
+set(gca,'GridColor','white');
+temp = ylabel('ORIGIN','FontSize',16);
+xlabel('DESTINATION','FontSize',16);
+set(temp,'Position', [-.1 .5 0])
