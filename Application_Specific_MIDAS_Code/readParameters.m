@@ -5,11 +5,10 @@ modelParameters.spinupTime = 8;
 modelParameters.numAgents = 1000;
 mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
-modelParameters.timeSteps = 64;
 modelParameters.cycleLength = 4;
 modelParameters.incomeInterval = 1;
 modelParameters.visualizeYN = 0;
-modelParameters.listTimeStepYN = 0;
+modelParameters.listTimeStepYN = 1;
 modelParameters.visualizeInterval = 1;
 modelParameters.showMovesOrNetwork = 0; %1 for recent moves, 0 for network
 modelParameters.movesFadeSteps = 12; 
@@ -98,6 +97,8 @@ if(~isempty(inputs))
        eval([inputs.parameterNames{indexI} ' = ' num2str(inputs.parameterValues(indexI)) ';']);
    end
 end
+
+modelParameters.timeSteps = modelParameters.spinupTime + 44;  %in this particular experiment only, there are 44 time steps with data
 
 
 end

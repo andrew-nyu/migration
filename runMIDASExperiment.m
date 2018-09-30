@@ -15,7 +15,7 @@ series = 'MC_Run_';
 saveDirectory = './Outputs/';
 
 %number of runs
-modelRuns = 1;
+modelRuns = 4;
 
 %define the levels and parameters you will explore, as below
 mcParams = table([],[],[],[],'VariableNames',{'Name','Lower','Upper','RoundYN'});
