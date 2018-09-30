@@ -21,14 +21,14 @@ function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTim
 %some parameters only relevant to this file - should be moved to parameters
 %file once we're sure.  while they are here, they won't be included in
 %sensitivity testing
-stepsPerYear = 4;
 quantiles = 4;
 years = 11;
-noise = 0.05;
-iReturn = 0.05;
-iDiscount = 0.1;
-iYears = 20;
-leadTime = 20;
+noise = modelParameters.utility_noise;
+iReturn = modelParameters.utility_iReturn;
+iDiscount = modelParameters.utility_iDiscount;
+iYears = modelParameters.utility_iYears;
+leadTime = modelParameters.spinupTime;
+
 
 load([modelParameters.utilityDataPath '/incomeMats']);
 
@@ -190,7 +190,7 @@ quarterShare = incomeQs ./ (sum(incomeQs,2));
 
 
 
-timeSteps = years * quantiles;  %2005 to 2015 inclusive
+timeSteps = years * modelParameters.cycleLength;  %2005 to 2015 inclusive
 
 utilityLayerFunctions = [];
 for indexI = 1:(size(incomeMean,1)*quantiles)  %16 different sources, with 4 levels
@@ -323,7 +323,7 @@ utilityAccessCosts = [];
 for indexI = 1:length(localOnly)
    if(localOnly(indexI))
         meanValues = mean(utilityBaseLayers(:,(indexI-1)*quantiles+1:indexI*quantiles,:,:),3);
-        accessCost = (1 - (1+iDiscount)^(-iYears)) / iDiscount / (1 + iReturn) * meanValues;
+        accessCost = meanValues / (1 + iReturn) * ((1+iDiscount)^iYears -1) / iDiscount / ((1 + iDiscount)^iYears);  %using CCRF to estimate access cost
         for indexJ = 1:quantiles
            utilityAccessCosts = [utilityAccessCosts; [(accessCodeCount:accessCodeCount + length(locations)-1)' accessCost(:,indexJ)]];   
            for indexK = 1:length(locations)
