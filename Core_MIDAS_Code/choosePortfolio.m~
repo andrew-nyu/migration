@@ -319,8 +319,8 @@ for indexL = 1:length(locationList)
         %add access costs that would need to be paid in order to access the
         %layers in this portfolio.  first identify those necessary and then
         %cancel out those that are already paid.
-        accessCostCodes = reshape(any(utilityVariables.utilityAccessCodesMat(locationList(indexL),portfolioSet(indexP,:),:),2), size(utilityVariables.utilityAccessCodesMat, 3),1);
-        accessCostCodes(agent.accessCodesPaid) = false;
+        accessCostCodes = any(utilityVariables.utilityAccessCodesMat(locationList(indexL),portfolioSet(indexP,:),:),2);
+        accessCostCodes(agent.accessCodesPaid(accessCostCodes)) = false;
         newCosts = sum(utilityVariables.utilityAccessCosts(accessCostCodes,2));
         
         %add these costs to the first element in the time series, and store
@@ -406,7 +406,7 @@ agent.accessCodesPaid(codesToPay) = true;
 %now that we've paid everything, give the new portfolio to the agent, but
 %only give layers that actually have open slots ... this could be an
 %unlucky agent that shows up and doesn't get what they dreamed of.
-bestPortfolio = utilityVariables.hasOpenSlots(agent.matrixLocation,:) & bestPortfolio;
+bestPortfolio
 
 agent.currentPortfolio = bestPortfolio;
 

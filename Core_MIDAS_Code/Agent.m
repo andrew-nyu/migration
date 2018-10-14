@@ -21,6 +21,9 @@ classdef Agent < handle
        bestPortfolioValues
        knowsIncomeLocation
        incomeLayersHistory
+       heardOpening
+       expectedProbOpening
+       timeProbOpeningUpdated
        %incomeLayersTest
        currentPortfolio
        firstPortfolio
@@ -37,6 +40,9 @@ classdef Agent < handle
        pMeetNew
        pAddFitElement
        pChoose
+       fDecay
+       pGetLayer_informed
+       pGetLayer_uninformed
        pRandomLearn
        countRandomLearn
        numBestLocation
@@ -57,15 +63,10 @@ classdef Agent < handle
    
    methods 
        %basic constructor
-      function A = Agent(id, location, accessCodesPaid, knowsIncomeLocation, incomeLayersHistory)
+      function A = Agent(id, location)
          A.id = id;
          A.location = location;
          A.network = [];
-         A.accessCodesPaid = accessCodesPaid;
-         A.knowsIncomeLocation = knowsIncomeLocation;
-         A.incomeLayersHistory = incomeLayersHistory;
-         A.personalIncomeHistory = zeros(size(incomeLayersHistory,3),1);
-         A.currentSharedIn = 0;
          A.TOD = -9999;  %TOD is 'time of death'
       end %  
       

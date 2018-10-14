@@ -302,9 +302,8 @@ utilityPrereqs = sparse(utilityPrereqs);
 %pre-requisites) and the input data (occupying Q4 means only occupying Q4)
 tempExpected = zeros(size(nExpected));
 for indexI = 1:size(nExpected,2)
-   tempExpected(:,indexI) = sum(nExpected(:,utilityPrereqs(:,indexI) > 0),2); 
+   tempExpected(:,indexI) = nExpected(:,utilityPrereqs(:,indexI) 
 end
-nExpected = tempExpected;
 
 %generate base layers for input; these will be ordered N1Q1 N1Q2 N1Q3 N1Q4
 %N2Q1 N2Q2 N2Q3 N2Q4, etc.  (i.e., all layers for one source in order, then

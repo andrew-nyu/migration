@@ -19,12 +19,24 @@ pChoose = min(1,max(0,agentParameters.chooseMean + randn() * agentParameters.cho
 rValue = max(0,agentParameters.rValueMean + randn() * agentParameters.rValueSD);
 discountRate = max(0, agentParameters.discountRateMean + randn() * agentParameters.discountRateSD);
 prospectLoss = -max(0, agentParameters.prospectLossMean + randn() * agentParameters.prospectLossSD);
+pGetLayer_informed = min(1,max(0,agentParameters.informedExpectedProbJoinLayerMean + randn() * agentParameters.informedExpectedProbJoinLayerSD));
+pGetLayer_uninformed = min(1,max(0,agentParameters.uninformedMaxExpectedProbJoinLayerMean + randn() * agentParameters.uninformedMaxExpectedProbJoinLayerSD));
+fDecay = min(1,max(0,agentParameters.expectationDecayMean + randn() * agentParameters.expectationDecaySD));
+
 
 %bList has elements corresponding to each kind of utility layer present
 bList = max(0, agentParameters.bListMean + randn(utilityVariables.numForms,1) * agentParameters.bListSD);
 
-newAgent = Agent(agentParameters.currentID, location, agentParameters.init_accessCodesPaid, ...
-    agentParameters.init_knowsIncomeLocation, agentParameters.init_incomeLayersHistory);
+newAgent = Agent(agentParameters.currentID, location);
+
+newAgent.accessCodesPaid = agentParameters.init_accessCodesPaid;
+newAgent.knowsIncomeLocation = agentParameters.init_knowsIncomeLocation;
+newAgent.incomeLayersHistory = agentParameters.init_incomeLayersHistory;
+newAgent.expectedProbOpening = agentParameters.init_expectedProbOpening;
+newAgent.heardOpening = agentParameters.init_knowsIncomeLocation;
+newAgent.personalIncomeHistory = zeros(size(agentParameters.init_incomeLayersHistory,3),1);
+newAgent.timeProbOpeningUpdated = zeros(size(agentParameters.init_expectedProbOpening));
+newAgent.currentSharedIn = 0;
 
 newAgent.knowledgeShareFrac = knowledgeShareFrac;
 newAgent.shareCostThreshold = shareCostThreshold;
@@ -43,6 +55,9 @@ newAgent.pAddFitElement = pAddFitElement;
 newAgent.pRandomLearn = pRandomLearn;
 newAgent.countRandomLearn = countRandomLearn;
 newAgent.pChoose = pChoose;
+newAgent.fDecay = fDecay;
+newAgent.pGetLayer_informed = pGetLayer_informed;
+newAgent.pGetLayer_uninformed = pGetLayer_uninformed;
 newAgent.numPeriodsEvaluate = numPeriodsEvaluate;
 newAgent.numPeriodsMemory = numPeriodsMemory;
 newAgent.discountRate = discountRate;

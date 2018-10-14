@@ -49,7 +49,7 @@ if(numScalesSpecified ~= numScalesReceived)
 end
 
 
-locations = sortrows(locations,'cityID');
+locations = sortrows(locations,'matrixID');
 
 %start with the 'same district' costs, and then replace according to each
 %scale

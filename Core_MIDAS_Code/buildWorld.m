@@ -38,7 +38,7 @@ demographicVariables.ageDiscountRateFactor = ageDiscountRateFactor;
 %they experienced or learned.  This structure allows an arbitrarily large
 %landscape with an arbitrarily large number of agents, without wasting
 %memory
-[utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat, utilityPrereqs, utilityBaseLayers, utilityForms, incomeForms, nExpected] = createUtilityLayers(locations, modelParameters, demographicVariables);
+[utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat, utilityPrereqs, utilityBaseLayers, utilityForms, incomeForms, nExpected, hardSlotCountYN] = createUtilityLayers(locations, modelParameters, demographicVariables);
 
 utilityVariables.numForms = max(utilityForms);
 utilityVariables.utilityLayerFunctions = utilityLayerFunctions;
@@ -51,17 +51,21 @@ utilityVariables.utilityForms = utilityForms;
 utilityVariables.incomeForms = incomeForms;
 utilityVariables.utilityPrereqs = utilityPrereqs;
 utilityVariables.nExpected = nExpected;
+utilityVariables.hardSlotCountYN = hardSlotCountYN;
+utilityVariables.hasOpenSlots = false(size(hardSlotCountYN));
 
 
 %create agents and randomly allocate them to 'cities' - the term we use
 %here for the lowest administrative level
 accessCodesPaid = false(size(utilityAccessCosts,1),1);
-knowsIncomeLocation = sparse(size(locations,1),size(utilityAccessCosts,1));
+knowsIncomeLocation = sparse(size(locations,1),size(utilityBaseLayers,2));
 incomeLayersHistory = false(size(utilityBaseLayers));
+expectedProbOpening = zeros(size(knowsIncomeLocation));
 
 agentParameters.init_accessCodesPaid = accessCodesPaid;
 agentParameters.init_knowsIncomeLocation = knowsIncomeLocation;
 agentParameters.init_incomeLayersHistory = incomeLayersHistory;
+agentParameters.init_expectedProbOpening = expectedProbOpening;
 
 %create agents, assigning agent-specific properties as appropriate from
 %input data

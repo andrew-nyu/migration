@@ -26,7 +26,7 @@ network(1:numAgents,1:numAgents) = speye(numAgents, numAgents);
 sizeX = mapParameters.sizeX;
 sizeY = mapParameters.sizeY;
 
-locations = sortrows(locations,'cityID');
+locations = sortrows(locations,'matrixID');
 [listX, listY] = ind2sub([sizeX sizeY],locations.LocationIndex);
 distanceMatrix = squareform(pdist([listX listY]));
 

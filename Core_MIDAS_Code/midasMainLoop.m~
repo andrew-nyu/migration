@@ -18,7 +18,6 @@ sizeArray = size(utilityVariables.utilityHistory);
 
 %create any other outcome variables of interest
 countAgentsPerLayer = zeros(numLocations, numLayers, modelParameters.timeSteps);
-averageExpectedOpening = countAgentsPerLayer;
 averageWealth = zeros(modelParameters.timeSteps ,1);
 migrations = zeros(modelParameters.timeSteps,1);
 outMigrations = zeros(numLocations, modelParameters.timeSteps);
@@ -65,7 +64,7 @@ for indexT = 1:modelParameters.timeSteps
         %any information.  As information gets older, expectation shifts
         %from based in A to mostly B
         temp_f =  (1 - currentAgent.fDecay).^(indexT - currentAgent.timeProbOpeningUpdated);
-        currentAgent.expectedProbOpening = currentAgent.pGetLayer_informed * currentAgent.heardOpening .* temp_f + currentAgent.pGetLayer_uninformed * rand(size(temp_f)) .* (1 - temp_f);
+        currentAgent.expectedProbOpening = currentAgent.heardOpening * currentAgent.pGetLayer_informed * temp_f + currentAgent.pGetLayer_uninformed * rand(size(temp_f)) .* (1 - temp_f);
         
         %agent gets updated knowledge of any openings available in layers
         %that it occupies
@@ -177,9 +176,6 @@ for indexT = 1:modelParameters.timeSteps
         %income in the world around it
         if(rand() < currentAgent.pRandomLearn && currentAgent.age >= modelParameters.ageLearn)
             currentAgent.incomeLayersHistory(randperm(prod([sizeArray(1:2) indexT]),currentAgent.countRandomLearn)) = true;
-            temp = randperm(prod(size(utilityVariables.hasOpenSlots)), currentAgent.countRandomLearn);
-            currentAgent.heardOpening(temp) = utilityVariables.hasOpenSlots(temp);
-            currentAgent.timeProbOpeningUpdated(temp) = indexT;
         end
         
 
@@ -306,8 +302,6 @@ for indexT = 1:modelParameters.timeSteps
     end
     
     averageWealth(indexT) = mean([livingAgents(:).wealth]);
-    temp = reshape(cell2mat({agentList.expectedProbOpening}), size(agentList(1).expectedProbOpening, 1), size(agentList(1).expectedProbOpening,2), length(agentList));
-    averageExpectedOpening(:,:,indexT) = mean(temp,3);
     
     if(modelParameters.listTimeStepYN)
         fprintf([runName ' - Time step ' num2str(indexT) ' of ' num2str(modelParameters.timeSteps) ' - ' num2str(migrations(indexT)) ' migrations.\n']);
@@ -323,7 +317,6 @@ outputs.locations = mapVariables.locations;
 outputs.inMigrations = inMigrations;
 outputs.outMigrations = outMigrations;
 outputs.migrationMatrix = migrationMatrix;
-outputs.averageExpectedOpening = averageExpectedOpening;
 
 agentSummary = table([agentList(:).id]','VariableNames',{'id'});
 agentSummary.wealth = [agentList(:).wealth]';

@@ -26,10 +26,12 @@ baseMovingCosts = [100000; ... %same district
     500000; ... %same country, different state
     80000000]; %different country
 
+baseMovingCosts = baseMovingCosts * 0;
+
 %   Note any distance-specific costs
 
 %distanceCost = 10;  %per unit distance
-distanceCost = 10000;  %maximum moving cost by distance
+distanceCost = 1000;%10000;  %maximum moving cost by distance
 
 %parameters for beta distribution
 beta1 = 5;
@@ -69,7 +71,7 @@ if(numScalesSpecified ~= numScalesReceived)
 end
 
 
-locations = sortrows(locations,'cityID');
+locations = sortrows(locations,'matrixID');
 
 %start with the 'same district' costs, and then replace according to each
 %scale
