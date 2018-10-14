@@ -15,7 +15,7 @@ series = 'MC_Run_';
 saveDirectory = './Outputs/';
 
 %number of runs
-modelRuns = 4;
+modelRuns = 200;
 
 %define the levels and parameters you will explore, as below
 mcParams = table([],[],[],[],'VariableNames',{'Name','Lower','Upper','RoundYN'});
@@ -100,8 +100,8 @@ save([saveDirectory 'experiment_' date '_input_summary'], 'experimentList', 'mcP
 
 runList = zeros(length(experimentList),1);
 %run the model
-%parfor indexI = 1:length(experimentList)
-for indexI = 1:length(experimentList)
+parfor indexI = 1:length(experimentList)
+%for indexI = 1:length(experimentList)
     if(runList(indexI) == 0)
         input = experimentList{indexI};
         

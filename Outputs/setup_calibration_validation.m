@@ -70,7 +70,7 @@ temp = ylabel('ORIGIN','FontSize',16);
 xlabel('DESTINATION','FontSize',16);
 set(temp,'Position', [-.1 .5 0])
 
-temp = dir('MC*');
+temp = dir('MC*Oct*');
 load(temp(end).name);
 %close all;
 figure;

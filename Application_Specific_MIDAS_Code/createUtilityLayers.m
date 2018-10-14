@@ -123,13 +123,13 @@ aveNumSources = aveNumSources(:,indexInLocations,:,:);
 %     'oilseedincome' equal along year
 %     'pulseincome' time in Q4,1; income in Q1
 %     'maizeincome' time in Q4,1,2; income in Q2
-%     'totallivestocksales' equal along year
-%     'totallfishsales' equal along year
-%     'totaltreessales' equal along year
+%     'totallivestocksales' equal along year, but possibly exclude
+%     'totallfishsales' equal along year, but possibly exclude
+%     'totaltreessales' equal along year, but possibly exclude
 % (based on
 % http://en.banglapedia.org/index.php?title=Agricultural_Calendar)
 
-excludeLayers = [1 2 5];
+excludeLayers = [1 2 5 17:19];
 incomeMean(excludeLayers,:,:,:) = [];
 incomeCounts(excludeLayers,:,:,:) = [];
 peopleCounts(excludeLayers,:,:,:) = [];
@@ -146,10 +146,10 @@ localOnly = [1; ... %rental income
     1; ... %aus
     1; ... %oilseed
     1; ... %pulse
-    1; ... %maize
-    1; ... %livestock
-    1; ... %fish
-    1]; %tree
+    1];% ... %maize
+    %1; ... %livestock
+    %1; ... %fish
+    %1]; %tree
 
 timeQs = [1 1 1 1; ... %rental income
     1 1 1 1; ... %wage
@@ -163,12 +163,12 @@ timeQs = [1 1 1 1; ... %rental income
     0 1 1 0; ... %aus
     1 1 1 1; ... %oilseed
     1 0 0 1; ... %pulse
-    1 1 0 1; ... %maize
-    1 1 1 1; ... %livestock
-    1 1 1 1; ... %fish
-    1 1 1 1]; %tree
+    1 1 0 1];% ... %maize
+    %1 1 1 1; ... %livestock
+    %1 1 1 1; ... %fish
+    %1 1 1 1]; %tree
 
-incomeQs = [1 1 1 1; ... %rental income
+incomeQs =[1 1 1 1; ... %rental income
     1 1 1 1; ... %wage
     1 1 1 1; ... %salary
     1 1 1 1; ... %othercrops
@@ -180,10 +180,10 @@ incomeQs = [1 1 1 1; ... %rental income
     0 0 1 0; ... %aus
     1 1 1 1; ... %oilseed
     1 0 0 0; ... %pulse
-    0 1 0 0; ... %maize
-    1 1 1 1; ... %livestock
-    1 1 1 1; ... %fish
-    1 1 1 1]; %tree
+    0 1 0 0];% ... %maize
+    %1 1 1 1; ... %livestock
+    %1 1 1 1; ... %fish
+    %1 1 1 1]; %tree
    
 quarterShare = incomeQs ./ (sum(incomeQs,2));
 
@@ -193,7 +193,7 @@ quarterShare = incomeQs ./ (sum(incomeQs,2));
 timeSteps = years * modelParameters.cycleLength;  %2005 to 2015 inclusive
 
 utilityLayerFunctions = [];
-for indexI = 1:(size(incomeMean,1)*quantiles)  %16 different sources, with 4 levels
+for indexI = 1:(size(incomeMean,1)*quantiles)  %16 (or 13) different sources, with 4 levels
     utilityLayerFunctions{indexI,1} = @(k,m,nExpected,n_actual, base) base * (m * nExpected) / (max(0, n_actual - m * nExpected) * k + m * nExpected);   %some income layer - base layer input times density-dependent extinction
 end
 
@@ -333,7 +333,7 @@ for indexI = 1:length(localOnly)
         end       
    else
         meanValues = mean(mean(utilityBaseLayers(:,(indexI-1)*quantiles+1:indexI*quantiles,:,:),3),1);
-        accessCost = (1 - (1+iDiscount)^(-iYears)) / iDiscount / (1 + iReturn) * meanValues;
+        accessCost = meanValues / (1 + iReturn) * ((1+iDiscount)^iYears -1) / iDiscount / ((1 + iDiscount)^iYears);
         for indexJ = 1:quantiles
            utilityAccessCosts = [utilityAccessCosts; [(accessCodeCount+1) accessCost(indexJ)]];   
            utilityAccessCodesMat(:,(indexI-1)*quantiles+indexJ, accessCodeCount) = 1;
@@ -341,3 +341,8 @@ for indexI = 1:length(localOnly)
         end
    end
 end
+
+
+%any hack code for testing ideas can go below here but should be commented
+%when not in use...
+% utilityAccessCosts(1:quantiles * size(locations,1),2) = 0.2 * utilityAccessCosts(1:quantiles * size(locations,1),2);
