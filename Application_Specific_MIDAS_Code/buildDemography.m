@@ -45,7 +45,7 @@ function [locationLikelihood, genderLikelihood, ageLikelihood, survivalRate, fer
 %make locationLikelihood - if there is no data, let the likelihood be
 %uniform random
 if(~isempty(modelParameters.popFile))
-    popTable = readtable(modelParameters.popFile);
+    popTable = readtable(modelParameters.popFile,'UseExcel',false);
     popTable.population = sum(popTable{:,2:end},2);
     popTable = join(popTable,dataset2table(locations),'LeftKeys',{'geolev2'},'RightKeys',{'source_ID_2'});
     
@@ -106,7 +106,7 @@ else
 end
 
 if(~isempty(modelParameters.survivalFile))
-    survivalTable = readtable(modelParameters.survivalFile);
+    survivalTable = readtable(modelParameters.survivalFile,'UseExcel',false);
     agePointsSurvival = (survivalTable.MaxAge)';
     survivalRate = ones(length(locations),1) * (survivalTable.Male)';
     survivalRate(:,:,2) = ones(length(locations),1) * (survivalTable.Female)';
@@ -117,7 +117,7 @@ else
 end
 
 if(~isempty(modelParameters.fertilityFile))
-    fertilityTable = readtable(modelParameters.fertilityFile);
+    fertilityTable = readtable(modelParameters.fertilityFile,'UseExcel',false);
     agePointsFertility = (fertilityTable.MaxAge)';
     agePointsFertility = [fertilityTable.MinAge(1) agePointsFertility];
     fertilityRate = ones(length(locations),1) * (fertilityTable.Births)' / 1000; %this data is births per 1000 women
@@ -129,7 +129,7 @@ end
 
 %any additional age-specific factors ought to be handled here
 if(~isempty(modelParameters.agePreferencesFile))
-    agePrefTable = readtable(modelParameters.agePreferencesFile);
+    agePrefTable = readtable(modelParameters.agePreferencesFile,'UseExcel',false);
     agePointsPref = (agePrefTable.MaxAge)';
 
     ageDiscountRateFactor = agePrefTable.discRateAge;
