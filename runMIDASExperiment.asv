@@ -76,12 +76,12 @@ mcParams = [mcParams; {'agentParameters.bListMean', 0.5, 1, 0}];
 mcParams = [mcParams; {'agentParameters.bListSD', 0, 0.4, 0}];
 mcParams = [mcParams; {'agentParameters.prospectLossMean', 1, 2, 0}];
 mcParams = [mcParams; {'agentParameters.prospectLossSD', 0, 0.2, 0}];
-mcParams = [mcParams; {'agentParameters.informedExpectedProbJoinLayerMean', 0.8, 1,0}];
-mcParams = [mcParams; {'agentParameters.informedExpectedProbJoinLayerSD', 0, 0.2, 0}];
-mcParams = [mcParams; {'agentParameters.uninformedMaxExpectedProbJoinLayerMean,', 0, 0.4, 0}];
-mcParams = [mcParams; {'agentParameters.uninformedMaxExpectedProbJoinLayerSD', 0, 0.2, 0}];
-mcParams = [mcParams; {'agentParameters.expectationDecayMean', 0.05, 0.2, 0}];
-mcParams = [mcParams; {'agentParameters.expectationDecaySD', 0, 0.2, 0}];
+mcParams = [mcParams; {agentParameters.informedExpectedProbJoinLayerMean = 1;
+mcParams = [mcParams; {agentParameters.informedExpectedProbJoinLayerSD = 0;
+mcParams = [mcParams; {agentParameters.uninformedMaxExpectedProbJoinLayerMean = 0.4;
+agentParameters.uninformedMaxExpectedProbJoinLayerSD = 0;
+agentParameters.expectationDecayMean = 0.1;
+agentParameters.expectationDecaySD = 0;
 
 %make the full design
 
