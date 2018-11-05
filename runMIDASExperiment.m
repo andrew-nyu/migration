@@ -15,13 +15,13 @@ series = 'MC_Run_';
 saveDirectory = './Outputs/';
 
 %number of runs
-modelRuns = 5000;
+modelRuns = 500;
 
 %define the levels and parameters you will explore, as below
 mcParams = table([],[],[],[],'VariableNames',{'Name','Lower','Upper','RoundYN'});
 
 mcParams = [mcParams; {'modelParameters.spinupTime', 8, 20, 1}];
-mcParams = [mcParams; {'modelParameters.numAgents', 2000, 20000, 1}];
+mcParams = [mcParams; {'modelParameters.numAgents', 3000, 6000, 1}];
 mcParams = [mcParams; {'modelParameters.utility_k', 1, 5, 0}];
 mcParams = [mcParams; {'modelParameters.utility_m', 1, 2, 0}];
 mcParams = [mcParams; {'modelParameters.utility_noise', 0, 0.1, 0}];
@@ -78,7 +78,7 @@ mcParams = [mcParams; {'agentParameters.prospectLossMean', 1, 2, 0}];
 mcParams = [mcParams; {'agentParameters.prospectLossSD', 0, 0.2, 0}];
 mcParams = [mcParams; {'agentParameters.informedExpectedProbJoinLayerMean', 0.8, 1,0}];
 mcParams = [mcParams; {'agentParameters.informedExpectedProbJoinLayerSD', 0, 0.2, 0}];
-mcParams = [mcParams; {'agentParameters.uninformedMaxExpectedProbJoinLayerMean,', 0, 0.4, 0}];
+mcParams = [mcParams; {'agentParameters.uninformedMaxExpectedProbJoinLayerMean', 0, 0.4, 0}];
 mcParams = [mcParams; {'agentParameters.uninformedMaxExpectedProbJoinLayerSD', 0, 0.2, 0}];
 mcParams = [mcParams; {'agentParameters.expectationDecayMean', 0.05, 0.2, 0}];
 mcParams = [mcParams; {'agentParameters.expectationDecaySD', 0, 0.2, 0}];
