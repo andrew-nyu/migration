@@ -336,8 +336,8 @@ end
 %now add some lead time for agents to learn before time actually starts
 %moving
 utilityBaseLayers(:,:,leadTime+1:leadTime+timeSteps) = utilityBaseLayers;
-for indexI = 1:leadTime
-   utilityBaseLayers(:,:,indexI) = utilityBaseLayers(:,:,leadTime+1); 
+for indexI = leadTime:-1:1
+   utilityBaseLayers(:,:,indexI) = utilityBaseLayers(:,:,indexI+modelParameters.cycleLength); 
 end
 
 %estimate costs for access, such that the expected ROI is i +/- noise, given discount

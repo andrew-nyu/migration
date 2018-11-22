@@ -31,7 +31,7 @@ baseMovingCosts = baseMovingCosts * 0;
 %   Note any distance-specific costs
 
 %distanceCost = 10;  %per unit distance
-distanceCost = 1000;%10000;  %maximum moving cost by distance
+distanceCost = 0;%1000;%10000;  %maximum moving cost by distance
 
 %parameters for beta distribution
 beta1 = 5;
