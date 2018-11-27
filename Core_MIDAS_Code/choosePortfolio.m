@@ -378,7 +378,7 @@ if(currentLocation ~= bestLocation)
     
     moved = agent.matrixLocation;
     %pay moving costs
-    agent.wealth = agent.wealth - locationMovingCosts(indexSorted(1));
+    agent.wealth = agent.wealth - locationMovingCosts(choice);
     
     %update location - this includes i) the matrixLocation (which is the
     %location's index in the location vector, ii) the cityID, which is the
@@ -386,7 +386,7 @@ if(currentLocation ~= bestLocation)
     %from other administrative scales), and iii) the visX and visY markers
     %used to place the agent uniquely somewhere in the appropriate
     %lowest-level unit for visualization purposes
-    agent.matrixLocation = locationList(indexSorted(1));
+    agent.matrixLocation = locationList(choice);
 
     agent.location = mapVariables.locations(agent.matrixLocation,:).cityID;
 
@@ -405,6 +405,7 @@ if(currentLocation ~= bestLocation)
     
     %mark the agent as having moved
     moved = [moved; agent.matrixLocation];
+
 end
 
 %pay any access costs necessary to make use of this layer
