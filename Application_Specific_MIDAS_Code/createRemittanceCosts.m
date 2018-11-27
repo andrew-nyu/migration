@@ -19,8 +19,8 @@ function [ remittanceFee, remittanceRate ] = createRemittanceCosts(locations)
 
 baseCosts = [0 0; ... %same district
     0 0; ... %same division, different district
-    10 0; ... %same country, different division
-    11 2]; %different country
+    0 0; ... %same country, different division
+    0 0]; %different country
 
 
 

@@ -120,11 +120,14 @@ for indexT = 1:modelParameters.timeSteps
             currentConnections(currentAgent.id) = true;
             
             %create a list of distances to other agents, based on their location
-            agentLocations = [agentList.matrixLocation];
+            agentLocations = zeros(1,length(agentList));
+            agentLocations(:) = [agentList.matrixLocation];
             distanceWeight = mapVariables.distanceMatrix(currentAgent.matrixLocation,agentLocations);
+
             
             %create a list of shared layers (in same location)
-            agentLayers = vertcat(agentList.currentPortfolio);
+            agentLayers = zeros(length(agentList),size(utilityVariables.utilityLayerFunctions,1));
+            agentLayers(:) = vertcat(agentList.currentPortfolio);
             layerWeight = currentAgent.currentPortfolio * (((agentLocations == currentAgent.matrixLocation)'*ones(1,size(agentLayers,2)))' .* agentLayers') ;
             
             %identify the new network link using the appropriate function for this
@@ -145,6 +148,8 @@ for indexT = 1:modelParameters.timeSteps
             connectedAgent.lastIntendedShareIn(end+1) = 0;
             currentAgent.network(end+1) = connectedAgent;
             connectedAgent.network(end+1) = currentAgent;
+            
+
         end
         
         %draw number to see if agent has social interaction with existing
