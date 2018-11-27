@@ -5,15 +5,15 @@ function [locationLikelihood, genderLikelihood, ageLikelihood, survivalRate, fer
 %particular way, so that outputs must be structured as follows:
 
 %locationLikelihood is an n x 1 vector providing a cumulative distribution
-%scaling from 0 to 1, where n is the number of places in the instance, and 
-%the interval between element i and the previous element is the likelihood 
+%scaling from 0 to 1, where n is the number of places in the instance, and
+%the interval between element i and the previous element is the likelihood
 %of an agent being assigned to place i.  Here, i corresponds to the
 %matrixID property of the locations stored in the model map.
 
 %genderLikelihood is an n x 1 vector, in which each element i is the
 %likelihood of an agent being MALE in place i
 
-%agePoints is an m x 1 vector of ages at which likelihoods / survival / 
+%agePoints is an m x 1 vector of ages at which likelihoods / survival /
 %fertility are evaluated.  MIDAS uses interpolation to evaluate ages and survival
 %probabilities, so this vector SHOULD include the minimum age (i.e., 0) and
 %whatever maximum age you expect in your model.  In most cases, data will
@@ -45,7 +45,11 @@ function [locationLikelihood, genderLikelihood, ageLikelihood, survivalRate, fer
 %make locationLikelihood - if there is no data, let the likelihood be
 %uniform random
 if(~isempty(modelParameters.popFile))
-    popTable = readtable(modelParameters.popFile,'UseExcel',false);
+    if(ispc)
+        popTable = readtable(modelParameters.popFile,'UseExcel',false);
+    else
+        popTable = readtable(modelParameters.popFile);
+    end
     popTable.population = sum(popTable{:,2:end},2);
     popTable = join(popTable,dataset2table(locations),'LeftKeys',{'geolev2'},'RightKeys',{'source_ID_2'});
     
@@ -53,21 +57,21 @@ if(~isempty(modelParameters.popFile))
     agePointsPopulationMale = popTable.Properties.VariableNames(startsWith(popTable.Properties.VariableNames,'male'));
     agePointsPopulationMale = regexprep(agePointsPopulationMale,'male','');
     for indexI = 1:length(agePointsPopulationMale)
-       try agePointsPopulationMale{indexI} = extractAfter(agePointsPopulationMale{indexI},strfind(agePointsPopulationMale{indexI},'_'));
-       end
+        try agePointsPopulationMale{indexI} = extractAfter(agePointsPopulationMale{indexI},strfind(agePointsPopulationMale{indexI},'_'));
+        end
     end
     agePointsPopulationMale = str2double(agePointsPopulationMale);
     [agePointsPopulationMale, ageIndexMale] = sort(agePointsPopulationMale,'ascend');
-
+    
     agePointsPopulationFemale = popTable.Properties.VariableNames(startsWith(popTable.Properties.VariableNames,'male'));
     agePointsPopulationFemale = regexprep(agePointsPopulationFemale,'male','');
     for indexI = 1:length(agePointsPopulationFemale)
-       try agePointsPopulationFemale{indexI} = extractAfter(agePointsPopulationFemale{indexI},strfind(agePointsPopulationFemale{indexI},'_'));
-       end
+        try agePointsPopulationFemale{indexI} = extractAfter(agePointsPopulationFemale{indexI},strfind(agePointsPopulationFemale{indexI},'_'));
+        end
     end
     agePointsPopulationFemale = str2double(agePointsPopulationFemale);
     [~, ageIndexFemale] = sort(agePointsPopulationFemale,'ascend');
-
+    
     ageLikelihoodMale = popTable{:,startsWith(popTable.Properties.VariableNames,'male')};
     ageLikelihoodMale(popTable.matrixID,:) = ageLikelihoodMale;
     ageLikelihoodMale = ageLikelihoodMale(:,ageIndexMale); %just in case the tables aren't ordered properly
@@ -106,7 +110,11 @@ else
 end
 
 if(~isempty(modelParameters.survivalFile))
-    survivalTable = readtable(modelParameters.survivalFile,'UseExcel',false);
+    if(ispc)
+        survivalTable = readtable(modelParameters.survivalFile,'UseExcel',false);
+    else
+        survivalTable = readtable(modelParameters.survivalFile);
+    end
     agePointsSurvival = (survivalTable.MaxAge)';
     survivalRate = ones(length(locations),1) * (survivalTable.Male)';
     survivalRate(:,:,2) = ones(length(locations),1) * (survivalTable.Female)';
@@ -117,7 +125,11 @@ else
 end
 
 if(~isempty(modelParameters.fertilityFile))
-    fertilityTable = readtable(modelParameters.fertilityFile,'UseExcel',false);
+    if(ispc)
+        fertilityTable = readtable(modelParameters.fertilityFile,'UseExcel',false);
+    else
+        fertilityTable = readtable(modelParameters.fertilityFile);
+    end
     agePointsFertility = (fertilityTable.MaxAge)';
     agePointsFertility = [fertilityTable.MinAge(1) agePointsFertility];
     fertilityRate = ones(length(locations),1) * (fertilityTable.Births)' / 1000; %this data is births per 1000 women
@@ -129,9 +141,13 @@ end
 
 %any additional age-specific factors ought to be handled here
 if(~isempty(modelParameters.agePreferencesFile))
-    agePrefTable = readtable(modelParameters.agePreferencesFile,'UseExcel',false);
+    if(ispc)
+        agePrefTable = readtable(modelParameters.agePreferencesFile,'UseExcel',false);
+    else
+        agePrefTable = readtable(modelParameters.agePreferencesFile);
+    end
     agePointsPref = (agePrefTable.MaxAge)';
-
+    
     ageDiscountRateFactor = agePrefTable.discRateAge;
     
 else
