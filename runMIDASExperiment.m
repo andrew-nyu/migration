@@ -15,7 +15,7 @@ series = 'MC_Run_';
 saveDirectory = './Outputs/';
 
 %number of runs
-modelRuns = 1000;
+modelRuns = 10;
 
 %define the levels and parameters you will explore, as below
 mcParams = table([],[],[],[],'VariableNames',{'Name','Lower','Upper','RoundYN'});
@@ -28,6 +28,10 @@ mcParams = [mcParams; {'modelParameters.utility_noise', 0, 0.1, 0}];
 mcParams = [mcParams; {'modelParameters.utility_iReturn', 0, 0.2, 0}];
 mcParams = [mcParams; {'modelParameters.utility_iDiscount', 0, 0.1, 0}];
 mcParams = [mcParams; {'modelParameters.utility_iYears', 10, 20, 1}];
+mcParams = [mcParams; {'modelParameters.remitRate', 0, 20, 0}];
+mcParams = [mcParams; {'mapParameters.movingCostPerMile', 0, 5000, 0}];
+mcParams = [mcParams; {'mapParameters.minDistForCost', 0, 50, 0}];
+mcParams = [mcParams; {'mapParameters.maxDistForCost', 0, 5000, 0}];
 mcParams = [mcParams; {'networkParameters.networkDistanceSD', 5, 15, 1}];
 mcParams = [mcParams; {'networkParameters.connectionsMean', 1, 5, 1}];
 mcParams = [mcParams; {'networkParameters.connectionsSD', 1, 3, 1}];

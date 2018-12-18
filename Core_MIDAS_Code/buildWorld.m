@@ -9,7 +9,7 @@ else
 end
 
 %define remittance costs based on these locations
-[ remittanceFee, remittanceRate ] = createRemittanceCosts(locations);
+[ remittanceFee, remittanceRate ] = createRemittanceCosts(locations, modelParameters.remitRate);
 
 %establish population density and likelihood of agent locations
 [locationLikelihood, genderLikelihood, ageLikelihood, survivalRate, fertilityRate, ageDiscountRateFactor, agePointsPopulation, agePointsSurvival, agePointsFertility, agePointsPref] = buildDemography(modelParameters, locations);

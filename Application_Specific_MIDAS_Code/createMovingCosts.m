@@ -1,4 +1,4 @@
-function [movingCosts ] = createMovingCosts(locations, distanceMatrix, mapParameters, varargin)
+function [movingCosts ] = createMovingCosts(locations, distanceMatrix, mapParameters)
 %createMovingCosts create moving cost structures for all scales
 %and/or unit pairs in model, using scale-specific fixed costs plus distance
 %costs
@@ -31,16 +31,14 @@ baseMovingCosts = baseMovingCosts * 0;
 %   Note any distance-specific costs
 
 %distanceCost = 10;  %per unit distance
-distanceCost = 0;%1000;%10000;  %maximum moving cost by distance
-
-if(~isempty(varargin)) distanceCost = varargin(1);  %specified from calibration
-end
+distanceCost = mapParameters.movingCostPerMile;%1000;%10000;  %maximum moving cost by distance
 
 %parameters for beta distribution
 beta1 = 5;
 beta2 = 2;
-distanceMin = 50; %below this distance in miles, we consider it 'free'
-distanceMax = 300; %above this distance, costs don't really rise
+distanceMin = mapParameters.minDistForCost; %below this distance in miles, we consider it 'free'
+distanceMax = mapParameters.maxDistForCost; %above this distance, costs don't really rise
+
 
 %translate actual distances into their beta distribution equivalent, then
 %calculate the distance costs

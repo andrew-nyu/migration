@@ -28,8 +28,8 @@ baseCosts = [0 0; ... %same district
 %exchanges)
 if(~isempty(varargin)) %have some specific input about base costs
     baseCosts = [0 0; ... %same district
-        0 varargin(1); ... %same division, different district
-        0 varargin(1); ... %same country, different division
+        0 varargin{1}; ... %same division, different district
+        0 varargin{1}; ... %same country, different division
         0 0]; %different country
 end
 
