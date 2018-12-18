@@ -129,7 +129,7 @@ end
 
 
 %create the set of moving costs, now that we have a distance matrix made
-[movingCosts ] = createMovingCosts(locations, distanceMatrix);
+[movingCosts ] = createMovingCosts(locations, distanceMatrix, mapParameters);
 
 
 %package everything up

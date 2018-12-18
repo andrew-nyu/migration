@@ -33,11 +33,7 @@ locations = sortrows(locations,'matrixID');
 %mapParameters
 if(~isempty(mapParameters.r1))
    aveLatitude = mapParameters.r1(2) + sizeX / mapParameters.density / 2;
-   longDegToMile = cos(aveLatitude * mapParameters.degToRad);
-   
-   listX = listX / mapParameters.density * mapParameters.milesPerDeg;
-   listY = listY / mapParameters.density * mapParameters.milesPerDeg * longDegToMile;
-
+   longDegToMile = cosine(aveLatitude * mapParameters.degToRad);
 end
 
 

@@ -1,4 +1,4 @@
-function [ remittanceFee, remittanceRate ] = createRemittanceCosts(locations)
+function [ remittanceFee, remittanceRate ] = createRemittanceCosts(locations, varargin)
 %createRemittanceCosts create remittance cost structures for all scales
 %and/or unit pairs in model
 
@@ -23,6 +23,15 @@ baseCosts = [0 0; ... %same district
     0 0]; %different country
 
 
+%in this particular application, let the rate for remittances outside of
+%same district be set by calibration (same number for all interdistrict
+%exchanges)
+if(~isempty(varargin)) %have some specific input about base costs
+    baseCosts = [0 0; ... %same district
+        0 varargin(1); ... %same division, different district
+        0 varargin(1); ... %same country, different division
+        0 0]; %different country
+end
 
 %   Next, make any unit-specific exceptions in an x by 4 array called exceptions, of the form:
 %   [unit1 unit2 fee rate; ...].  The unit IDs should correspond to the
