@@ -39,12 +39,12 @@ end
 %parameters for beta distribution
 beta1 = 5;
 beta2 = 2;
-distanceMin = 200; %below this distance, we consider it 'free'
-distanceMax = 2000; %above this distance, costs don't really rise
+distanceMin = 50; %below this distance in miles, we consider it 'free'
+distanceMax = 300; %above this distance, costs don't really rise
 
 %translate actual distances into their beta distribution equivalent, then
 %calculate the distance costs
-Db = distanceMatrix * betaDistanceCommuter / (distanceMax-distanceCommuter) + betaDistanceCommuter * (1 - distanceCommuter/(distanceMax-distanceCommuter));
+Db = (distanceMatrix - distanceMin) / (distanceMax - distanceMin);
 distanceCost = betacdf(Db,beta1,beta2) * distanceCost;
 
 %   Next, make any unit-specific exceptions in an x by 3 array called exceptions, of the form:
