@@ -129,7 +129,7 @@ aveNumSources = aveNumSources(:,indexInLocations,:,:);
 % (based on
 % http://en.banglapedia.org/index.php?title=Agricultural_Calendar)
 
-excludeLayers = [1 2 5 17:19];
+excludeLayers = [1 2 5];
 incomeMean(excludeLayers,:,:,:) = [];
 incomeCounts(excludeLayers,:,:,:) = [];
 peopleCounts(excludeLayers,:,:,:) = [];
@@ -146,10 +146,10 @@ localOnly = [1; ... %rental income
     1; ... %aus
     1; ... %oilseed
     1; ... %pulse
-    1];% ... %maize
-    %1; ... %livestock
-    %1; ... %fish
-    %1]; %tree
+    1;% ... %maize
+    1; ... %livestock
+    1; ... %fish
+    1]; %tree
 
 timeQs = [1 1 1 1; ... %rental income
     1 1 1 1; ... %wage
@@ -163,10 +163,10 @@ timeQs = [1 1 1 1; ... %rental income
     0 1 1 0; ... %aus
     1 1 1 1; ... %oilseed
     1 0 0 1; ... %pulse
-    1 1 0 1];% ... %maize
-    %1 1 1 1; ... %livestock
-    %1 1 1 1; ... %fish
-    %1 1 1 1]; %tree
+    1 1 0 1;% ... %maize
+    1 1 1 1; ... %livestock
+    1 1 1 1; ... %fish
+    1 1 1 1]; %tree
 
 incomeQs =[1 1 1 1; ... %rental income
     1 1 1 1; ... %wage
@@ -180,10 +180,10 @@ incomeQs =[1 1 1 1; ... %rental income
     0 0 1 0; ... %aus
     1 1 1 1; ... %oilseed
     1 0 0 0; ... %pulse
-    0 1 0 0];% ... %maize
-    %1 1 1 1; ... %livestock
-    %1 1 1 1; ... %fish
-    %1 1 1 1]; %tree
+    0 1 0 0;% ... %maize
+    1 1 1 1; ... %livestock
+    1 1 1 1; ... %fish
+    1 1 1 1]; %tree
    
 quarterShare = incomeQs ./ (sum(incomeQs,2));
 
