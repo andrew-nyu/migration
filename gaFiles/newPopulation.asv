@@ -354,14 +354,7 @@ for indexI = startStep:gAParameters.generations
             %this is the same as tournament selection, except that the best
             %function from the previous generation is automatically
             %included
-            
-            %make sure better scores are always larger
-            if(gAParameters.isBestFitnessMin == 1)
-                fitnessScore = max(fitnessScore) - fitnessScore;
-            else
-                fitnessScore = fitnessScore - min(fitnessScore);
-            end
-            
+                        
             %first, put the previous best function as the first element in
             %the new generation.  in case there are more than one with the
             %same minimum score, pick one randomly
@@ -450,10 +443,8 @@ for indexI = startStep:gAParameters.generations
     
     %HACK
     %make sure we keep the best one from the last round
-    %note that at this point, all 3 approaches have made the largest
-    %fitness score the best, no matter how it was originally defined
     replaceMember = randperm(length(newPopulation),1);
-    bestPrevious = find(fitnessScore == max(fitnessScore));
+    bestPrevious = find(fitnessScore == min(fitnessScore));
     newPopulation(replaceMember) = population(bestPrevious(1));
     
     %set the current population to be this new population
@@ -480,17 +471,17 @@ for indexI = startStep:gAParameters.generations
 
         
     end
-    
+
     %mark the best (lowest) fitness score in the current population
     if(gAParameters.isBestFitnessMin == 1)
-        [fitnessHistory(indexI),indexMin] = min(fitnessScore);
+    [fitnessHistory(indexI),indexMin] = min(fitnessScore);
     else
-        [fitnessHistory(indexI),indexMin] = max(fitnessScore);
-    end
+    [fitnessHistory(indexI),indexMin] = max(fitnessScore);
+    end        
     r2History(indexI) = weightedR2(indexMin);
     
-    %Check for convergence (measured as the relative change in top fitness score between generations), and if we aren't changing much, quit early
-    testConverged = 0;
+   %Check for convergence (measured as the relative change in top fitness score between generations), and if we aren't changing much, quit early
+   testConverged = 0;
    if(indexI > gAParameters.changeScoreRounds+1)
        if(mean(abs((fitnessHistory(indexI-gAParameters.changeScoreRounds:indexI)  - min(fitnessHistory(indexI-gAParameters.changeScoreRounds-1:indexI-1)))./min(fitnessHistory(indexI-gAParameters.changeScoreRounds-1:indexI-1)))) < gAParameters.changeScoreTol)
           testConverged = 1; 
@@ -500,7 +491,7 @@ for indexI = startStep:gAParameters.generations
        break;
    end
    
-   fprintf('\n Timestep %d of %d; SSE = %f; r2 = %f',indexI, gAParameters.generations,fitnessHistory(indexI), r2History(indexI));
+   fprintf('\n Timestep %d of %d; SSE = %f; r2 = %f',indexI, gAParameters.generations,fitnessHistory(indexI), weightedR2(indexI));
    %select the function with best fit (using in this case a random draw as a
    %tie-breaking rule)
    if(gAParameters.isBestFitnessMin == 1)
