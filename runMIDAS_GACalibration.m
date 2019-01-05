@@ -30,7 +30,7 @@ gAParameters.tournamentSize = 5; %size of tournament pool for tournament selecti
 gAParameters.changeScoreRounds = 5; %number of rounds over which to evaluate change in outcomes (for early breakout from algorithm)
 gAParameters.changeScoreTol = 0.001; %tolerance of difference in outcomes to allow an early breakout from algorithm
 gAParameters.isBestFitnessMin = 1; %flag ... if 1 then best fitness is minimum, otherwise is maximum
-
+gAParameters.rawFitnessWeights = [1 1 1];
 
 [bestPortfolio, fitnessHistory, population]  = newPopulation(gAParameters);
 
