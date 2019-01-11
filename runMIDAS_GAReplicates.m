@@ -1,6 +1,13 @@
 load latestPopulation;
 
-repeats = 10;
+addpath('./Override_Core_MIDAS_Code');
+addpath('./Application_Specific_MIDAS_Code');
+addpath('./Core_MIDAS_Code');
+
+rng('shuffle');
+
+
+repeats = 4;
 series = 'GA_Output_Run_';
 saveDirectory = './Outputs/';
 
