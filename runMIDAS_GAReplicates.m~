@@ -9,13 +9,10 @@ rng('shuffle');
 
 repeats = 10;
 series = 'GA_Output_Run_';
-saveDirectoryBase = './GASets/Ban_GA_';
+saveDirectory = './Outputs/';
 
-for indexK = 1:11
-    
-    saveDirectory = [saveDirectoryBase num2str(indexK) '/'];
-    
-load([saveDirectory 'latestPopulation']);
+
+load latestPopulation;
 
 runList = zeros(repeats,1);
 
@@ -32,7 +29,7 @@ parfor indexI = 1:repeats
         functionVersions = functionVersions(strmatch(pwd,functionVersions));
         output.codeUsed = functionVersions;
         currentFile = [series num2str(length(dir([series '*']))) '_' datestr(now) '.mat'];
-        currentFile = [saveDirectoryBase num2str(indexK) '/' currentFile];
+        currentFile = [saveDirectory currentFile];
         
         %make the filename compatible across Mac/PC
         currentFile = strrep(currentFile,':','-');
@@ -41,6 +38,4 @@ parfor indexI = 1:repeats
         saveToFile(bestCalibrationSet, output, currentFile);
         runList(indexI) = 1;
     end
-end
-
 end
