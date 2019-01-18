@@ -32,7 +32,7 @@ parfor indexI = 1:repeats
         currentFile = strrep(currentFile,':','-');
         currentFile = strrep(currentFile,' ','_');
 
-        saveToFile(input, output, currentFile);
+        saveToFile(bestCalibrationSet, output, currentFile);
         runList(indexI) = 1;
     end
 end
