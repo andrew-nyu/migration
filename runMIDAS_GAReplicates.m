@@ -21,13 +21,14 @@ load([saveDirectory 'latestPopulation']);
 
 runList = zeros(repeats,1);
 
+input = bestCalibrationSet;
 parfor indexI = 1:repeats
 %for indexI = 1:length(experimentList)
     if(runList(indexI) == 0)
         
         %this next line runs MIDAS using the current experimental
         %parameters
-        output = midasMainLoop(bestCalibrationSet, ['Replicate Run ' num2str(indexI)]);
+        output = midasMainLoop(input, ['Replicate Run ' num2str(indexI)]);
         
         
         functionVersions = inmem('-completenames');
@@ -40,7 +41,7 @@ parfor indexI = 1:repeats
         currentFile = strrep(currentFile,':','-');
         currentFile = strrep(currentFile,' ','_');
 
-        saveToFile(bestCalibrationSet, output, currentFile);
+        saveToFile(input, output, currentFile);
         runList(indexI) = 1;
     end
 end
