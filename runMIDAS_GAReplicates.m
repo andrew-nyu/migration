@@ -1,4 +1,6 @@
 
+function runMIDAS_GAReplicates()
+
 addpath('./Override_Core_MIDAS_Code');
 addpath('./Application_Specific_MIDAS_Code');
 addpath('./Core_MIDAS_Code');
@@ -43,4 +45,10 @@ parfor indexI = 1:repeats
     end
 end
 
+end
+
+end
+
+function saveToFile(input, output, filename);
+    save(filename,'input', 'output');
 end
