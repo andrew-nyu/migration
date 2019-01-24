@@ -129,7 +129,7 @@ aveNumSources = aveNumSources(:,indexInLocations,:,:);
 % (based on
 % http://en.banglapedia.org/index.php?title=Agricultural_Calendar)
 
-excludeLayers = [1 2 5 17:19];
+excludeLayers = [1 2 5 17 19];
 incomeMean(excludeLayers,:,:,:) = [];
 incomeCounts(excludeLayers,:,:,:) = [];
 peopleCounts(excludeLayers,:,:,:) = [];
@@ -146,9 +146,9 @@ localOnly = [1; ... %rental income
     1; ... %aus
     1; ... %oilseed
     1; ... %pulse
-    1];% ... %maize
+    1; ...% ... %maize
     %1; ... %livestock
-    %1; ... %fish
+    1];% ... %fish
     %1]; %tree
 
 timeQs = [1 1 1 1; ... %rental income
@@ -163,9 +163,9 @@ timeQs = [1 1 1 1; ... %rental income
     0 1 1 0; ... %aus
     1 1 1 1; ... %oilseed
     1 0 0 1; ... %pulse
-    1 1 0 1];% ... %maize
+    1 1 0 1; ... %maize
     %1 1 1 1; ... %livestock
-    %1 1 1 1; ... %fish
+    1 1 1 1];% ... %fish
     %1 1 1 1]; %tree
 
 incomeQs =[1 1 1 1; ... %rental income
@@ -180,9 +180,9 @@ incomeQs =[1 1 1 1; ... %rental income
     0 0 1 0; ... %aus
     1 1 1 1; ... %oilseed
     1 0 0 0; ... %pulse
-    0 1 0 0];% ... %maize
+    0 1 0 0;% ... %maize
     %1 1 1 1; ... %livestock
-    %1 1 1 1; ... %fish
+    1 1 1 1];% ... %fish
     %1 1 1 1]; %tree
    
 quarterShare = incomeQs ./ (sum(incomeQs,2));
@@ -240,6 +240,7 @@ hardSlotCountYN(:,37:40) = false; %aus
 hardSlotCountYN(:,41:44) = false; %oilseed
 hardSlotCountYN(:,45:48) = false; %pulse
 hardSlotCountYN(:,49:52) = false; % ... %maize
+hardSlotCountYN(:,53:56) = false; % ... %fish
 
 %utility layers may be income, use value, etc.  identify what form of
 %utility it is, so that they get added and weighted appropriately in
