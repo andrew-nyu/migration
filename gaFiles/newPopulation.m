@@ -21,12 +21,25 @@ jointPopWeights = sourcePopWeights .* destPopWeights;
 %destPopSum = sum(sum(destPopWeights));
 jointPopSum = sum(sum(jointPopWeights));
 
+
 %one simple metric is the relative # of migrations per source-destination
 %pair
-%fracMigsData = migrationData / sum(sum(migrationData));
+fracMigsData = migrationData / sum(sum(migrationData));
 
 %another is the migs per total population
 migRateData = migrationData / sum(popData);
+
+%and another is the in/out ratio
+inOutData = sum(migrationData) ./ (sum(migrationData'));
+inOutData(isnan(inOutData)) = 0;
+inOutData(isinf(inOutData)) = 0;
+
+fitnessData.fracMigsData = fracMigsData;
+fitnessData.migRateData = migRateData;
+fitnessData.inOutData = inOutData;
+fitnessData.jointPopWeights = jointPopWeights;
+fitnessData.jointPopSum = jointPopSum;
+fitnessData.popData = popData;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -106,13 +119,16 @@ if(isempty(temp))
     population = {};
     startStep = 1;
     fitnessScore = zeros(gAParameters.sizeGeneration,1);
+    rawFitnessScore = zeros(gAParameters.sizeGeneration,3);
     weightedR2 = fitnessScore;
     fitnessHistory = zeros(gAParameters.generations,1);
+    r2History = zeros(gAParameters.generations,1);
 else
     load('latestPopulation.mat'); 
     startStep = find(fitnessHistory == 0);
     startStep = startStep(1);
     fitnessScore = zeros(gAParameters.sizeGeneration,1);
+    rawFitnessScore = zeros(gAParameters.sizeGeneration,3);
 end
 
 %if prior generation is empty, build first generation with randomly
@@ -141,16 +157,23 @@ parfor indexJ = 1:gAParameters.sizeGeneration
     
     %calculate the SSE
     %fracMigsRun = output.migrationMatrix / sum(sum(output.migrationMatrix));
-    migRateRun = output.migrationMatrix / size(output.agentSummary,1) / 11;  %(this data is 11 years)
+   % migRateRun = output.migrationMatrix / size(output.agentSummary,1) / 11;  %(this data is 11 years)
 
-    SSE = sum(sum(((migRateRun - migRateData).^2).*jointPopWeights))/jointPopSum;
-    r2 = weightedPearson(migRateRun(:), migRateData(:), jointPopWeights(:));
+    %SSE = sum(sum(((migRateRun - migRateData).^2).*jointPopWeights))/jointPopSum;
+    %r2 = weightedPearson(migRateRun(:), migRateData(:), jointPopWeights(:));
 
-    fitnessScore(indexJ) = SSE;
-    weightedR2(indexJ) = r2;
+    rawFitnessScore(indexJ,:) = calcFitness(output, fitnessData);
+    
+    %fitnessScore(indexJ) = SSE;
+    %weightedR2(indexJ) = r2;
     
 end
     
+rawFitnessScore = rawFitnessScore ./ (ones(size(rawFitnessScore,1),1) * max(rawFitnessScore));
+fitnessScore = rawFitnessScore(:,1) * gAParameters.rawFitnessWeights(1) + ...
+    rawFitnessScore(:,2) * gAParameters.rawFitnessWeights(2) + ...
+    rawFitnessScore(:,3) * gAParameters.rawFitnessWeights(3);
+
 %make a scale from 0 to 1 to capture the appropriate
 %probabilities of crossover, mutation, or straight reproduction
 reproduceScale = [gAParameters.pCrossover gAParameters.pMutate gAParameters.pReproduce];
@@ -182,8 +205,11 @@ for indexI = startStep:gAParameters.generations
             %and those with lowest occupy the least.  in this particular
             %case, we rescale fitness score so that the lowest utilities
             %are 0, and will occupy 0 space along this scale
-            %fitnessScore = fitnessScore - min(fitnessScore);  %thus, lowest score will have 0 probability
-            fitnessScore = max(fitnessScore) - fitnessScore;  %thus, lowest score will have 0 probability
+            if(gAParameters.isBestFitnessMin == 1)
+                fitnessScore = max(fitnessScore) - fitnessScore;  %thus, lowest score will have 0 probability
+            else
+                fitnessScore = fitnessScore - min(fitnessScore);  %thus, lowest score will have 0 probability
+            end
             fitnessScore(isnan(fitnessScore)) = 0;
             if(sum(fitnessScore ~= 0) == 0)
                %all zero, perhaps because all options had negative utility
@@ -263,7 +289,14 @@ for indexI = startStep:gAParameters.generations
             
             
         case 2 %tournament selection
-                        
+                
+            %make sure better scores are always larger
+            if(gAParameters.isBestFitnessMin == 1)
+                fitnessScore = max(fitnessScore) - fitnessScore;  
+            else
+                fitnessScore = fitnessScore - min(fitnessScore);  
+            end
+            
             %while the new generation is not yet full, keep adding to it
             indexJ = 1;
             while indexJ <= gAParameters.sizeGeneration
@@ -343,7 +376,14 @@ for indexI = startStep:gAParameters.generations
             %this is the same as tournament selection, except that the best
             %function from the previous generation is automatically
             %included
-                        
+            
+            %make sure better scores are always larger
+            if(gAParameters.isBestFitnessMin == 1)
+                fitnessScore = max(fitnessScore) - fitnessScore;
+            else
+                fitnessScore = fitnessScore - min(fitnessScore);
+            end
+            
             %first, put the previous best function as the first element in
             %the new generation.  in case there are more than one with the
             %same minimum score, pick one randomly
@@ -432,8 +472,10 @@ for indexI = startStep:gAParameters.generations
     
     %HACK
     %make sure we keep the best one from the last round
+    %note that at this point, all 3 approaches have made the largest
+    %fitness score the best, no matter how it was originally defined
     replaceMember = randperm(length(newPopulation),1);
-    bestPrevious = find(fitnessScore == min(fitnessScore));
+    bestPrevious = find(fitnessScore == max(fitnessScore));
     newPopulation(replaceMember) = population(bestPrevious(1));
     
     %set the current population to be this new population
@@ -449,46 +491,79 @@ for indexI = startStep:gAParameters.generations
         
         %calculate the SSE
         %fracMigsRun = output.migrationMatrix / sum(sum(output.migrationMatrix));
-        migRateRun = output.migrationMatrix / size(output.agentSummary,1) / 11;  %(this data is 11 years)
-        
-        SSE = sum(sum(((migRateRun - migRateData).^2).*jointPopWeights))/jointPopSum;
-        
-        r2 = weightedPearson(migRateRun(:), migRateData(:), jointPopWeights(:));
-
-        fitnessScore(indexK) = SSE;
-        weightedR2(indexK) = r2;
-
-        
+%         migRateRun = output.migrationMatrix / size(output.agentSummary,1) / 11;  %(this data is 11 years)
+%         
+%         SSE = sum(sum(((migRateRun - migRateData).^2).*jointPopWeights))/jointPopSum;
+%         
+%         r2 = weightedPearson(migRateRun(:), migRateData(:), jointPopWeights(:));
+% 
+%         fitnessScore(indexK) = SSE;
+%         weightedR2(indexK) = r2;
+% 
+            rawFitnessScore(indexK,:) = calcFitness(output, fitnessData);
+            
     end
-
-    %mark the best (lowest) fitness score in the current population
-    fitnessHistory(indexI) = min(fitnessScore);
     
-   %Check for convergence (measured as the relative change in top fitness score between generations), and if we aren't changing much, quit early
-   testConverged = 0;
-   if(indexI > gAParameters.changeScoreRounds+1)
-       if(mean(abs((fitnessHistory(indexI-gAParameters.changeScoreRounds:indexI)  - min(fitnessHistory(indexI-gAParameters.changeScoreRounds-1:indexI-1)))./min(fitnessHistory(indexI-gAParameters.changeScoreRounds-1:indexI-1)))) < gAParameters.changeScoreTol)
-          testConverged = 1; 
-       end
-   end
-   if(testConverged)
-       break;
-   end
-
-   fprintf('\n Timestep %d of %d; SSE = %f; r2 = %f',indexI, gAParameters.generations,fitnessHistory(indexI), weightedR2(indexI));
-   %select the function with best fit (using in this case a random draw as a
+    rawFitnessScore = rawFitnessScore ./ (ones(size(rawFitnessScore,1),1) * max(rawFitnessScore));
+    fitnessScore = rawFitnessScore(:,1) * gAParameters.rawFitnessWeights(1) + ...
+        rawFitnessScore(:,2) * gAParameters.rawFitnessWeights(2) + ...
+        rawFitnessScore(:,3) * gAParameters.rawFitnessWeights(3);
+    
+    
+    %mark the best (lowest) fitness score in the current population
+    if(gAParameters.isBestFitnessMin == 1)
+        [fitnessHistory(indexI),indexMin] = min(fitnessScore);
+    else
+        [fitnessHistory(indexI),indexMin] = max(fitnessScore);
+    end
+    
+    %Check for convergence (measured as the relative change in top fitness score between generations), and if we aren't changing much, quit early
+    testConverged = 0;
+    if(indexI > gAParameters.changeScoreRounds+1)
+        if(mean(abs((fitnessHistory(indexI-gAParameters.changeScoreRounds:indexI)  - min(fitnessHistory(indexI-gAParameters.changeScoreRounds-1:indexI-1)))./min(fitnessHistory(indexI-gAParameters.changeScoreRounds-1:indexI-1)))) < gAParameters.changeScoreTol)
+            testConverged = 1;
+        end
+    end
+    if(testConverged)
+        break;
+    end
+    
+    fprintf('\n Timestep %d of %d; Min. Score = %f',indexI, gAParameters.generations,fitnessHistory(indexI));
+    %select the function with best fit (using in this case a random draw as a
     %tie-breaking rule)
-    bestChoice = find(fitnessScore(:,1) == max(fitnessScore(:,1)));
+    if(gAParameters.isBestFitnessMin == 1)
+        bestChoice = find(fitnessScore(:,1) == min(fitnessScore(:,1)));
+    else
+        bestChoice = find(fitnessScore(:,1) == max(fitnessScore(:,1)));
+    end
     bestChoice = bestChoice(randperm(length(bestChoice),1));
     bestCalibrationSet = population{bestChoice,1};
-
-   save latestPopulation population fitnessHistory bestCalibrationSet;
-
+    
+    save latestPopulation population fitnessHistory bestCalibrationSet;
+    
 end
 
 
 end %function newPopulation
 
+function fitness = calcFitness(run, data)
+
+fracMigsRun = run.migrationMatrix / sum(sum(run.migrationMatrix));
+migRateRun = run.migrationMatrix / size(run.agentSummary,1) / 11;  %(this data is 11 years)
+inOutRun = sum(run.migrationMatrix) ./ (sum(run.migrationMatrix'));
+inOutRun(isnan(inOutRun)) = 0;
+inOutRun(isinf(inOutRun)) = 0;
+
+jointWeightFracMigsError = sum(sum(((fracMigsRun - data.fracMigsData).^2).*data.jointPopWeights))/data.jointPopSum;
+
+jointWeightMigRateError = sum(sum(((migRateRun - data.migRateData).^2).*data.jointPopWeights))/data.jointPopSum;
+
+popWeightInOutError = sum(sum(((inOutRun - data.inOutData).^2).*data.popData))/sum(data.popData);
+
+
+fitness = [ jointWeightFracMigsError  jointWeightMigRateError  popWeightInOutError];
+
+end
 
 function rho_2 = weightedPearson(X, Y, w)
 
