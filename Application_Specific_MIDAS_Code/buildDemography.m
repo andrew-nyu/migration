@@ -63,8 +63,8 @@ if(~isempty(modelParameters.popFile))
     agePointsPopulationMale = str2double(agePointsPopulationMale);
     [agePointsPopulationMale, ageIndexMale] = sort(agePointsPopulationMale,'ascend');
     
-    agePointsPopulationFemale = popTable.Properties.VariableNames(startsWith(popTable.Properties.VariableNames,'male'));
-    agePointsPopulationFemale = regexprep(agePointsPopulationFemale,'male','');
+    agePointsPopulationFemale = popTable.Properties.VariableNames(startsWith(popTable.Properties.VariableNames,'female'));
+    agePointsPopulationFemale = regexprep(agePointsPopulationFemale,'female','');
     for indexI = 1:length(agePointsPopulationFemale)
         try agePointsPopulationFemale{indexI} = extractAfter(agePointsPopulationFemale{indexI},strfind(agePointsPopulationFemale{indexI},'_'));
         end
