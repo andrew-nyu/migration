@@ -49,11 +49,13 @@ for indexI = 1:length(agentList)
                     [endPointsX,endPointsY] = setltln(currentMap,mapParameters.r1,endPointsX, endPointsY);
                     if(~isempty(startPointsX))
                         %plot them using patchline so that they can be translucent
-                        patchline([startPointsY endPointsY],[startPointsX endPointsX],(maxColor+1) * ones(size(startPointsY,1),2),'EdgeColor',[0 0 0],'EdgeAlpha',fade);
+                        %patchline([startPointsY endPointsY],[startPointsX endPointsX],(maxColor+1) * ones(size(startPointsY,1),2),'EdgeColor',[0 0 0],'EdgeAlpha',fade);
+                        plot3([startPointsY endPointsY],[startPointsX endPointsX],(maxColor+1) * ones(size(startPointsY,1),2),'Color',[0 0 0 fade]);
                     end
                 else %random map
                     %plot them using patchline so that they can be translucent
-                    patchline([startPointsY endPointsY],[startPointsX endPointsX],'EdgeColor',[0 0 0],'EdgeAlpha',fade);
+                    %patchline([startPointsY endPointsY],[startPointsX endPointsX],'EdgeColor',[0 0 0],'EdgeAlpha',fade);
+                    plot([startPointsY endPointsY],[startPointsX endPointsX],'EdgeColor',[0 0 fade]);
                 end
             
             end
@@ -77,11 +79,13 @@ for indexI = 1:length(agentList)
             maxColor = max(max(currentMap));
             if(~isempty(startPointsX))
                 %plot them using patchline so that they can be translucent
-                patchline([startPointsY endPointsY],[startPointsX endPointsX],(maxColor+1) * ones(size(startPointsY,1),2),'EdgeColor',[0 0 0],'EdgeAlpha',modelParameters.edgeAlpha);
+                %patchline([startPointsY endPointsY],[startPointsX endPointsX],(maxColor+1) * ones(size(startPointsY,1),2),'EdgeColor',[0 0 0],'EdgeAlpha',modelParameters.edgeAlpha);
+                plot3([startPointsY endPointsY],[startPointsX endPointsX],(maxColor+1) * ones(size(startPointsY,1),2),'Color',[0 0 0 modelParameters.edgeAlpha]);
             end
         else %random map
             %plot them using patchline so that they can be translucent
-            patchline([startPointsY endPointsY],[startPointsX endPointsX],'EdgeColor',[0 0 0],'EdgeAlpha',modelParameters.edgeAlpha);
+            %patchline([startPointsY endPointsY],[startPointsX endPointsX],'EdgeColor',[0 0 0],'EdgeAlpha',modelParameters.edgeAlpha);
+            plot([startPointsY endPointsY],[startPointsX endPointsX],'Color',[0 0 0]);
             
         end
         
