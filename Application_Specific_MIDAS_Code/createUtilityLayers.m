@@ -30,7 +30,7 @@ iYears = modelParameters.utility_iYears;
 leadTime = modelParameters.spinupTime;
 
 
-load([modelParameters.utilityDataPath '/incomeMats']);
+load([modelParameters.utilityDataPath '/incomeMats_noWinsorize']);
 
 %fix mismatches between HIES dataset names and spatial data
 bUnion = strrep(bUnion,'Nawabganj','Chapai Nababganj');
