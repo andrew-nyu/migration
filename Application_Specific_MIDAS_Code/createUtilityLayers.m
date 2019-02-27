@@ -376,4 +376,8 @@ end
 
 %any hack code for testing ideas can go below here but should be commented
 %when not in use...
+
+% hardSlotCountYN(:,:) = false;  %THIS IS A QUICK HACK TO MAKE RANDOM MODEL
+% utilityAccessCosts(:,2) = 0;
+% utilityBaseLayers = rand(size(utilityBaseLayers));
 % utilityAccessCosts(1:quantiles * size(locations,1),2) = 0.2 * utilityAccessCosts(1:quantiles * size(locations,1),2);
