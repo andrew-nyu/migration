@@ -22,16 +22,15 @@ function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTim
 %file once we're sure.  while they are here, they won't be included in
 %sensitivity testing
 quantiles = 4;
-years = 51;
+years = 11;
 noise = modelParameters.utility_noise;
 iReturn = modelParameters.utility_iReturn;
 iDiscount = modelParameters.utility_iDiscount;
 iYears = modelParameters.utility_iYears;
 leadTime = modelParameters.spinupTime;
 
-scenario = 0;  %HERE WE ARE LOOKING AT BASELINE
 
-load([modelParameters.utilityDataPath '/incomeMats_old']);
+load([modelParameters.utilityDataPath '/incomeMats_noWinsorize']);
 
 %fix mismatches between HIES dataset names and spatial data
 bUnion = strrep(bUnion,'Nawabganj','Chapai Nababganj');
@@ -65,6 +64,45 @@ peopleCounts = peopleCounts(:,indexInLocations,:,:);
 sizeMean = sizeMean(:,indexInLocations,:,:);
 aveNumSources = aveNumSources(:,indexInLocations,:,:);
 % 
+% %%%%%%
+% dataYears = [2005 2010 2015];
+% for indexI = 1:3
+%     figure;   
+%     subplot(4,1,1);
+%     imagesc(incomeMean(:,:,1,indexI));
+%     colorbar;
+%     set(gca,'YTick',1:19,'YTickLabel',incomeSources);
+%     a = get(gca,'Position');
+%     a(3:4) = [0.75 0.15];
+%     set(gca,'Position',a);
+%     subplot(4,1,2);
+%     imagesc(incomeMean(:,:,2,indexI));
+%     colorbar;
+%     set(gca,'YTick',1:19,'YTickLabel',incomeSources);
+%     a = get(gca,'Position');
+%     a(3:4) = [0.75 0.15];
+%     set(gca,'Position',a);
+%     subplot(4,1,3);
+%     imagesc(incomeMean(:,:,3,indexI));
+%     colorbar;
+%     set(gca,'YTick',1:19,'YTickLabel',incomeSources);
+%     a = get(gca,'Position');
+%     a(3:4) = [0.75 0.15];
+%     set(gca,'Position',a);
+%     subplot(4,1,4);
+%     imagesc(incomeMean(:,:,4,indexI));
+%     
+%     set(gca,'YTick',1:19,'YTickLabel',incomeSources);
+%     set(gca,'XTick',1:64,'XTickLabel',locations.source_ADMIN_NAME);
+%     xtickangle(90);
+%     colorbar;
+%     a = get(gca,'Position');
+%     a(3:4) = [0.75 0.15];
+%     set(gca,'Position',a);
+%     suptitle(num2str(dataYears(indexI)));
+% end
+% 
+% %%%%
 
 %incomeMean has dimensions of (layers - 19 in total, places - 64 divisions, quartiles - 4, time periods - [2005, 2010, and 2015])
 
@@ -149,37 +187,7 @@ incomeQs =[1 1 1 1; ... %rental income
    
 quarterShare = incomeQs ./ (sum(incomeQs,2));
 
-%now modify base layers based on flood expectations for this scenario
-load([modelParameters.utilityDataPath '/probFloods.mat']);
 
-
-incomeShockPercentPerFoot_0 = [0; ... %rental income
-    0; ... %wage
-    0; ... %salary
-    -45; ... %othercrops
-    -45; ... %sugarcane
-    -45; ... %jute
-    -45; ... %wheat
-    -45; ... %boro
-    -45; ... %aman
-    -45; ... %aus
-    -45; ... %oilseed
-    -45; ... %pulse
-    -45];% ...% ... %maize
-
-incomeShockPercentPerFoot = [-13.8; ... %rental income
-    -2.6; ... %wage
-    -13.8; ... %salary
-    -2.5; ... %othercrops
-    -2.5; ... %sugarcane
-    -2.5; ... %jute
-    -2.5; ... %wheat
-    -2.5; ... %boro
-    -2.5; ... %aman
-    -2.5; ... %aus
-    -2.5; ... %oilseed
-    -2.5; ... %pulse
-    -2.5];% ...% ... %maize
 
 
 timeSteps = years * modelParameters.cycleLength;  %2005 to 2015 inclusive
@@ -233,9 +241,6 @@ hardSlotCountYN(:,41:44) = false; %oilseed
 hardSlotCountYN(:,45:48) = false; %pulse
 hardSlotCountYN(:,49:52) = false; % ... %maize
 %hardSlotCountYN(:,53:56) = false; % ... %fish
-%hardSlotCountYN(:,57:60) = false; % livestock
-%hardSlotCountYN(:,61:64) = false; % forest
-
 
 %utility layers may be income, use value, etc.  identify what form of
 %utility it is, so that they get added and weighted appropriately in
@@ -306,49 +311,17 @@ nExpected = tempExpected;
 %N2Q1 N2Q2 N2Q3 N2Q4, etc.  (i.e., all layers for one source in order, then
 %the next source, etc.)
 for indexI = 1:length(locations)
-    
-    %generate the flood history for this location for the next 101 years
-    currentLocation = find(cityID_districts == locations.cityID(indexI));
-    actualFloods = zeros(years,1);
-    for indexJ = 1:years
-        if(scenario > 0)
-            randDepth = find(rand() < cumProbsMatYear{scenario, currentLocation, indexJ}, 1);
-            actualFloods(indexJ) = floodDepth(randDepth);
-        end
-        normalFlood = mean(actualFloods(1:11));
-        floodShock = actualFloods - normalFlood;
-        floodShock(1:11) = 0;
-        floodShock = floodShock / 0.3048; %converting meters to feet
-        floodShock(floodShock < 0) = 0;
-    end
-    
-    floodShock_0 = [0; floodShock(1:end-1)];  % this is for adding shock to next year
-    
     for indexJ = 1:length(utilityLayerFunctions)
         for indexK = 1:quantiles
             tempMean = zeros(3,1);
             tempMean(:) = incomeMean(ceil(indexJ/quantiles),indexI, indexK,:);
             tempMean(isnan(tempMean)) = 0;  %assume missing data to mean 0 income
             
-            %for RCPs, walking through 2000, 2005, 2010, then onward to
-            %2100... randomize the appearance of these 3 periods over 11
-            tempExtension = zeros(8,1);
-            for indexL = 1:18
-                tempExtension(indexL) = tempMean(randperm(3,1));
-            end
-            tempMean = [tempMean; tempExtension];
-            
-            %expand from 21 periods to 101 years
+            %expand from 3 periods to 11 years
             tempMean = interp(tempMean,5,1,0.5);
-            tempMean = tempMean(1:51);
-
+            tempMean = tempMean(1:11);
             
-            %now add in flood shock as appropriate.  note that at this
-            %point utility layers have been expanded out
-            tempMean = tempMean .* max(0,(1 + incomeShockPercentPerFoot_0(ceil(indexJ/quantiles)) / 100 * floodShock));
-            tempMean = tempMean .* max(0,(1 + incomeShockPercentPerFoot(ceil(indexJ/quantiles)) / 100 * floodShock_0));
-            
-            %expand from 101 years to 404 quarters
+            %expand from 11 years to 44 quarters
             fullMean = zeros(length(tempMean) * quantiles,1);
             for indexM = 1:length(tempMean)
                 fullMean((indexM-1)*quantiles+1:indexM*quantiles) = tempMean(indexM) * quarterShare(ceil(indexJ/quantiles),:);
@@ -401,14 +374,6 @@ for indexI = 1:length(localOnly)
 end
 
 
-
-
-%expected, normal flood is whatever you get for 2000-2010
-for indexI = 1:length(cityID_districts)
-
-end
-
-f=1;
 %any hack code for testing ideas can go below here but should be commented
 %when not in use...
 % utilityAccessCosts(1:quantiles * size(locations,1),2) = 0.2 * utilityAccessCosts(1:quantiles * size(locations,1),2);
