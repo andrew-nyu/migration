@@ -10,12 +10,12 @@ overlap = agent.incomeLayersHistory + 2 * partner.incomeLayersHistory;
 
 %agent communicates a fraction of overlap == 1 with partner
 agentToPartner = find(overlap == 1);
-atp = agent.incomeLayersHistory & ~partner.incomeLayersHistory;
 agentToPartner(rand(length(agentToPartner),1) > agent.knowledgeShareFrac) = [];
-atp(atp == true) = rand(sum(atp(:)==true),1) < agent.knowledgeShareFrac;
-
 partner.incomeLayersHistory(agentToPartner) = true;
-partner.incomeLayersHistory(atp) = true;
+
+atp = agent.incomeLayersHistory & ~partner.incomeLayersHistory;
+atp(atp == true) = 
+partner.incomeLayersHistory = partner.incomeLayersHistory | atp;
 
 %partner communicates a fraction of overlap == 2 with agent
 partnerToAgent = find(overlap == 2);

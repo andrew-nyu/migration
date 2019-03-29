@@ -59,7 +59,7 @@ utilityVariables.hasOpenSlots = false(size(hardSlotCountYN));
 %here for the lowest administrative level
 accessCodesPaid = false(size(utilityAccessCosts,1),1);
 knowsIncomeLocation = sparse(size(locations,1),size(utilityBaseLayers,2));
-incomeLayersHistory = false(size(utilityBaseLayers));
+incomeLayersHistory = (false(size(utilityBaseLayers)));
 expectedProbOpening = zeros(size(knowsIncomeLocation));
 
 agentParameters.init_accessCodesPaid = accessCodesPaid;

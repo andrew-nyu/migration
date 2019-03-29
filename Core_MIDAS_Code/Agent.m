@@ -21,6 +21,7 @@ classdef Agent < handle
        bestPortfolioValues
        knowsIncomeLocation
        incomeLayersHistory
+       overlap
        heardOpening
        expectedProbOpening
        timeProbOpeningUpdated

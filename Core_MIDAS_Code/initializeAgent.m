@@ -32,6 +32,7 @@ newAgent = Agent(agentParameters.currentID, location);
 newAgent.accessCodesPaid = agentParameters.init_accessCodesPaid;
 newAgent.knowsIncomeLocation = agentParameters.init_knowsIncomeLocation;
 newAgent.incomeLayersHistory = agentParameters.init_incomeLayersHistory;
+newAgent.overlap = agentParameters.init_incomeLayersHistory;
 newAgent.expectedProbOpening = agentParameters.init_expectedProbOpening;
 newAgent.heardOpening = agentParameters.init_knowsIncomeLocation;
 newAgent.personalIncomeHistory = zeros(size(agentParameters.init_incomeLayersHistory,3),1);
