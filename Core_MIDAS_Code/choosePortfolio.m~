@@ -98,6 +98,10 @@ locationPortfolio = cell(length(locationList),1);
 locationAccessCodes = cell(length(locationList),1);
 locationMovingCosts = zeros(length(locationList),1);
 
+%any other variables we reuse over and over
+
+accessCostCodes = false(size(utilityVariables.utilityAccessCodesMat, 1),1);
+
 %for each location, find a good income portfolio - the current portfolio
 %(if this is home city), some other good portfolios from past searches, and
 %a few random new ones
@@ -284,8 +288,10 @@ for indexL = 1:length(locationList)
     
     portfolioSubSet = portfolioSet;
     portfolioSubSet = portfolioSubSet .* agent.bList(utilityVariables.utilityForms)' .* agent.expectedProbOpening(locationList(indexL),:);
-
     portfolioSubSet(:,~any(portfolioSet,1))=[];
+    
+    exceedsCreditLimit = false(size(portfolioSet,1),1);
+    
     for indexP = 1:numPortfolios
         
         %dump all layers into a single time series with each element being
@@ -319,7 +325,8 @@ for indexL = 1:length(locationList)
         %add access costs that would need to be paid in order to access the
         %layers in this portfolio.  first identify those necessary and then
         %cancel out those that are already paid.
-        accessCostCodes = reshape(any(utilityVariables.utilityAccessCodesMat(locationList(indexL),portfolioSet(indexP,:),:),2), size(utilityVariables.utilityAccessCodesMat, 3),1);
+        accessCostCodes(:) = any(utilityVariables.utilityAccessCodesMat(:,portfolioSet(indexP, locationList(indexL)),:),2);
+        accessCostCodes2 = reshape(any(utilityVariables.utilityAccessCodesMat(locationList(indexL),portfolioSet(indexP,:),:),2), size(utilityVariables.utilityAccessCodesMat, 1),1);
         accessCostCodes(agent.accessCodesPaid) = false;
         newCosts = sum(utilityVariables.utilityAccessCosts(accessCostCodes,2));
         
@@ -337,8 +344,15 @@ for indexL = 1:length(locationList)
         %capital' - that is, the sum of access costs already paid as a
         %proxy for self-investment
         
-        if(agent.wealth - currentMovingCost - newCosts < sum(utilityVariables.utilityAccessCosts(agent.accessCodesPaid,2))
+        %this should not preclude keeping the current portfolio even if
+        %agent is deeply in debt
+        if(and(currentMovingCost + newCosts > 0, agent.wealth - currentMovingCost - newCosts < modelParameters.creditMultiplier * sum(utilityVariables.utilityAccessCosts(agent.accessCodesPaid,2))))
+            exceedsCreditLimit(indexP) = true;
+        end
         
+        if(and(and(locationList(indexL) == agent.matrixLocation, exceedsCreditLimit == true), sum((portfolioSet(indexP,:) == agent.currentPortfolio) == 0) == 0 ))
+            f=1;
+        end
         %convert each element to utility using the risk coefficient, and
         %then discount all elements forward to get NPV in utility units
         
@@ -349,19 +363,32 @@ for indexL = 1:length(locationList)
         
     end
     
-    %sort them
-    [sortedValues,indexSorted] = sort(portfolioValues,'descend');
+
+    %exclude new portfolios that are out of reach due to credit limit
+    portfolioValues(exceedsCreditLimit) = [];
+    portfolioSet(exceedsCreditLimit,:) = [];
+    portfolioAccessCodes(exceedsCreditLimit) = [];
     
-    
-    %save the top few to the 'best portfolio' list
-    for indexB = 1:min(agent.numBestPortfolio,length(indexSorted))
-        agent.bestPortfolios{locationList(indexL), indexB} = portfolioSet(indexSorted(indexB),:);
+    if(~isempty(portfolioSet))
+        %sort them
+        [sortedValues,indexSorted] = sort(portfolioValues,'descend');
+        
+        
+        %save the top few to the 'best portfolio' list
+        for indexB = 1:min(agent.numBestPortfolio,length(indexSorted))
+            agent.bestPortfolios{locationList(indexL), indexB} = portfolioSet(indexSorted(indexB),:);
+        end
+        
+        %save the best for current evaluation
+        locationValue(indexL) = sortedValues(1);
+        locationPortfolio{indexL} = portfolioSet(indexSorted(1),:);
+        locationAccessCodes{indexL} = portfolioAccessCodes{indexSorted(1)};
+    else
+        if(locationList(indexL) == agent.matrixLocation)
+            f=1;
+        end
+        locationValue(indexL) = -Inf;
     end
-    
-    %save the best for current evaluation
-    locationValue(indexL) = sortedValues(1);
-    locationPortfolio{indexL} = portfolioSet(indexSorted(1),:);
-    locationAccessCodes{indexL} = portfolioAccessCodes{indexSorted(1)};
 end
 
 %now identify the best one.  
@@ -421,10 +448,14 @@ newCosts = sum(utilityVariables.utilityAccessCosts(codesToPay,2));
 agent.wealth = agent.wealth - newCosts;
 agent.accessCodesPaid(codesToPay) = true;
 
+try
 %now that we've paid everything, give the new portfolio to the agent, but
 %only give layers that actually have open slots ... this could be an
 %unlucky agent that shows up and doesn't get what they dreamed of.
 bestPortfolio = utilityVariables.hasOpenSlots(agent.matrixLocation,:) & bestPortfolio;
+catch
+    f=1;
+end
 
 agent.currentPortfolio = bestPortfolio;
 

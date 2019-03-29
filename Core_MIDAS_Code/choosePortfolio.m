@@ -98,6 +98,7 @@ locationPortfolio = cell(length(locationList),1);
 locationAccessCodes = cell(length(locationList),1);
 locationMovingCosts = zeros(length(locationList),1);
 
+
 %for each location, find a good income portfolio - the current portfolio
 %(if this is home city), some other good portfolios from past searches, and
 %a few random new ones
@@ -321,7 +322,7 @@ for indexL = 1:length(locationList)
         %add access costs that would need to be paid in order to access the
         %layers in this portfolio.  first identify those necessary and then
         %cancel out those that are already paid.
-        accessCostCodes = reshape(any(utilityVariables.utilityAccessCodesMat(locationList(indexL),portfolioSet(indexP,:),:),2), size(utilityVariables.utilityAccessCodesMat, 3),1);
+        accessCostCodes = reshape(any(utilityVariables.utilityAccessCodesMat(:,portfolioSet(indexP,:),locationList(indexL)),2), size(utilityVariables.utilityAccessCodesMat, 1),1);
         accessCostCodes(agent.accessCodesPaid) = false;
         newCosts = sum(utilityVariables.utilityAccessCosts(accessCostCodes,2));
         

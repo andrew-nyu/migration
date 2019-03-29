@@ -332,21 +332,21 @@ for indexI = 1:length(locations)
             
             %for RCPs, walking through 2000, 2005, 2010, then onward to
             %2100... randomize the appearance of these 3 periods over 11
-            tempExtension = zeros(8,1);
-            for indexL = 1:8
-                tempExtension(indexL) = tempMean(randperm(3,1));
-            end
-            tempMean = [tempMean; tempExtension];
-            
+%             tempExtension = zeros(8,1);
+%             for indexL = 1:18
+%                 tempExtension(indexL) = tempMean(randperm(3,1));
+%             end
+%             tempMean = [tempMean; tempExtension];
+%             
             %expand from 21 periods to 101 years
             tempMean = interp(tempMean,5,1,0.5);
-            tempMean = tempMean(1:51);
+            tempMean = tempMean(1:11);
 
             
             %now add in flood shock as appropriate.  note that at this
             %point utility layers have been expanded out
-            tempMean = tempMean .* max(0,(1 + incomeShockPercentPerFoot_0(ceil(indexJ/quantiles)) / 100 * floodShock));
-            tempMean = tempMean .* max(0,(1 + incomeShockPercentPerFoot(ceil(indexJ/quantiles)) / 100 * floodShock_0));
+%             tempMean = tempMean .* max(0,(1 + incomeShockPercentPerFoot_0(ceil(indexJ/quantiles)) / 100 * floodShock));
+%             tempMean = tempMean .* max(0,(1 + incomeShockPercentPerFoot(ceil(indexJ/quantiles)) / 100 * floodShock_0));
             
             %expand from 101 years to 404 quarters
             fullMean = zeros(length(tempMean) * quantiles,1);

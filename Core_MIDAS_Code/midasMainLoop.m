@@ -26,7 +26,7 @@ inMigrations = zeros(numLocations, modelParameters.timeSteps);
 migrationMatrix = zeros(numLocations);
 
 for indexT = 1:modelParameters.timeSteps
-  
+    
     %update the social network links ... cap any that swelled above 1 in
     %the last loop, and allow all to decay to no less than 0
     mapVariables.network(mapVariables.network ~= 0) = min(1,mapVariables.network(mapVariables.network ~= 0));
@@ -34,7 +34,7 @@ for indexT = 1:modelParameters.timeSteps
         
     livingAgents = agentList([agentList.TOD] < 0);
     currentRandOrder = randperm(length(livingAgents));
-    
+
     %update agent age, information and preferences, looping across agents
     for indexA = 1:length(currentRandOrder)
         
@@ -66,6 +66,7 @@ for indexT = 1:modelParameters.timeSteps
         %from based in A to mostly B
         temp_f =  (1 - currentAgent.fDecay).^(indexT - currentAgent.timeProbOpeningUpdated);
         currentAgent.expectedProbOpening = currentAgent.pGetLayer_informed * currentAgent.heardOpening .* temp_f + currentAgent.pGetLayer_uninformed * rand(size(temp_f)) .* (1 - temp_f);
+        
         
         %agent gets updated knowledge of any openings available in layers
         %that it occupies
@@ -186,6 +187,7 @@ for indexT = 1:modelParameters.timeSteps
             currentAgent.heardOpening(temp) = utilityVariables.hasOpenSlots(temp);
             currentAgent.timeProbOpeningUpdated(temp) = indexT;
         end
+        clear temp;
         
 
         %draw number to see if agent updates preferences on where to
@@ -313,6 +315,7 @@ for indexT = 1:modelParameters.timeSteps
     averageWealth(indexT) = mean([livingAgents(:).wealth]);
     temp = reshape(cell2mat({agentList.expectedProbOpening}), size(agentList(1).expectedProbOpening, 1), size(agentList(1).expectedProbOpening,2), length(agentList));
     averageExpectedOpening(:,:,indexT) = mean(temp,3);
+    clear temp;
     
     if(modelParameters.listTimeStepYN)
         fprintf([runName ' - Time step ' num2str(indexT) ' of ' num2str(modelParameters.timeSteps) ' - ' num2str(migrations(indexT)) ' migrations.\n']);
