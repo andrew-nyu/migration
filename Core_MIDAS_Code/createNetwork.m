@@ -12,7 +12,7 @@ function [ network, distanceMatrix, listX, listY ] = createNetwork( locations, m
 %we use a sparse matrix for agents where the i or j index corresponds to
 %the agent's ID.  A '1' indicates a connection between agents i and j; the
 %diagonal is all ones by default
-numAgents = length(agentList);
+numAgents = sum([agentList.TOD] < 0 & [agentList.DOB] >= 0);
 network = spalloc(networkParameters.agentPreAllocation, networkParameters.agentPreAllocation, networkParameters.nonZeroPreAllocation);
 network(1:numAgents,1:numAgents) = speye(numAgents, numAgents);
 
@@ -115,7 +115,11 @@ end
 agentList = agentList(sortAgentOrder);
 for indexI = 1:numAgents
     currentAgent = agentList(indexI);
+    try
     currentAgent.network = agentList(currentAgent.network);
+    catch
+        f=1;
+    end
 end
 
 end

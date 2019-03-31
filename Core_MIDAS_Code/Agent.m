@@ -12,6 +12,7 @@ classdef Agent < handle
        age
        gender
        TOD
+       DOB
        
        %agent accumulated data
        network
@@ -69,6 +70,7 @@ classdef Agent < handle
          A.location = location;
          A.network = [];
          A.TOD = -9999;  %TOD is 'time of death'
+         A.DOB = -9999;  %DOB is 'date of birth'
       end %  
       
       %as written presently, most agent actions are coded as model

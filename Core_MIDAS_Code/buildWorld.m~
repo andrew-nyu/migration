@@ -67,7 +67,7 @@ agentParameters.init_knowsIncomeLocation = knowsIncomeLocation;
 agentParameters.init_incomeLayersHistory = incomeLayersHistory;
 agentParameters.init_expectedProbOpening = expectedProbOpening;
 
-agentList = repmat(initializeAgent(agentParameters, utilityVariables, 1, 1, 1),1, networkParameters.agentPreAllocation);
+agentList = repmat();
 
 %create agents, assigning agent-specific properties as appropriate from
 %input data
@@ -83,14 +83,14 @@ for indexI = 1:modelParameters.numAgents
     %below
     age = interp1([0 ageLikelihood(locationID,:,gender)],[0 agePointsPopulation],rand());
     
-    %currentAgent = initializeAgent(agentParameters, utilityVariables, age, gender, locations(locationID,1).cityID, agentList(indexI));
-    currentAgent = initializeAgent(agentParameters, utilityVariables, age, gender, locations(locationID,1).cityID);
+    currentAgent = initializeAgent(agentParameters, utilityVariables, age, gender, locations(locationID,1).cityID, agentList(indexI));
+    %currentAgent = initializeAgent(agentParameters, utilityVariables, age, gender, locations(locationID,1).cityID);
     currentAgent.matrixLocation = locations(locationID,:).matrixID;
     currentAgent.moveHistory = [0 currentAgent.matrixLocation];
     currentAgent.DOB = 0;
     currentAgent.id = agentParameters.currentID;
     agentParameters.currentID = indexI + 1;     
-    agentList(indexI) = currentAgent;
+    %agentList(indexI) = currentAgent;
 end
 
 %Agents' 'location' is simply the city they are in, for all computational purposes,

@@ -305,8 +305,11 @@ for indexL = 1:length(locationList)
             remittanceFee = mapVariables.remittanceFee(agent.matrixLocation, [agent.network(:).matrixLocation]);
             remittanceRate = mapVariables.remittanceRate(agent.matrixLocation, [agent.network(:).matrixLocation]);
 
+            try
             remittanceCost = remittanceFee + remittanceRate / 100 .* potentialAmounts;
-
+            catch
+                f=1;
+            end
             
             %discard any potential transfers that exceed agent's threshold
             %for costs (i.e., agent stops making transfers if the

@@ -35,7 +35,7 @@ for indexT = 1:modelParameters.timeSteps
     livingAgents = agentList([agentList.TOD] < 0 & [agentList.DOB] >= 0);
     currentRandOrder = randperm(length(livingAgents));
     baseIndexLivingAgents = 1:length(livingAgents);
-    idIndexLivingAgents = [livingAgents.id];
+    idIndexLivingAgents = [livingAgetn
     %update agent age, information and preferences, looping across agents
     for indexA = 1:length(currentRandOrder)
         
@@ -83,7 +83,6 @@ for indexT = 1:modelParameters.timeSteps
                 %newBaby = initializeAgent(agentParameters, utilityVariables, age, gender, currentAgent.location, agentList(agentParameters.currentID));
                 newBaby = initializeAgent(agentParameters, utilityVariables, age, gender, currentAgent.location);
                 newBaby.id = agentParameters.currentID;
-                agentList(agentParameters.currentID) = newBaby;
                 agentParameters.currentID = agentParameters.currentID + 1;
                 newBaby.matrixLocation = currentAgent.matrixLocation;
                 newBaby.DOB = indexT;
@@ -102,7 +101,7 @@ for indexT = 1:modelParameters.timeSteps
                 mapVariables.network(newBaby.id, currentAgent.id) = 1;
                 mapVariables.network(currentAgent.id, newBaby.id) = 1;
                 
-                
+                %agentList(end+1) = newBaby;
             end
         end
         
@@ -118,29 +117,29 @@ for indexT = 1:modelParameters.timeSteps
             
             %create a list of 'shared weighted connections' with other agents;
             connectionsWeight = mapVariables.network(currentAgent.id,1:length(agentList))*mapVariables.network(1:length(agentList), 1:length(agentList));
-            %connectionsWeight = mapVariables.network(currentAgent.id,[livingAgents.id])*mapVariables.network([livingAgents.id], [livingAgents.id]);
+            connectionsWeight = mapVariables.network(currentAgent.id,[livingAgents.id])*mapVariables.network([livingAgents.id], [livingAgents.id]);
             
             %make a list of existing connections and dead agents, who
             %should not have any weight in the calculations
             currentConnections = mapVariables.network(currentAgent.id,:) > 0;
-            currentConnections([agentList.TOD] > 0 | [agentList.DOB] < 0) = true;
+            currentConnections([agentList.TOD] > 0 & [agentList.DOB] >= 0) = true;
             currentConnections(currentAgent.id) = true;
             
             %create a list of distances to other agents, based on their location
-            agentLocations = ones(1,length(agentList));
-            agentLocations([livingAgents.id]) = [livingAgents.matrixLocation];
+            agentLocations = zeros(1,length(livingAgents));
+            agentLocations(:) = [livingAgents.matrixLocation];
             distanceWeight = mapVariables.distanceMatrix(currentAgent.matrixLocation,agentLocations);
 
             
             %create a list of shared layers (in same location)
-            agentLayers = zeros(length(agentList),size(utilityVariables.utilityLayerFunctions,1));
-            agentLayers(:) = vertcat(agentList.currentPortfolio);
+            agentLayers = zeros(length(livingAgents),size(utilityVariables.utilityLayerFunctions,1));
+            agentLayers(:) = vertcat(livingAgents.currentPortfolio);
             layerWeight = currentAgent.currentPortfolio * (((agentLocations == currentAgent.matrixLocation)'*ones(1,size(agentLayers,2)))' .* agentLayers') ;
             
             %identify the new network link using the appropriate function for this
             %simulation
             newAgentConnection = chooseNewLink(networkParameters, connectionsWeight, distanceWeight, layerWeight, currentConnections);
-            connectedAgent = agentList((newAgentConnection));
+            connectedAgent = agentList(livingAgents(newAgentConnection).id);
             
             %now update all network parameters
             strength = rand();
@@ -344,7 +343,7 @@ outputs.outMigrations = outMigrations;
 outputs.migrationMatrix = migrationMatrix;
 outputs.averageExpectedOpening = averageExpectedOpening;
 
-agentList = agentList(1:agentParameters.currentID-1);
+agentList = agentList(1:modelParameters.currentID-1);
 agentSummary = table([agentList(:).id]','VariableNames',{'id'});
 agentSummary.wealth = [agentList(:).wealth]';
 agentSummary.location = [agentList(:).location]';
@@ -373,11 +372,7 @@ tempAccess = cell(length(agentList),1);
 for indexI = 1:length(agentList)
     tempCurrentPortfolio{indexI} = agentList(indexI).currentPortfolio;
     tempFirstPortfolio{indexI} = agentList(indexI).firstPortfolio;
-    try
     tempNetwork{indexI} = [agentList(indexI).network(:).id];
-    catch
-        f=1;
-    end
     tempMove{indexI} = [agentList(indexI).moveHistory];
     tempAccess{indexI} = [agentList(indexI).accessCodesPaid];
 end

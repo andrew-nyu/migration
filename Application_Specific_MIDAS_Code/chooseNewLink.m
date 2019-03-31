@@ -41,7 +41,6 @@ end
 
 %networkParameters stores the weights by which these different factors
 %should be considered
-
 agentFullWeight = connectionsWeight * networkParameters.weightNetworkLink + ...
     distanceWeight * networkParameters.weightLocation + ...
     layerWeight * networkParameters.weightSameLayer;

@@ -1,4 +1,4 @@
-function newAgent = initializeAgent(agentParameters, utilityVariables, age, gender, location)
+function newAgent = initializeAgent(agentParameters, utilityVariables, age, gender, location, varargin)
 
 knowledgeShareFrac = min(1,max(0,agentParameters.knowledgeShareFracMean + randn() * agentParameters.knowledgeShareFracSD));
 shareCostThreshold = min(1,max(0,agentParameters.shareCostThresholdMean + randn() * agentParameters.shareCostThresholdSD));
@@ -27,7 +27,11 @@ fDecay = min(1,max(0,agentParameters.expectationDecayMean + randn() * agentParam
 %bList has elements corresponding to each kind of utility layer present
 bList = max(0, agentParameters.bListMean + randn(utilityVariables.numForms,1) * agentParameters.bListSD);
 
-newAgent = Agent(agentParameters.currentID, location);
+if(~isempty(varargin))
+    newAgent = varargin{1};
+else
+    newAgent = Agent(Inf, location);
+end
 
 newAgent.accessCodesPaid = agentParameters.init_accessCodesPaid;
 newAgent.knowsIncomeLocation = agentParameters.init_knowsIncomeLocation;
