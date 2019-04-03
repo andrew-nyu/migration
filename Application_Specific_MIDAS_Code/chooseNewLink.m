@@ -1,4 +1,4 @@
-function newLink = chooseNewLink(networkParameters, connectionsWeight, distanceWeight, layerWeight, currentConnections)
+function newLink = chooseNewLink(networkParameters, connectionsWeight, distanceWeight, layerWeight, currentConnections, aliveList)
 
 %this is an applications specific function to choose a new connection,
 %based on inputs of i) existing network connections, ii) distances to other
@@ -48,6 +48,7 @@ agentFullWeight = connectionsWeight * networkParameters.weightNetworkLink + ...
 %currentConnections stores the list of current connections, whose weight in
 %the final calculation should be 0
 agentFullWeight(currentConnections) = 0;
+agentFullWeight(~aliveList) = 0;
 
 agentFullWeight = cumsum(agentFullWeight);
 agentFullWeight = agentFullWeight / max(agentFullWeight);

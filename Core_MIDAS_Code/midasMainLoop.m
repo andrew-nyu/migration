@@ -9,7 +9,7 @@ tic;
 outputs = [];
 [agentParameters, modelParameters, networkParameters, mapParameters] = readParameters(inputs);
 
-[agentList, modelParameters, agentParameters, mapParameters, utilityVariables, mapVariables, demographicVariables] = buildWorld(modelParameters, mapParameters, agentParameters, networkParameters);
+[agentList, aliveList, modelParameters, agentParameters, mapParameters, utilityVariables, mapVariables, demographicVariables] = buildWorld(modelParameters, mapParameters, agentParameters, networkParameters);
     
 numLocations = size(mapVariables.locations,1);
 numLayers = size(utilityVariables.utilityLayerFunctions,1);
@@ -25,6 +25,13 @@ outMigrations = zeros(numLocations, modelParameters.timeSteps);
 inMigrations = zeros(numLocations, modelParameters.timeSteps);
 migrationMatrix = zeros(numLocations);
 
+%create a list of shared layers, for use in choosing new link
+agentLayers = zeros(length(agentList),size(utilityVariables.utilityLayerFunctions,1));
+agentLayers(:) = vertcat(agentList.currentPortfolio);
+
+agentLocations = ones(1,length(agentList));
+agentLocations(aliveList) = [agentList(aliveList).matrixLocation];
+
 for indexT = 1:modelParameters.timeSteps
     
     %update the social network links ... cap any that swelled above 1 in
@@ -32,10 +39,9 @@ for indexT = 1:modelParameters.timeSteps
     mapVariables.network(mapVariables.network ~= 0) = min(1,mapVariables.network(mapVariables.network ~= 0));
     mapVariables.network(mapVariables.network ~= 0) = max(0,mapVariables.network(mapVariables.network ~= 0) - networkParameters.decayPerStep);
         
-    livingAgents = agentList([agentList.TOD] < 0 & [agentList.DOB] >= 0);
+    livingAgents = agentList(aliveList);
     currentRandOrder = randperm(length(livingAgents));
-    baseIndexLivingAgents = 1:length(livingAgents);
-    idIndexLivingAgents = [livingAgents.id];
+
     %update agent age, information and preferences, looping across agents
     for indexA = 1:length(currentRandOrder)
         
@@ -54,6 +60,7 @@ for indexT = 1:modelParameters.timeSteps
             mapVariables.network(currentAgent.id, [currentAgent.network(:).id]) = 0;
             mapVariables.network([currentAgent.network(:).id],currentAgent.id) = 0;
             currentAgent.TOD = indexT;
+            aliveList(currentAgent.id) = false;
             continue;
         end
         
@@ -101,7 +108,11 @@ for indexT = 1:modelParameters.timeSteps
                 
                 mapVariables.network(newBaby.id, currentAgent.id) = 1;
                 mapVariables.network(currentAgent.id, newBaby.id) = 1;
-                
+                aliveList(newBaby.id) = true;
+                                
+                %update this line in the array used to choose new links
+                agentLayers(newBaby.id,:) = newBaby.currentPortfolio;
+                agentLocations(newBaby.id) = newBaby.matrixLocation;
                 
             end
         end
@@ -123,23 +134,25 @@ for indexT = 1:modelParameters.timeSteps
             %make a list of existing connections and dead agents, who
             %should not have any weight in the calculations
             currentConnections = mapVariables.network(currentAgent.id,:) > 0;
-            currentConnections([agentList.TOD] > 0 | [agentList.DOB] < 0) = true;
+            %currentConnections2 = mapVariables.network(currentAgent.id,:) > 0;
+            %currentConnections([agentList.TOD] > 0 | [agentList.DOB] < 0) = true;
+            %currentConnections2(~aliveList) = true;
+            
+           
             currentConnections(currentAgent.id) = true;
             
             %create a list of distances to other agents, based on their location
-            agentLocations = ones(1,length(agentList));
-            agentLocations([livingAgents.id]) = [livingAgents.matrixLocation];
             distanceWeight = mapVariables.distanceMatrix(currentAgent.matrixLocation,agentLocations);
 
             
-            %create a list of shared layers (in same location)
-            agentLayers = zeros(length(agentList),size(utilityVariables.utilityLayerFunctions,1));
-            agentLayers(:) = vertcat(agentList.currentPortfolio);
-            layerWeight = currentAgent.currentPortfolio * (((agentLocations == currentAgent.matrixLocation)'*ones(1,size(agentLayers,2)))' .* agentLayers') ;
-            
+            %create a list of shared layers (in same location) using
+            %agentLayers            
+            sameLocation = agentLocations == currentAgent.matrixLocation;
+            layerWeight = sparse(ones(sum(sameLocation),1),find(sameLocation), currentAgent.currentPortfolio * agentLayers(sameLocation,:)', 1, length(agentList));
+
             %identify the new network link using the appropriate function for this
             %simulation
-            newAgentConnection = chooseNewLink(networkParameters, connectionsWeight, distanceWeight, layerWeight, currentConnections);
+            newAgentConnection = chooseNewLink(networkParameters, connectionsWeight, distanceWeight, layerWeight, currentConnections, aliveList);
             connectedAgent = agentList((newAgentConnection));
             
             %now update all network parameters
@@ -156,9 +169,6 @@ for indexT = 1:modelParameters.timeSteps
             currentAgent.network(end+1) = connectedAgent;
             connectedAgent.network(end+1) = currentAgent;
             
-            if(currentAgent.id == connectedAgent.id)
-                f=1;
-            end
         end
         
         %draw number to see if agent has social interaction with existing
@@ -177,7 +187,10 @@ for indexT = 1:modelParameters.timeSteps
                     %the original
                     partner = potentialPartners(randperm(length(potentialPartners),1));
                     
-                    [currentAgent, partner] = interact(currentAgent, partner);
+                    [currentAgent, partner] = interact(currentAgent, partner, indexT);
+                    
+                    
+                    
                     currentAgent.knowsIncomeLocation = any(currentAgent.incomeLayersHistory,3);
                     partner.knowsIncomeLocation = any(partner.incomeLayersHistory,3);
                     
@@ -202,6 +215,8 @@ for indexT = 1:modelParameters.timeSteps
         %be/what to do
         if(rand() < currentAgent.pChoose && indexT > modelParameters.spinupTime && currentAgent.age >= modelParameters.ageDecision)
             [currentAgent, moved] = choosePortfolio(currentAgent, utilityVariables, indexT, modelParameters, mapParameters, demographicVariables, mapVariables);
+            
+            
             if(~isempty(moved))
                 migrations(indexT) = migrations(indexT) + 1;
                 inMigrations(moved(2), indexT) = inMigrations(moved(2), indexT) + 1;
@@ -209,6 +224,10 @@ for indexT = 1:modelParameters.timeSteps
                 migrationMatrix(moved(1),moved(2)) = migrationMatrix(moved(1),moved(2)) + 1;
                 currentAgent.moveHistory = [currentAgent.moveHistory; indexT currentAgent.matrixLocation currentAgent.visX currentAgent.visY];
             end
+            
+            %update these line in the arrays used to choose new links
+            agentLayers(currentAgent.id,:) = currentAgent.currentPortfolio;
+            agentLocations(currentAgent.id) = currentAgent.matrixLocation;
         end
        
         

@@ -159,12 +159,10 @@ for indexL = 1:length(locationList)
     %mark out what information our agent has - use the global stored array
     %of income  history to access all data for the layers in use, and blank out elements not known to our agent as
     %NaN
-
     fullHistory = utilityVariables.utilityHistory(locationList(indexL),usedIncomeLayers,1:currentT);
-
     availableHistory = agent.incomeLayersHistory(locationList(indexL),usedIncomeLayers,1:currentT);
     fullHistory(~availableHistory) = NaN;
-    
+
     %make a blank array to hold the estimated time paths for each layer,
     %and reshape our fullHistory array to be the same 2D shape
     numUniqueLayers = size(availableHistory,2);

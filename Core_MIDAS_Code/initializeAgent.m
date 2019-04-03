@@ -35,6 +35,7 @@ end
 
 newAgent.accessCodesPaid = agentParameters.init_accessCodesPaid;
 newAgent.knowsIncomeLocation = agentParameters.init_knowsIncomeLocation;
+newAgent.scratch = sparse(agentParameters.init_incomeLayersHistory(:));
 newAgent.incomeLayersHistory = agentParameters.init_incomeLayersHistory;
 newAgent.overlap = agentParameters.init_incomeLayersHistory;
 newAgent.expectedProbOpening = agentParameters.init_expectedProbOpening;
