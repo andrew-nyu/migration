@@ -2,7 +2,7 @@ function [agentParameters, modelParameters, networkParameters, mapParameters] = 
 
 %All model parameters go here
 modelParameters.spinupTime = 10;
-modelParameters.numAgents = 200;
+modelParameters.numAgents = 2000;
 mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
 modelParameters.cycleLength = 4;
@@ -29,7 +29,7 @@ mapParameters.maxDistForCost = 400;
 networkParameters.networkDistanceSD = 7;
 networkParameters.connectionsMean = 2;
 networkParameters.connectionsSD = 2;
-networkParameters.agentPreAllocation = modelParameters.numAgents * 3;
+networkParameters.agentPreAllocation = modelParameters.numAgents * 2;
 networkParameters.nonZeroPreAllocation = networkParameters.agentPreAllocation * 10;
 networkParameters.weightLocation = 3;
 networkParameters.weightNetworkLink = 5;

@@ -1,4 +1,4 @@
-function [ network, distanceMatrix, listX, listY ] = createNetwork( locations, mapParameters, agentList, networkParameters )
+function [ network, distanceMatrix, listX, listY ] = createNetwork( locations, mapParameters, agentList, networkParameters, aliveList )
 %createNetwork creates a network among agents living in different locations
 
 %returns a sparse matrix network of all connected agents, with (i,j) ==1
@@ -12,7 +12,7 @@ function [ network, distanceMatrix, listX, listY ] = createNetwork( locations, m
 %we use a sparse matrix for agents where the i or j index corresponds to
 %the agent's ID.  A '1' indicates a connection between agents i and j; the
 %diagonal is all ones by default
-numAgents = length(agentList);
+numAgents = sum([agentList.TOD] < 0 & [agentList.DOB] >= 0);
 network = spalloc(networkParameters.agentPreAllocation, networkParameters.agentPreAllocation, networkParameters.nonZeroPreAllocation);
 network(1:numAgents,1:numAgents) = speye(numAgents, numAgents);
 
@@ -56,6 +56,10 @@ for indexI = 1:length(numAgentConnections)
 end
 connectionList = connectionList(randperm(length(connectionList)));
 
+%other vars to be used
+agentLocations = [agentList.matrixLocation];
+agentLayers = vertcat(agentList.currentPortfolio);
+
 %cycle through each connection and make it 
 for indexI = 1:length(connectionList)
     currentAgent = agentList(connectionList(indexI));
@@ -78,16 +82,14 @@ for indexI = 1:length(connectionList)
     currentConnections = network(currentAgent.id,:) > 0;
 
     %create a list of distances to other agents, based on their location
-    agentLocations = [agentList.matrixLocation];
     distanceWeight = distanceMatrix(currentAgent.matrixLocation,agentLocations);
         
     %create a list of shared layers (in same location)
-    agentLayers = vertcat(agentList.currentPortfolio);
     layerWeight = currentAgent.currentPortfolio * ((agentLocations == currentAgent.matrixLocation)'*ones(1,size(agentLayers,2)))';
     
     %identify the new network link using the appropriate function for this
     %simulation
-    newAgentConnection = chooseNewLink(networkParameters, connectionsWeight, distanceWeight, layerWeight, currentConnections);
+    newAgentConnection = chooseNewLink(networkParameters, connectionsWeight, distanceWeight, layerWeight, currentConnections, aliveList);
     connectedAgent = agentList(newAgentConnection);
     
     %now update all network parameters
@@ -115,7 +117,11 @@ end
 agentList = agentList(sortAgentOrder);
 for indexI = 1:numAgents
     currentAgent = agentList(indexI);
+    try
     currentAgent.network = agentList(currentAgent.network);
+    catch
+        f=1;
+    end
 end
 
 end
