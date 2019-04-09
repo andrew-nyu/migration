@@ -315,13 +315,14 @@ for indexI = 1:length(locations)
             randDepth = find(rand() < cumProbsMatYear{scenario, currentLocation, indexJ}, 1);
             actualFloods(indexJ) = floodDepth(randDepth);
         end
-        normalFlood = mean(actualFloods(1:11));
-        floodShock = actualFloods - normalFlood;
-        floodShock(1:11) = 0;
-        floodShock = floodShock / 0.3048; %converting meters to feet
-        floodShock(floodShock < 0) = 0;
+        
     end
-    
+    normalFlood = mean(actualFloods(1:11));
+    floodShock = actualFloods - normalFlood;
+    floodShock(1:11) = 0;
+    floodShock = floodShock / 0.3048; %converting meters to feet
+    floodShock(floodShock < 0) = 0;
+        
     floodShock_0 = [0; floodShock(1:end-1)];  % this is for adding shock to next year
     
     for indexJ = 1:length(utilityLayerFunctions)
