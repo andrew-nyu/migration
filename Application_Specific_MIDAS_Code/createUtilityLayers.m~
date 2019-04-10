@@ -317,13 +317,7 @@ for indexI = 1:length(locations)
         end
         
     end
-    
-    
-    %%%define 'normal' flood as the expected flooding in the last year of
-    %%%our income data, 2010 (year 11)
-    %normalFlood = mean(actualFloods(1:11));
-    normalFlood = floodDepth * (cumProbsMatYear{scenario, currentLocation, 11} - [0; cumProbsMatYear{scenario, currentLocation, 11}(1:end-1)]);
-
+    normalFlood = mean(actualFloods(1:11));
     floodShock = actualFloods - normalFlood;
     floodShock(1:11) = 0;
     floodShock = floodShock / 0.3048; %converting meters to feet
@@ -331,7 +325,8 @@ for indexI = 1:length(locations)
         
     floodShock_0 = [0; floodShock(1:end-1)];  % this is for adding shock to next year
     
-    
+    expectedFlood(indexI) = floodDepth * (cumProbsMatYear{scenario, currentLocation, indexJ} - [0; cumProbsMatYear{scenario, currentLocation, indexJ}(1:end-1)]);
+    norm
     for indexJ = 1:length(utilityLayerFunctions)
         for indexK = 1:quantiles
             tempMean = zeros(3,1);
@@ -355,9 +350,6 @@ for indexI = 1:length(locations)
             %point utility layers have been expanded out
             tempMean = tempMean .* max(0,(1 + incomeShockPercentPerFoot_0(ceil(indexJ/quantiles)) / 100 * floodShock));
             tempMean = tempMean .* max(0,(1 + incomeShockPercentPerFoot(ceil(indexJ/quantiles)) / 100 * floodShock_0));
-            
-            a = max(0,(1 + incomeShockPercentPerFoot_0(ceil(indexJ/quantiles)) / 100 * floodShock));
-            a = a .* max(0,(1 + incomeShockPercentPerFoot(ceil(indexJ/quantiles)) / 100 * floodShock_0));
             
             %expand from 101 years to 404 quarters
             fullMean = zeros(length(tempMean) * quantiles,1);
