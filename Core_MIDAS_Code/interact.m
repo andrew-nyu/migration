@@ -1,4 +1,4 @@
-function [agent, partner] = interact(agent, partner)
+function [agent, partner] = interact(agent, partner, indexT)
 %interact handles the sharing of information between agents
 
 
@@ -6,17 +6,25 @@ function [agent, partner] = interact(agent, partner)
 %operation below, data known only to agent get a 1, data known only to
 %partner get a 2, and data known by both of them get a 3
 
-overlap = agent.incomeLayersHistory + 2 * partner.incomeLayersHistory;
+%agent.overlap = agent.incomeLayersHistory + 2 * partner.incomeLayersHistory;
+%agent.overlap(:) = agent.incomeLayersHistory(:) + 2 * partner.incomeLayersHistory(:);
+%agent.overlap(:) = agent.incomeLayersHistory(:) & ~partner.incomeLayersHistory(:);
+
 
 %agent communicates a fraction of overlap == 1 with partner
-agentToPartner = find(overlap == 1);
+%agentToPartner = find(agent.overlap == 1);
+agentToPartner = find(agent.incomeLayersHistory(:) & ~partner.incomeLayersHistory(:));
 agentToPartner(rand(length(agentToPartner),1) > agent.knowledgeShareFrac) = [];
 partner.incomeLayersHistory(agentToPartner) = true;
 
 %partner communicates a fraction of overlap == 2 with agent
-partnerToAgent = find(overlap == 2);
+%partnerToAgent = find(agent.overlap == 2);
+partnerToAgent = find(partner.incomeLayersHistory(:) & ~agent.incomeLayersHistory(:));
 partnerToAgent(rand(length(partnerToAgent),1) > partner.knowledgeShareFrac) = [];
 agent.incomeLayersHistory(partnerToAgent) = true;
+%%%%%%%%%%%%%
+
+
 
 %separately, allow agents to share more recent knowledge of available
 %openings.  

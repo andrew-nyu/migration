@@ -98,6 +98,7 @@ locationPortfolio = cell(length(locationList),1);
 locationAccessCodes = cell(length(locationList),1);
 locationMovingCosts = zeros(length(locationList),1);
 
+
 %for each location, find a good income portfolio - the current portfolio
 %(if this is home city), some other good portfolios from past searches, and
 %a few random new ones
@@ -158,12 +159,10 @@ for indexL = 1:length(locationList)
     %mark out what information our agent has - use the global stored array
     %of income  history to access all data for the layers in use, and blank out elements not known to our agent as
     %NaN
-
     fullHistory = utilityVariables.utilityHistory(locationList(indexL),usedIncomeLayers,1:currentT);
-
     availableHistory = agent.incomeLayersHistory(locationList(indexL),usedIncomeLayers,1:currentT);
     fullHistory(~availableHistory) = NaN;
-    
+
     %make a blank array to hold the estimated time paths for each layer,
     %and reshape our fullHistory array to be the same 2D shape
     numUniqueLayers = size(availableHistory,2);
@@ -304,8 +303,11 @@ for indexL = 1:length(locationList)
             remittanceFee = mapVariables.remittanceFee(agent.matrixLocation, [agent.network(:).matrixLocation]);
             remittanceRate = mapVariables.remittanceRate(agent.matrixLocation, [agent.network(:).matrixLocation]);
 
+            try
             remittanceCost = remittanceFee + remittanceRate / 100 .* potentialAmounts;
-
+            catch
+                f=1;
+            end
             
             %discard any potential transfers that exceed agent's threshold
             %for costs (i.e., agent stops making transfers if the
@@ -321,7 +323,7 @@ for indexL = 1:length(locationList)
         %add access costs that would need to be paid in order to access the
         %layers in this portfolio.  first identify those necessary and then
         %cancel out those that are already paid.
-        accessCostCodes = reshape(any(utilityVariables.utilityAccessCodesMat(locationList(indexL),portfolioSet(indexP,:),:),2), size(utilityVariables.utilityAccessCodesMat, 3),1);
+        accessCostCodes = reshape(any(utilityVariables.utilityAccessCodesMat(:,portfolioSet(indexP,:),locationList(indexL)),2), size(utilityVariables.utilityAccessCodesMat, 1),1);
         accessCostCodes(agent.accessCodesPaid) = false;
         newCosts = sum(utilityVariables.utilityAccessCosts(accessCostCodes,2));
         

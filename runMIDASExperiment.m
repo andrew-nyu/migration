@@ -32,8 +32,8 @@ catch
     mcParams = [mcParams; {'modelParameters.utility_iDiscount', 0, 0.1, 0}];
     mcParams = [mcParams; {'modelParameters.utility_iYears', 10, 20, 1}];
     mcParams = [mcParams; {'modelParameters.creditMultiplier', 0, 2, 0}];
-    mcParams = [mcParams; {'modelParameters.remitRate', 0, 0, 0}];
-    mcParams = [mcParams; {'mapParameters.movingCostPerMile', 0, 0, 0}];
+    mcParams = [mcParams; {'modelParameters.remitRate', 0, 20, 0}];
+    mcParams = [mcParams; {'mapParameters.movingCostPerMile', 0, 5000, 0}];
     mcParams = [mcParams; {'mapParameters.minDistForCost', 0, 50, 0}];
     mcParams = [mcParams; {'mapParameters.maxDistForCost', 0, 5000, 0}];
     mcParams = [mcParams; {'networkParameters.networkDistanceSD', 5, 15, 1}];

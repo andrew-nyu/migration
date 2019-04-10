@@ -12,7 +12,8 @@ portfolio = false(1,size(constraints,1));
 while(sum(timeRemaining) > 0 && ~isempty(layers))
     
     %draw one of those layers at random and remove it from the set
-    randomDraw = randperm(length(layers),1);
+    randomDraw = ceil(rand()*length(layers));
+    
     nextElement = layers(randomDraw);
     layers(randomDraw) = [];
     
@@ -35,6 +36,7 @@ while(sum(timeRemaining) > 0 && ~isempty(layers))
             layers(sum(constraints(layers,2:end) > timeRemaining,2) > 0) = [];
         end
     end
+
 end
 
 

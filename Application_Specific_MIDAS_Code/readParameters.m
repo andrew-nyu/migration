@@ -7,7 +7,7 @@ mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
 modelParameters.cycleLength = 4;
 modelParameters.incomeInterval = 1;
-modelParameters.visualizeYN = 0;
+modelParameters.visualizeYN = 1;
 modelParameters.listTimeStepYN = 0;
 modelParameters.visualizeInterval = 1;
 modelParameters.showMovesOrNetwork = 0; %1 for recent moves, 0 for network
@@ -29,7 +29,7 @@ mapParameters.maxDistForCost = 400;
 networkParameters.networkDistanceSD = 7;
 networkParameters.connectionsMean = 2;
 networkParameters.connectionsSD = 2;
-networkParameters.agentPreAllocation = modelParameters.numAgents * 3;
+networkParameters.agentPreAllocation = modelParameters.numAgents * 2;
 networkParameters.nonZeroPreAllocation = networkParameters.agentPreAllocation * 10;
 networkParameters.weightLocation = 3;
 networkParameters.weightNetworkLink = 5;
@@ -46,15 +46,15 @@ mapParameters.numDivisionMean = [2 8 9];
 mapParameters.numDivisionSD = [0 2 1];
 mapParameters.position = [300 100 600 600];
 mapParameters.r1 = []; %this will be the spatial reference if we are pulling from a shape file
-mapParameters.filePath = './Data/Bangladesh Data/ipums_district_level.shp';
+mapParameters.filePath = './Data/Global Data/WorldRegions.shp';
 mapParameters.saveDirectory = './Outputs/';
-modelParameters.popFile = './Data/Bangladesh Data/ban_pop_estimate_ipums.xls';
-modelParameters.survivalFile = './Data/Bangladesh Data/mortality_ban.xls';
-modelParameters.fertilityFile = './Data/Bangladesh Data/fert_age_ban.xls';
-modelParameters.agePreferencesFile = './Data/Bangladesh Data/age_specific_params.xls';
-modelParameters.utilityDataPath = './Data/Bangladesh Data';
+modelParameters.popFile = [];
+modelParameters.survivalFile = [];
+modelParameters.fertilityFile = [];
+modelParameters.agePreferencesFile = [];
+modelParameters.utilityDataPath = [];
 modelParameters.saveImg = false;
-modelParameters.shortName = 'Bangladesh_test';
+modelParameters.shortName = 'Global Test';
 agentParameters.currentID = 1;
 agentParameters.incomeShareFractionMean = 0.4;
 agentParameters.incomeShareFractionSD = 0;
@@ -111,7 +111,7 @@ if(~isempty(inputs))
    end
 end
 
-modelParameters.timeSteps = modelParameters.spinupTime + 44;  %in this particular experiment only, there are 44 time steps with data
+modelParameters.timeSteps = modelParameters.spinupTime + 204;  %in this particular experiment only, there are 204 time steps with data
 
 
 end

@@ -46,7 +46,7 @@ function [locationLikelihood, genderLikelihood, ageLikelihood, survivalRate, fer
 %uniform random
 if(~isempty(modelParameters.popFile))
     if(ispc)
-        popTable = readtable(modelParameters.popFile);
+        popTable = readtable(modelParameters.popFile,'UseExcel',false);
     else
         popTable = readtable(modelParameters.popFile);
     end
@@ -111,7 +111,7 @@ end
 
 if(~isempty(modelParameters.survivalFile))
     if(ispc)
-        survivalTable = readtable(modelParameters.survivalFile);
+        survivalTable = readtable(modelParameters.survivalFile,'UseExcel',false);
     else
         survivalTable = readtable(modelParameters.survivalFile);
     end
@@ -126,7 +126,7 @@ end
 
 if(~isempty(modelParameters.fertilityFile))
     if(ispc)
-        fertilityTable = readtable(modelParameters.fertilityFile);
+        fertilityTable = readtable(modelParameters.fertilityFile,'UseExcel',false);
     else
         fertilityTable = readtable(modelParameters.fertilityFile);
     end
@@ -142,7 +142,7 @@ end
 %any additional age-specific factors ought to be handled here
 if(~isempty(modelParameters.agePreferencesFile))
     if(ispc)
-        agePrefTable = readtable(modelParameters.agePreferencesFile);
+        agePrefTable = readtable(modelParameters.agePreferencesFile,'UseExcel',false);
     else
         agePrefTable = readtable(modelParameters.agePreferencesFile);
     end

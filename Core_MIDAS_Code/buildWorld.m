@@ -1,4 +1,4 @@
-function [agentList, modelParameters, agentParameters, mapParameters, utilityVariables, mapVariables, demographicVariables] = buildWorld(modelParameters, mapParameters, agentParameters, networkParameters)
+function [agentList, aliveList, modelParameters, agentParameters, mapParameters, utilityVariables, mapVariables, demographicVariables] = buildWorld(modelParameters, mapParameters, agentParameters, networkParameters)
 
 %create a map based on the defined administrative structure in
 %mapParameters
@@ -59,7 +59,7 @@ utilityVariables.hasOpenSlots = false(size(hardSlotCountYN));
 %here for the lowest administrative level
 accessCodesPaid = false(size(utilityAccessCosts,1),1);
 knowsIncomeLocation = sparse(size(locations,1),size(utilityBaseLayers,2));
-incomeLayersHistory = false(size(utilityBaseLayers));
+incomeLayersHistory = (false(size(utilityBaseLayers)));
 expectedProbOpening = zeros(size(knowsIncomeLocation));
 
 agentParameters.init_accessCodesPaid = accessCodesPaid;
@@ -67,6 +67,13 @@ agentParameters.init_knowsIncomeLocation = knowsIncomeLocation;
 agentParameters.init_incomeLayersHistory = incomeLayersHistory;
 agentParameters.init_expectedProbOpening = expectedProbOpening;
 
+%make the list all at once
+agentList = repmat(initializeAgent(agentParameters, utilityVariables, 1, 1, 1),1, networkParameters.agentPreAllocation);
+
+%make each element a pointer to a different placeholder object
+for indexI = 1:networkParameters.agentPreAllocation
+   agentList(indexI) =  initializeAgent(agentParameters, utilityVariables, 1, 1, 1);
+end
 %create agents, assigning agent-specific properties as appropriate from
 %input data
 for indexI = 1:modelParameters.numAgents
@@ -81,13 +88,17 @@ for indexI = 1:modelParameters.numAgents
     %below
     age = interp1([0 ageLikelihood(locationID,:,gender)],[0 agePointsPopulation],rand());
     
+    %currentAgent = initializeAgent(agentParameters, utilityVariables, age, gender, locations(locationID,1).cityID, agentList(indexI));
     currentAgent = initializeAgent(agentParameters, utilityVariables, age, gender, locations(locationID,1).cityID);
     currentAgent.matrixLocation = locations(locationID,:).matrixID;
     currentAgent.moveHistory = [0 currentAgent.matrixLocation];
-    
+    currentAgent.DOB = 0;
+    currentAgent.id = agentParameters.currentID;
     agentParameters.currentID = indexI + 1;     
     agentList(indexI) = currentAgent;
 end
+
+aliveList = sparse([agentList.TOD] < 0 & [agentList.DOB] >= 0);
 
 %Agents' 'location' is simply the city they are in, for all computational purposes,
 %but for the purposes of visualization, we spread them around.  
@@ -125,7 +136,7 @@ end
 %construct a network among agents according to parameters specified in
 %networkParameters.  Any change in network structure should modify/replace
 %the createNetwork function
-[network, distanceMatrix ] = createNetwork(locations, mapParameters, agentList, networkParameters);
+[network, distanceMatrix ] = createNetwork(locations, mapParameters, agentList, networkParameters, aliveList);
 
 
 %create the set of moving costs, now that we have a distance matrix made
@@ -148,7 +159,7 @@ mapVariables.movingCosts = movingCosts;
 if(modelParameters.visualizeYN)
     mapVariables.indexT = 0;
     mapVariables.cycleLength = modelParameters.cycleLength;
-    [mapHandle] = visualizeMap(agentList, mapVariables, mapParameters, modelParameters);
+    [mapHandle] = visualizeMap(agentList(aliveList), mapVariables, mapParameters, modelParameters);
             set(gcf,'Position',mapParameters.position)
         drawnow();
     mapVariables.mapHandle = mapHandle;

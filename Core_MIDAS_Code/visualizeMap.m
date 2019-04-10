@@ -64,13 +64,13 @@ for indexI = 1:length(agentList)
     else
         %make a list of line segments from them to each of their network
         %connections
+
         endPointsX = [currentAgent.network(:).visX]';
+
         endPointsY = [currentAgent.network(:).visY]';
-        try
+
         startPointsX = ones(length(endPointsX),1) * currentAgent.visX;
-        catch
-            f=1;
-        end
+
         startPointsY = ones(length(endPointsY),1) * currentAgent.visY;
         
         if(~isempty(mapParameters.r1)) %from shapefile
