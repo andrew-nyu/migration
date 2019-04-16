@@ -17,7 +17,7 @@ function [ remittanceFee, remittanceRate ] = createRemittanceCosts(locations, va
 %   different countries).  Exceptions for specific unit-unit pairs are made
 %   next
 
-baseCosts = [0 0; ... %same district
+baseCosts = [ %0 0; ... %same district
     %0 0; ... %same division, different district
     %0 0; ... %same country, different division
     0 0]; %different country
@@ -27,7 +27,7 @@ baseCosts = [0 0; ... %same district
 %same district be set by calibration (same number for all interdistrict
 %exchanges)
 if(~isempty(varargin)) %have some specific input about base costs
-    baseCosts = [0 0; ... %same district
+    baseCosts = [ %0 0; ... %same district
         %0 varargin{1}; ... %same division, different district
         %0 varargin{1}; ... %same country, different division
         0 0]; %different country
