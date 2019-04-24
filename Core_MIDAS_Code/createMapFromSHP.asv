@@ -94,9 +94,8 @@ catch
     minY = min([shapeData(:).Y]);
     maxY = max([shapeData(:).Y]);
     
-    %use margins with caution as they may overlap for global extents
-    xMargin = 0;%(maxX-minX)*0.02;
-    yMargin = 0;%(maxY-minY)*0.02;
+    xMargin = (maxX-minX)*0.02;
+    yMargin = (maxY-minY)*0.02;
     
     sizeX = ceil(min(360,(maxX - minX) + 3 * xMargin)) * mapParameters.density;
     sizeY = ceil(min(180,(maxY - minY) + 3 * yMargin)) * mapParameters.density;
