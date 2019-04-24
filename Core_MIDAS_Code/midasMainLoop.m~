@@ -391,7 +391,6 @@ agentSummary.discountRate = [agentList(:).discountRate]';
 agentSummary.rValue = [agentList(:).rValue]';
 agentSummary.bList = [agentList(:).bList]';
 agentSummary.TOD = [agentList(:).TOD]';
-agentSummary.personalIncomeHistory = [agentList(:).personalIncomeHistory]';
 
 
 
