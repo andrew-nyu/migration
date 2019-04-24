@@ -23,7 +23,7 @@ averageWealth = zeros(modelParameters.timeSteps ,1);
 migrations = zeros(modelParameters.timeSteps,1);
 outMigrations = zeros(numLocations, modelParameters.timeSteps);
 inMigrations = zeros(numLocations, modelParameters.timeSteps);
-migrationMatrix = zeros(numLocations);
+migrationMatrix = zeros(numLocations, numLocations, modelParameters.timeSteps);
 
 %create a list of shared layers, for use in choosing new link
 agentLayers = zeros(length(agentList),size(utilityVariables.utilityLayerFunctions,1));
@@ -221,7 +221,7 @@ for indexT = 1:modelParameters.timeSteps
                 migrations(indexT) = migrations(indexT) + 1;
                 inMigrations(moved(2), indexT) = inMigrations(moved(2), indexT) + 1;
                 outMigrations(moved(1), indexT) = outMigrations(moved(1), indexT) + 1;
-                migrationMatrix(moved(1),moved(2)) = migrationMatrix(moved(1),moved(2)) + 1;
+                migrationMatrix(moved(1),moved(2), indexT) = migrationMatrix(moved(1),moved(2),indexT) + 1;
                 currentAgent.moveHistory = [currentAgent.moveHistory; indexT currentAgent.matrixLocation currentAgent.visX currentAgent.visY];
             end
             
