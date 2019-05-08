@@ -22,7 +22,7 @@ function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTim
 %file once we're sure.  while they are here, they won't be included in
 %sensitivity testing
 quantiles = 4;
-years = 51;
+years = 81;
 noise = modelParameters.utility_noise;
 iReturn = modelParameters.utility_iReturn;
 iDiscount = modelParameters.utility_iDiscount;
@@ -305,6 +305,9 @@ nExpected = tempExpected;
 %generate base layers for input; these will be ordered N1Q1 N1Q2 N1Q3 N1Q4
 %N2Q1 N2Q2 N2Q3 N2Q4, etc.  (i.e., all layers for one source in order, then
 %the next source, etc.)
+
+storeFloods = zeros(64, years);
+normFloodMat = zeros(64,1);
 for indexI = 1:length(locations)
     
     %generate the flood history for this location for the next 101 years
@@ -331,7 +334,8 @@ for indexI = 1:length(locations)
         
     floodShock_0 = [0; floodShock(1:end-1)];  % this is for adding shock to next year
     
-    
+    storeFloods(indexI,:) = floodShock;
+    normFloodMat(indexI) = normalFlood;
     for indexJ = 1:length(utilityLayerFunctions)
         for indexK = 1:quantiles
             tempMean = zeros(3,1);
@@ -340,15 +344,15 @@ for indexI = 1:length(locations)
             
             %for RCPs, walking through 2000, 2005, 2010, then onward to
             %2100... randomize the appearance of these 3 periods over 11
-            tempExtension = zeros(8,1);
-            for indexL = 1:8
+            tempExtension = zeros(14,1);
+            for indexL = 1:14
                 tempExtension(indexL) = tempMean(randperm(3,1));
             end
             tempMean = [tempMean; tempExtension];
             
             %expand from 21 periods to 101 years
             tempMean = interp(tempMean,5,1,0.5);
-            tempMean = tempMean(1:51);
+            tempMean = tempMean(1:81);
 
             
             %now add in flood shock as appropriate.  note that at this
@@ -371,6 +375,23 @@ for indexI = 1:length(locations)
         end
     end
 end
+
+
+%%%%%CHECKING HOW THE FLOOD LOOKS!!!!
+banDist = shaperead([modelParameters.utilityDataPath '/ipums_district_level.shp']);
+normFloodCell = num2cell(normFloodMat);
+shockCell = num2cell(mean(storeFloods(:,end-9:end),2));
+[banDist.normFlood] = normFloodCell{:};
+[banDist.shockFlood] = shockCell{:};
+
+figure; 
+subplot(1,2,1);
+axisLimitsColor = [0 5];
+normFloodSpec = makesymbolspec('Polygon', {'normFlood', axisLimitsColor, 'FaceColor', hot});
+mapshow(banDist, 'DisplayType', 'polygon', 'SymbolSpec', normFloodSpec);
+subplot(1,2,2);
+shockSpec = makesymbolspec('Polygon', {'shockFlood', axisLimitsColor, 'FaceColor', hot});
+mapshow(banDist, 'DisplayType', 'polygon', 'SymbolSpec', shockSpec);
 
 %now add some lead time for agents to learn before time actually starts
 %moving
