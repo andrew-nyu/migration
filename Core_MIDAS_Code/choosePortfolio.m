@@ -281,10 +281,10 @@ for indexL = 1:length(locationList)
     %make a subset, and then apply any weightings, including UTILITY
     %WEIGHTS and EXPECTATIONS OF GETTING ACCESS
     
+   
     portfolioSubSet = portfolioSet;
     portfolioSubSet = portfolioSubSet .* agent.bList(utilityVariables.utilityForms)' .* agent.expectedProbOpening(locationList(indexL),:);
     portfolioSubSet(:,~any(portfolioSet,1))=[];
-    
     exceedsCreditLimit = false(size(portfolioSet,1),1);
     
     for indexP = 1:numPortfolios

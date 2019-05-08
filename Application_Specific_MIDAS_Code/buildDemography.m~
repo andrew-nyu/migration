@@ -50,29 +50,63 @@ if(~isempty(modelParameters.popFile))
     else
         popTable = readtable(modelParameters.popFile);
     end
-    popTable = popTable(:,{'regionName','matrixID','x1990'});
-    popTable.Properties.VariableNames{3} = 'population';
+    popTable = popTable(:,{'regionName','matrixID','x1990'})
     
-    popTable = join(popTable,dataset2table(locations),'Keys',{'matrixID'});
+    popTable.population = sum(popTable{:,2:end},2);
+    popTable = join(popTable,dataset2table(locations),'LeftKeys',{'geolev2'},'RightKeys',{'source_ID_2'});
     
+    %variable names with age bins are of form 'maleX_Y'
+    agePointsPopulationMale = popTable.Properties.VariableNames(startsWith(popTable.Properties.VariableNames,'male'));
+    agePointsPopulationMale = regexprep(agePointsPopulationMale,'male','');
+    for indexI = 1:length(agePointsPopulationMale)
+        try agePointsPopulationMale{indexI} = extractAfter(agePointsPopulationMale{indexI},strfind(agePointsPopulationMale{indexI},'_'));
+        end
+    end
+    agePointsPopulationMale = str2double(agePointsPopulationMale);
+    [agePointsPopulationMale, ageIndexMale] = sort(agePointsPopulationMale,'ascend');
     
-    %this current simple file only has population, so that age/gender
-    %likelihoods are still random
-    agePointsPopulation = [0 50 100];
-    ageLikelihood = ones(length(locations),1) * [0.33 0.66 1];
-    ageLikelihood(:,:,2) = ageLikelihood;
-    genderLikelihood = rand(length(locations),1);
-
+    agePointsPopulationFemale = popTable.Properties.VariableNames(startsWith(popTable.Properties.VariableNames,'female'));
+    agePointsPopulationFemale = regexprep(agePointsPopulationFemale,'female','');
+    for indexI = 1:length(agePointsPopulationFemale)
+        try agePointsPopulationFemale{indexI} = extractAfter(agePointsPopulationFemale{indexI},strfind(agePointsPopulationFemale{indexI},'_'));
+        end
+    end
+    agePointsPopulationFemale = str2double(agePointsPopulationFemale);
+    [~, ageIndexFemale] = sort(agePointsPopulationFemale,'ascend');
+    
+    ageLikelihoodMale = popTable{:,startsWith(popTable.Properties.VariableNames,'male')};
+    ageLikelihoodMale(popTable.matrixID,:) = ageLikelihoodMale;
+    ageLikelihoodMale = ageLikelihoodMale(:,ageIndexMale); %just in case the tables aren't ordered properly
+    popTable.male = sum(ageLikelihoodMale,2);
+    ageLikelihoodMale = cumsum(ageLikelihoodMale,2);
+    ageLikelihoodMale = ageLikelihoodMale ./ (ageLikelihoodMale(:,end) * ones(1,size(ageLikelihoodMale,2)));
+    
+    ageLikelihoodFemale = popTable{popTable.matrixID,startsWith(popTable.Properties.VariableNames,'female')};
+    ageLikelihoodFemale(popTable.matrixID,:) = ageLikelihoodFemale;
+    ageLikelihoodFemale = ageLikelihoodFemale(:,ageIndexFemale); %just in case the tables aren't ordered properly
+    popTable.male = sum(ageLikelihoodFemale,2);
+    ageLikelihoodFemale = cumsum(ageLikelihoodFemale,2);
+    ageLikelihoodFemale = ageLikelihoodFemale ./ (ageLikelihoodFemale(:,end) * ones(1,size(ageLikelihoodFemale,2)));
+    
+    ageLikelihood = ageLikelihoodMale;
+    ageLikelihood(:,:,2) = ageLikelihoodFemale;
+    agePointsPopulation = agePointsPopulationMale;
+    
+    popTable.female = sum(popTable{:,startsWith(popTable.Properties.VariableNames,'female')},2);
+    popTable = popTable(:,{'population','male','female','matrixID'});
+    
     locationLikelihood = zeros(length(locations),1);
     locationLikelihood(popTable.matrixID) = popTable.population;
     locationLikelihood = locationLikelihood / sum(locationLikelihood);
     locationLikelihood = cumsum(locationLikelihood);
     
+    genderLikelihood = popTable.male ./ popTable.population;
+    genderLikelihood(popTable.matrixID) = genderLikelihood;
 else
     locationLikelihood = ones(length(locations),1) / length(locations);
     locationLikelihood = cumsum(locationLikelihood);
-    agePointsPopulation = [0 50 100];
-    ageLikelihood = ones(length(locations),1) * [0.33 0.66 1];
+    agePointsPopulation = [50 100];
+    ageLikelihood = ones(length(locations),1) * [0.5 1];
     ageLikelihood(:,:,2) = ageLikelihood;
     genderLikelihood = rand(length(locations),1);
 end

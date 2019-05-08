@@ -9,8 +9,8 @@ function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTim
 %fraction of an agent's time consumed by accessing that particular layer.
 %all of these variables are generated here.
 
-%individual layer functions are defined as anonymous functions
-%of some set of variables.  any
+%at present, individual layer functions are defined as anonymous functions
+%of x, y, t (timestep), and n (number of agents occupying the layer).  any
 %additional arguments can be fed by varargin.  the key constraint of the
 %anonymous function is that whatever is input must be executable in a
 %single line of code - if the structure for the layer is more complicated,
@@ -22,7 +22,7 @@ function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTim
 %file once we're sure.  while they are here, they won't be included in
 %sensitivity testing
 stepsPerYear = modelParameters.cycleLength;
-years = modelParameters.dataTimeSteps;
+years = 51;
 noise = modelParameters.utility_noise;
 iReturn = modelParameters.utility_iReturn;
 iDiscount = modelParameters.utility_iDiscount;
@@ -31,16 +31,13 @@ leadTime = modelParameters.spinupTime;
 
 numLayers = 6;
 
-%read in raw utility layer data for use below
+
 utilityTable.hdi = readtable([modelParameters.utilityDataPath '/Layers_Region.xlsx'],'Sheet',1);
 utilityTable.gni = readtable([modelParameters.utilityDataPath '/Layers_Region.xlsx'],'Sheet',2);
 utilityTable.upp = readtable([modelParameters.utilityDataPath '/Layers_Region.xlsx'],'Sheet',3);
 utilityTable.rwe = readtable([modelParameters.utilityDataPath '/Layers_Region.xlsx'],'Sheet',4);
 utilityTable.dws = readtable([modelParameters.utilityDataPath '/Layers_Region.xlsx'],'Sheet',5);
 utilityTable.dep = readtable([modelParameters.utilityDataPath '/Layers_Region.xlsx'],'Sheet',6);
-
-dataYears = startsWith(utilityTable.hdi.Properties.VariableNames,'x');
-years = sum(dataYears);
 
 timeSteps = years * stepsPerYear;  
 
@@ -56,17 +53,17 @@ end
 utilityHistory = zeros(length(locations),length(utilityLayerFunctions),timeSteps+leadTime);
 utilityBaseLayers = -9999 * ones(length(locations),length(utilityLayerFunctions),timeSteps);
 
+for indexI = 1:length(locations)
+          
+    for indexJ = 1:length(utilityLayerFunctions)
+        for indexK = 1:timeSteps
 
-%In this application, Layers are (1) HDI, (2) GINI, (3) Urban Population %,
-%(4) % of Rural households electrified, (5) % with drinking water (?), and
-%(6) Dependency ratio
-for indexI = 1:length(locations)          
-    utilityBaseLayers(indexI,1,:) = table2array(utilityTable.hdi(utilityTable.hdi.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,2,:) = table2array(utilityTable.gni(utilityTable.hdi.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,3,:) = table2array(utilityTable.upp(utilityTable.hdi.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,4,:) = table2array(utilityTable.rwe(utilityTable.hdi.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,5,:) = table2array(utilityTable.dws(utilityTable.hdi.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,6,:) = table2array(utilityTable.dep(utilityTable.hdi.matrixID == indexI,dataYears));              
+            
+            utilityBaseLayers(indexI,indexJ,:) = rand(timeSteps,1);
+            
+            
+        end
+    end
 end
 
 %estimate expected number of agents for each layer, for use in the utility
@@ -94,7 +91,7 @@ utilityForms = zeros(length(utilityLayerFunctions),1);
 %Utility form values correspond to the list of utility coefficients in
 %agent utility functions (i.e., numbered 1 to n) ... in this case, all are
 %income (same coefficient)
-utilityForms(1:length(utilityLayerFunctions)) = 2;
+utilityForms(1:length(utilityLayerFunctions)) = 0;
 
 %Income form is either 0 or 1 (with 1 meaning income)
 incomeForms = utilityForms == 1;
