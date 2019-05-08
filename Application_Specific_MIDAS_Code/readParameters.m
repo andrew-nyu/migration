@@ -2,7 +2,7 @@ function [agentParameters, modelParameters, networkParameters, mapParameters] = 
 
 %All model parameters go here
 modelParameters.spinupTime = 10;
-modelParameters.numAgents = 100;
+modelParameters.numAgents = 1000;
 mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
 modelParameters.cycleLength = 1;
@@ -48,11 +48,11 @@ mapParameters.position = [300 100 600 600];
 mapParameters.r1 = []; %this will be the spatial reference if we are pulling from a shape file
 mapParameters.filePath = './Data/Global Data/WorldRegions.shp';
 mapParameters.saveDirectory = './Outputs/';
-modelParameters.popFile = [];
+modelParameters.popFile = './Data/Global Data/Population_Region.xlsx';
 modelParameters.survivalFile = [];
 modelParameters.fertilityFile = [];
 modelParameters.agePreferencesFile = [];
-modelParameters.utilityDataPath = [];
+modelParameters.utilityDataPath = './Data/Global Data/';
 modelParameters.saveImg = false;
 modelParameters.shortName = 'Global Test';
 agentParameters.currentID = 1;
@@ -111,7 +111,6 @@ if(~isempty(inputs))
    end
 end
 
-modelParameters.timeSteps = modelParameters.spinupTime + 5;  %in this particular experiment only, there are 204 time steps with data
 
 
 end
