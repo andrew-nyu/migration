@@ -112,7 +112,7 @@ if(~isempty(inputs))
    end
 end
 
-modelParameters.timeSteps = modelParameters.spinupTime + modelParameters.dataTimeSteps;  %in this particular experiment only, there are 204 time steps with data
+modelParameters.timeSteps = modelParameters.spinupTime + modelParameters.dataTimeSteps;  %in this particular experiment only, there are 38 time steps with data
 
 
 end
