@@ -24,10 +24,9 @@ function [movingCosts ] = createMovingCosts(locations, distanceMatrix, mapParame
 baseMovingCosts = [ 10; ... %same district
     %200000; ... %same state, different district
     %500000; ... %same country, different state
-    10 ...
-    ]; %different country
+    80000000]; %different country
 
-% baseMovingCosts = baseMovingCosts * 0;
+baseMovingCosts = baseMovingCosts * 0;
 
 %   Note any distance-specific costs
 

@@ -130,23 +130,12 @@ end
 
 %
 utilityAccessCosts = ...
-    [1 10;... %visa type 1 fee is 1223
-     2 20;...
-     3 30;...
-     4 40;...
-     5 50;...
-     6 60 ...
+    [1 1223; %visa type 1 fee is 1223
+     2 231323;
     ]; 
 
 utilityAccessCodesMat = false(size(utilityAccessCosts,1),length(utilityLayerFunctions),length(locations));
-utilityAccessCodesMat(3,:,1) = true;
-utilityAccessCodesMat(2,:,2) = true;
-utilityAccessCodesMat(6,:,3) = true;
-utilityAccessCodesMat(5,:,4) = true;
-utilityAccessCodesMat(4,:,5) = true;
-utilityAccessCodesMat(6,:,6) = true;
-
-%code 1: all locations require 'licence 1' to access layers 2 and 3
+%utilityAccessCodesMat(:,2:3,1) = true; %code 1: all locations require 'licence 1' to access layers 2 and 3
 %utilityAccessCodesMat(locations.AdminUnit1 == 2, 2:3,1) = true; %code 2: country 2 requires 'licence 2' for layers 2 and 3
 %utilityAccessCodesMat(locations.AdminUnit2 > 40, 2:3,1) = true; %code 2: country 2 requires 'licence 2' for layers 2 and 3
 %utilityAccessCodesMat(locations.AdminUnit1 == 2, 3,3) = true; %code 3: country 2 requires 'licence 3' for layer 3
