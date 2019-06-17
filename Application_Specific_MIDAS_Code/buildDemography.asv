@@ -50,7 +50,7 @@ if(~isempty(modelParameters.popFile))
     else
         popTable = readtable(modelParameters.popFile);
     end
-    popTable = popTable(:,{'matrixID','Country','x1990'});
+    popTable = popTable(:,{'matrixID','x1990'});
     popTable.Properties.VariableNames{3} = 'population';
     
     popTable = join(popTable,dataset2table(locations),'Keys',{'matrixID'});
