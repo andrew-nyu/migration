@@ -49,7 +49,7 @@ utilityTable.land        = readtable([modelParameters.utilityDataPath '/Layers_C
 utilityTable.peace       = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',16);
 utilityTable.cooperation = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',17);
 
-dataYears = startsWith(utilityTable.hdi.Properties.VariableNames,'x');
+dataYears = startsWith(utilityTable.poverty.Properties.VariableNames,'x');
 years = sum(dataYears);
 
 timeSteps = years * stepsPerYear;  
