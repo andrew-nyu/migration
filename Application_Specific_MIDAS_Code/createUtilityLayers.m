@@ -10,11 +10,10 @@ function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTim
 %all of these variables are generated here.
 
 %individual layer functions are defined as anonymous functions
-%of some set of variables.  any
-%additional arguments can be fed by varargin.  the key constraint of the
-%anonymous function is that whatever is input must be executable in a
-%single line of code - if the structure for the layer is more complicated,
-%one must either export some of the calculation to an intermediate variable
+%of some set of variables.  any additional arguments can be fed by varargin.  
+%the key constraint of the anonymous function is that whatever is input must 
+%be executable in a single line of code - if the structure for the layer is 
+%more complicated,one must either export some of the calculation to an intermediate variable
 %that can be fed to a single-line version of the layer function OR revisit
 %this anonymous function structure.
 
@@ -29,15 +28,26 @@ iDiscount = modelParameters.utility_iDiscount;
 iYears = modelParameters.utility_iYears;
 leadTime = modelParameters.spinupTime;
 
-numLayers = 6;
+numLayers = 17;
 
 %read in raw utility layer data for use below
-utilityTable.hdi = readtable([modelParameters.utilityDataPath '/Layers_Region.xlsx'],'Sheet',1);
-utilityTable.gni = readtable([modelParameters.utilityDataPath '/Layers_Region.xlsx'],'Sheet',2);
-utilityTable.upp = readtable([modelParameters.utilityDataPath '/Layers_Region.xlsx'],'Sheet',3);
-utilityTable.rwe = readtable([modelParameters.utilityDataPath '/Layers_Region.xlsx'],'Sheet',4);
-utilityTable.dws = readtable([modelParameters.utilityDataPath '/Layers_Region.xlsx'],'Sheet',5);
-utilityTable.dep = readtable([modelParameters.utilityDataPath '/Layers_Region.xlsx'],'Sheet',6);
+utilityTable.poverty     = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',1);
+utilityTable.food        = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',2);
+utilityTable.health      = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',3);
+utilityTable.education   = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',4);
+utilityTable.gender      = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',5);
+utilityTable.water       = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',6);
+utilityTable.energy      = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',7);
+utilityTable.economy     = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',8);
+utilityTable.innovation  = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',9);
+utilityTable.inequality  = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',10);
+utilityTable.cities      = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',11);
+utilityTable.consumption = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',12);
+utilityTable.climate     = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',13);
+utilityTable.ocean       = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',14);
+utilityTable.land        = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',15);
+utilityTable.peace       = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',16);
+utilityTable.cooperation = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',17);
 
 dataYears = startsWith(utilityTable.hdi.Properties.VariableNames,'x');
 years = sum(dataYears);
@@ -57,16 +67,25 @@ utilityHistory = zeros(length(locations),length(utilityLayerFunctions),timeSteps
 utilityBaseLayers = -9999 * ones(length(locations),length(utilityLayerFunctions),timeSteps);
 
 
-%In this application, Layers are (1) HDI, (2) GINI, (3) Urban Population %,
-%(4) % of Rural households electrified, (5) % with drinking water (?), and
-%(6) Dependency ratio
+%In this application, Layers are one indicator per SDG, a total of 17
 for indexI = 1:length(locations)          
-    utilityBaseLayers(indexI,1,:) = table2array(utilityTable.hdi(utilityTable.hdi.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,2,:) = table2array(utilityTable.gni(utilityTable.hdi.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,3,:) = table2array(utilityTable.upp(utilityTable.hdi.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,4,:) = table2array(utilityTable.rwe(utilityTable.hdi.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,5,:) = table2array(utilityTable.dws(utilityTable.hdi.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,6,:) = table2array(utilityTable.dep(utilityTable.hdi.matrixID == indexI,dataYears));              
+    utilityBaseLayers(indexI,1,:)  = table2array(utilityTable.poverty(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,2,:)  = table2array(utilityTable.food(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,3,:)  = table2array(utilityTable.health(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,4,:)  = table2array(utilityTable.education(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,5,:)  = table2array(utilityTable.gender(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,6,:)  = table2array(utilityTable.water(utilityTable.poverty.matrixID == indexI,dataYears));  
+    utilityBaseLayers(indexI,7,:)  = table2array(utilityTable.energy(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,8,:)  = table2array(utilityTable.economy(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,9,:)  = table2array(utilityTable.innovation(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,10,:) = table2array(utilityTable.inequality(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,11,:) = table2array(utilityTable.cities(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,12,:) = table2array(utilityTable.consumption(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,13,:) = table2array(utilityTable.climate(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,14,:) = table2array(utilityTable.ocean(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,15,:) = table2array(utilityTable.land(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,16,:) = table2array(utilityTable.peace(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,17,:) = table2array(utilityTable.cooperation(utilityTable.poverty.matrixID == indexI,dataYears));
 end
 
 %estimate expected number of agents for each layer, for use in the utility
@@ -82,7 +101,6 @@ hardSlotCountYN = false(size(nExpected));
 %identify which layers have a strict number of openings, and which layers
 %do not (but whose average value may decline with crowding)
 %hardSlotCountYN(:,1:4) = true; %rental income
-
 
 
 %utility layers may be income, use value, etc.  identify what form of
@@ -130,21 +148,36 @@ end
 
 %
 utilityAccessCosts = ...
-    [1 10;... %visa type 1 fee is 1223
-     2 20;...
-     3 30;...
-     4 40;...
-     5 50;...
-     6 60 ...
+    [1 5;... %license 1 fee is 5, added 1 license per layers as placeholder
+     2 5;...
+     3 5;...
+     4 5;...
+     5 5;...
+     6 5;...
+     7 5;...
+     8 5;...
+     9 5;...
+     10 5;...
+     11 5; ...
+     12 5;...
+     13 5;...
+     14 5;...
+     15 5;...
+     16 5; ...
+     17 5 ...
     ]; 
 
 utilityAccessCodesMat = false(size(utilityAccessCosts,1),length(utilityLayerFunctions),length(locations));
-utilityAccessCodesMat(3,:,1) = true;
-utilityAccessCodesMat(2,:,2) = true;
-utilityAccessCodesMat(6,:,3) = true;
-utilityAccessCodesMat(5,:,4) = true;
-utilityAccessCodesMat(4,:,5) = true;
-utilityAccessCodesMat(6,:,6) = true;
+% all costs set to 1 in the line above but more of the code below is needed to capture border policies
+
+% utilityAccessCodesMat(3,:,1) = true; %location 3 requires 'license 1' to access all layers
+
+%%MORE EXAMPLES
+% utilityAccessCodesMat(2,:,2) = true;
+% utilityAccessCodesMat(6,:,3) = true;
+% utilityAccessCodesMat(5,:,4) = true;
+% utilityAccessCodesMat(4,:,5) = true;
+% utilityAccessCodesMat(6,:,6) = true;
 
 %code 1: all locations require 'licence 1' to access layers 2 and 3
 %utilityAccessCodesMat(locations.AdminUnit1 == 2, 2:3,1) = true; %code 2: country 2 requires 'licence 2' for layers 2 and 3
