@@ -88,7 +88,7 @@ if(~isempty(modelParameters.survivalFile))
     survivalRate(:,:,2) = ones(length(locations),1) * (survivalTable.Female)';
     survivalRate = 1 - survivalRate;
 else
-    agePointsSurvival = agePointsPopulation;
+    agePointsSurvival = 1000 * agePointsPopulation; %
     survivalRate =  ones(length(locations),length(agePointsSurvival),2)%1 - rand(length(locations),length(agePointsSurvival),2) / 50;  %this gives annual likelihood of death up to 2%
 end
 
