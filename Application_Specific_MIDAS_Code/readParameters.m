@@ -3,7 +3,7 @@ function [agentParameters, modelParameters, networkParameters, mapParameters] = 
 %All model parameters go here
 modelParameters.dataTimeSteps = 28;
 modelParameters.spinupTime = 10;
-modelParameters.numAgents = 100;
+modelParameters.numAgents = 10000;
 mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
 modelParameters.cycleLength = 1;
@@ -47,7 +47,7 @@ mapParameters.numDivisionMean = [2 8 9];
 mapParameters.numDivisionSD = [0 2 1];
 mapParameters.position = [300 100 600 600];
 mapParameters.r1 = []; %this will be the spatial reference if we are pulling from a shape file
-mapParameters.filePath = './Data/Global Data/globalData.shp';
+mapParameters.filePath = './Data/Global Data/globalData2.shp';
 mapParameters.saveDirectory = './Outputs/';
 modelParameters.popFile = './Data/Global Data/Population_Country.xlsx';
 modelParameters.survivalFile = [];
