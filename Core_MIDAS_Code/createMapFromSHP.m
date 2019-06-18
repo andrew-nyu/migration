@@ -95,13 +95,13 @@ catch
     maxY = max([shapeData(:).Y]);
     
     %use margins with caution as they may overlap for global extents
-    xMargin = 0;%(maxX-minX)*0.02;
-    yMargin = 0;%(maxY-minY)*0.02;
+    xMargin = (maxX-minX)*0.04;
+    yMargin = (maxY-minY)*0.04;
     
     sizeX = ceil(min(360,(maxX - minX) + 3 * xMargin)) * mapParameters.density;
     sizeY = ceil(min(180,(maxY - minY) + 3 * yMargin)) * mapParameters.density;
     
-    r1 = [mapParameters.density  maxY + yMargin minX - xMargin];
+    r1 = [mapParameters.density  min(maxY + yMargin, 90) max(-180, minX - xMargin)];
     
     map = zeros(sizeY, sizeX, numLevels + 1);
     map(:,:,1) = 1;  %this to say, the starting condition is that the map is all in one piece
@@ -124,7 +124,11 @@ catch
     fprintf(['Mapping ' num2str(totalShapes) ' polygons ...']);
     newMsg = [];
     for indexJ = 1:length(shapeData)
+        try
         outcome = vec2mtx(shapeData(indexJ).Y, shapeData(indexJ).X, tempMap, r1, 'filled');
+        catch
+            f=1;
+        end
         tempMap(outcome < 2) = indexJ;
         shapeData(indexJ).matrixID = indexJ;
         if(mod(indexJ / (floor(totalShapes / 4)),1) == 0)

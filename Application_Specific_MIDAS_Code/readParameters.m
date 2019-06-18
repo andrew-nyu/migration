@@ -3,12 +3,12 @@ function [agentParameters, modelParameters, networkParameters, mapParameters] = 
 %All model parameters go here
 modelParameters.dataTimeSteps = 28;
 modelParameters.spinupTime = 10;
-modelParameters.numAgents = 1000;
+modelParameters.numAgents = 100;
 mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
 modelParameters.cycleLength = 1;
 modelParameters.incomeInterval = 1;
-modelParameters.visualizeYN = 0;
+modelParameters.visualizeYN = 1;
 modelParameters.listTimeStepYN = 0;
 modelParameters.visualizeInterval = 1;
 modelParameters.showMovesOrNetwork = 0; %1 for recent moves, 0 for network

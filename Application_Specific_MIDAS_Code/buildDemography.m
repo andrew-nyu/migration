@@ -89,7 +89,7 @@ if(~isempty(modelParameters.survivalFile))
     survivalRate = 1 - survivalRate;
 else
     agePointsSurvival = agePointsPopulation;
-    survivalRate = 1 - rand(length(locations),length(agePointsSurvival),2) / 50;  %this gives annual likelihood of death up to 2%
+    survivalRate =  ones(length(locations),length(agePointsSurvival),2)%1 - rand(length(locations),length(agePointsSurvival),2) / 50;  %this gives annual likelihood of death up to 2%
 end
 
 if(~isempty(modelParameters.fertilityFile))
@@ -104,7 +104,7 @@ if(~isempty(modelParameters.fertilityFile))
     fertilityRate = [zeros(length(locations),1) fertilityRate];
 else
     agePointsFertility = [15 49];
-    fertilityRate = rand(length(locations),length(agePointsFertility)) / 10;  %this gives annual likelihood of birth up to 10%
+    fertilityRate = zeros(length(locations),length(agePointsSurvival),2) %rand(length(locations),length(agePointsFertility)) / 10;  %this gives annual likelihood of birth up to 10%
 end
 
 %any additional age-specific factors ought to be handled here
