@@ -104,7 +104,7 @@ if(~isempty(modelParameters.fertilityFile))
     fertilityRate = [zeros(length(locations),1) fertilityRate];
 else
     agePointsFertility = [15 49];
-    fertilityRate = zeros(length(locations),length(agePointsSurvival),2) %rand(length(locations),length(agePointsFertility)) / 10;  %this gives annual likelihood of birth up to 10%
+    fertilityRate = zeros(length(locations),length(agePointsFertility)) %rand(length(locations),length(agePointsFertility)) / 10;  %this gives annual likelihood of birth up to 10%
 end
 
 %any additional age-specific factors ought to be handled here
