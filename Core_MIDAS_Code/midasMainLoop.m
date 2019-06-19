@@ -51,18 +51,20 @@ for indexT = 1:modelParameters.timeSteps
         currentAgent.age = currentAgent.age + modelParameters.cyclesPerTimeStep;
         
         %draw number to see if agent survives to this timestep
-        agentSurvives = rand() < interp1(demographicVariables.agePointsSurvival, demographicVariables.survivalRate(currentAgent.matrixLocation,:,currentAgent.gender), currentAgent.age);
-        if(~agentSurvives)
+        
+        % DIEGO: COMMENTING ALL THIS BLOCK SUPRESSES DEATH OF AGENTS
+        %agentSurvives = rand() < interp1(demographicVariables.agePointsSurvival, demographicVariables.survivalRate(currentAgent.matrixLocation,:,currentAgent.gender), currentAgent.age);
+        %if(~agentSurvives)
 
             %don't delete the agent, because we get into a re-indexing
             %nightmare.  just mark it dead, and force all network links to
             %0
-            mapVariables.network(currentAgent.id, [currentAgent.network(:).id]) = 0;
-            mapVariables.network([currentAgent.network(:).id],currentAgent.id) = 0;
-            currentAgent.TOD = indexT;
-            aliveList(currentAgent.id) = false;
-            continue;
-        end
+         %   mapVariables.network(currentAgent.id, [currentAgent.network(:).id]) = 0;
+          %  mapVariables.network([currentAgent.network(:).id],currentAgent.id) = 0;
+           % currentAgent.TOD = indexT;
+            %aliveList(currentAgent.id) = false;
+            %continue;
+        %end
         
         %update any age-specific agent parameters
  
@@ -81,41 +83,42 @@ for indexT = 1:modelParameters.timeSteps
         currentAgent.heardOpening(currentAgent.matrixLocation,currentAgent.currentPortfolio) = utilityVariables.hasOpenSlots(currentAgent.matrixLocation,currentAgent.currentPortfolio);
         currentAgent.timeProbOpeningUpdated(currentAgent.matrixLocation,currentAgent.currentPortfolio) = indexT;
  
+        % DIEGO: COMMENTING ALL THIS BLOCK INHIBITS BITRTHS
         %draw number to see if (for female agents) agent gives birth
-        if(currentAgent.gender == 2 && currentAgent.age >= modelParameters.ageDecision)
-            agentGivesBirth = rand() < interp1(demographicVariables.agePointsFertility, demographicVariables.fertilityRate(currentAgent.matrixLocation,:), currentAgent.age);
-            if(agentGivesBirth)
-                gender = 2 - (rand() > 0.5);  %let it be equally likely to be 1 or 2
-                age = 0;
-                %newBaby = initializeAgent(agentParameters, utilityVariables, age, gender, currentAgent.location, agentList(agentParameters.currentID));
-                newBaby = initializeAgent(agentParameters, utilityVariables, age, gender, currentAgent.location);
-                newBaby.id = agentParameters.currentID;
-                agentList(agentParameters.currentID) = newBaby;
-                agentParameters.currentID = agentParameters.currentID + 1;
-                newBaby.matrixLocation = currentAgent.matrixLocation;
-                newBaby.DOB = indexT;
-                newBaby.moveHistory = [indexT currentAgent.matrixLocation currentAgent.visX currentAgent.visY];
-                newBaby.visX = currentAgent.visX;
-                newBaby.visY = currentAgent.visY;
-                
-                newBaby.network = currentAgent;
-                newBaby.myIndexInNetwork(1) = length(currentAgent.network)+1;
-                currentAgent.network(end+1) = newBaby;
-                currentAgent.myIndexInNetwork(end+1) = 1;
-                currentAgent.lastIntendedShareIn(end+1) = 0;
-                
-                newBaby = assignInitialLayers(newBaby, utilityVariables);
-                
-                mapVariables.network(newBaby.id, currentAgent.id) = 1;
-                mapVariables.network(currentAgent.id, newBaby.id) = 1;
-                aliveList(newBaby.id) = true;
-                                
-                %update this line in the array used to choose new links
-                agentLayers(newBaby.id,:) = newBaby.currentPortfolio;
-                agentLocations(newBaby.id) = newBaby.matrixLocation;
-                
-            end
-        end
+        %if(currentAgent.gender == 2 && currentAgent.age >= modelParameters.ageDecision)
+        %    agentGivesBirth = rand() < interp1(demographicVariables.agePointsFertility, demographicVariables.fertilityRate(currentAgent.matrixLocation,:), currentAgent.age);
+        %    if(agentGivesBirth)
+        %        gender = 2 - (rand() > 0.5);  %let it be equally likely to be 1 or 2
+        %        age = 0;
+        %        %newBaby = initializeAgent(agentParameters, utilityVariables, age, gender, currentAgent.location, agentList(agentParameters.currentID));
+        %        newBaby = initializeAgent(agentParameters, utilityVariables, age, gender, currentAgent.location);
+        %        newBaby.id = agentParameters.currentID;
+        %        agentList(agentParameters.currentID) = newBaby;
+        %        agentParameters.currentID = agentParameters.currentID + 1;
+        %        newBaby.matrixLocation = currentAgent.matrixLocation;
+        %        newBaby.DOB = indexT;
+        %        newBaby.moveHistory = [indexT currentAgent.matrixLocation currentAgent.visX currentAgent.visY];
+        %        newBaby.visX = currentAgent.visX;
+        %        newBaby.visY = currentAgent.visY;
+        %        
+        %        newBaby.network = currentAgent;
+        %        newBaby.myIndexInNetwork(1) = length(currentAgent.network)+1;
+        %        currentAgent.network(end+1) = newBaby;
+        %        currentAgent.myIndexInNetwork(end+1) = 1;
+        %        currentAgent.lastIntendedShareIn(end+1) = 0;
+        %        
+        %        newBaby = assignInitialLayers(newBaby, utilityVariables);
+        %        
+        %        mapVariables.network(newBaby.id, currentAgent.id) = 1;
+        %        mapVariables.network(currentAgent.id, newBaby.id) = 1;
+        %        aliveList(newBaby.id) = true;
+        %                        
+        %        %update this line in the array used to choose new links
+        %        agentLayers(newBaby.id,:) = newBaby.currentPortfolio;
+        %        agentLocations(newBaby.id) = newBaby.matrixLocation;
+        %        
+        %    end
+        %end
         
         %draw number to see if agent meets a new agent
         if(rand() < currentAgent.pMeetNew)
