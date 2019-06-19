@@ -363,7 +363,6 @@ for indexT = 1:modelParameters.timeSteps
 end %for indexT = 1:modelParameters.timeSteps
 
 %prepare outputs
-outputs.averageWealth = averageWealth;
 outputs.countAgentsPerLayer = countAgentsPerLayer;
 outputs.migrations = migrations;
 outputs.locations = mapVariables.locations;

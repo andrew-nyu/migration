@@ -400,6 +400,8 @@ if(length(indexSorted) > 1)
     elseif(isnan(locationValue(indexSorted(1))) && isnan(locationValue(indexSorted(2))))
         temp = find(isnan(locationValue));
         choice = temp(randperm(length(temp),1));
+        
+        choice = find(locationList == currentLocation);
     end
 end
 
