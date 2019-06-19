@@ -129,8 +129,9 @@ utilityTimeConstraints = rand(size(utilityTimeConstraints));
 
 %define linkages between layers (such as where different layers represent
 %progressive investment in a particular line of utility (e.g., farmland)
-%AT PRESENT, NO LINKAGES AMONG LAYERS, LEAVE AS ZEROS
-utilityPrereqs = zeros(size(utilityTimeConstraints,1));
+%AT PRESENT, NO LINKAGES AMONG LAYERS, LEAVE AS ZEROS except for 1s along
+%diagonal
+utilityPrereqs = eye(size(utilityTimeConstraints,1));
 
 
 

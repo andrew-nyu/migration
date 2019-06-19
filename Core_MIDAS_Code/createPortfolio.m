@@ -3,7 +3,7 @@ function portfolio = createPortfolio(layers, constraints, prereqs, pAdd)
 %current time constraint
 
 %start with all the time in the world
-timeRemaining = ones(1, size(constraints,2)-1);  %will be as long as the cycle defined for layers
+timeRemaining = ones(1, size(constraints,2));  %will be as long as the cycle defined for layers
 
 %initialize an empty portfolio
 portfolio = false(1,size(constraints,1));
@@ -22,7 +22,7 @@ while(sum(timeRemaining) > 0 && ~isempty(layers))
 
         tempPortfolio = portfolio | prereqs(nextElement,:);
 
-        timeUse = sum(constraints(tempPortfolio,2:end),1);
+        timeUse = sum(constraints(tempPortfolio,:),1);
         timeExceedance = sum(sum(timeUse > 1)) > 0;
 
 
@@ -33,7 +33,7 @@ while(sum(timeRemaining) > 0 && ~isempty(layers))
             %remove any that are OBVIOUSLY over the limit, though this won't
             %catch any that have other time constraints tied to prereqs
             timeRemaining = 1 - timeUse;
-            layers(sum(constraints(layers,2:end) > timeRemaining,2) > 0) = [];
+            layers(sum(constraints(layers,:) > timeRemaining,2) > 0) = [];
         end
     end
 
