@@ -396,8 +396,11 @@ end
 %randomize which of the best is chosen, in the case of a tie
 choice = indexSorted(1);
 if(length(indexSorted) > 1)
-    if(locationValue(indexSorted(1)) == locationValue(indexSorted(2)))
+    if( locationValue(indexSorted(1)) == locationValue(indexSorted(2)))
         temp = find(locationValue == locationValue(indexSorted(1)));
+        choice = temp(randperm(length(temp),1));
+    elseif(isnan(locationValue(indexSorted(1))) && isnan(locationValue(indexSorted(2))))
+        temp = find(isnan(locationValue));
         choice = temp(randperm(length(temp),1));
     end
 end
