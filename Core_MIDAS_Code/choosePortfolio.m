@@ -386,7 +386,7 @@ for indexL = 1:length(locationList)
         if(locationList(indexL) == agent.matrixLocation)
             f=1;
         end
-        locationValue(indexL) = -Inf;
+        locationValue(indexL) = NaN;
     end
 end
 
@@ -399,7 +399,11 @@ if(length(indexSorted) > 1)
     if( locationValue(indexSorted(1)) == locationValue(indexSorted(2)))
         temp = find(locationValue == locationValue(indexSorted(1)));
         choice = temp(randperm(length(temp),1));
-    elseif(isnan(locationValue(indexSorted(1))) && isnan(locationValue(indexSorted(2))))
+    elseif( ... % don't move based on non-numeric winners
+            isnan(locationValue(indexSorted(1))) && isnan(locationValue(indexSorted(2)))  ||...
+            isinf(locationValue(indexSorted(1))) && isinf(locationValue(indexSorted(2)))  ...
+            )
+        
         temp = find(isnan(locationValue));
         choice = temp(randperm(length(temp),1));
         
@@ -462,6 +466,10 @@ catch
 end
 
 agent.currentPortfolio = bestPortfolio;
+
+if(isempty(bestPortfolio))
+    f=1;
+end
 
 end
 
