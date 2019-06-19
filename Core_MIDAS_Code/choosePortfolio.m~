@@ -76,10 +76,10 @@ locationList = locationList(iSort([true; diff(bSort)>0]),:);
 totalNumPortfolios = agent.numBestPortfolio + agent.numRandomPortfolio;
 
 
+% dDONT UNDERSTAND THIS PART
 %since we will try to match historical data to the appropriate season,
 %create labels for what part of the cycle our historical data and our
 %evaluation period are
-%DONT UNDERSTAND THIS PART COULD YOU EXPLAIN ANDREW?
 periodInCycleData = mod(1:currentT,modelParameters.cycleLength);
 periodInCycleEvaluation = mod(1:agent.numPeriodsEvaluate,modelParameters.cycleLength);
 
