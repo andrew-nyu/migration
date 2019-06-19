@@ -24,11 +24,8 @@ modelParameters.utility_iDiscount = 0.05;
 modelParameters.utility_iYears = 20;
 modelParameters.remitRate = 0;
 modelParameters.creditMultiplier = 0.3;
-<<<<<<< HEAD
 modelParameters.movingCostPerMile = 0;
-=======
 modelParameters.movingCostPerMile = 0.1; %= 0.1 cuts 30% of migrants (wrt 0);
->>>>>>> 47ce82d0001c1dcb0d0f1d6b45aa8d024cfd91c9
 modelParameters.minDistForCost = 5;
 modelParameters.maxDistForCost = 5000;
 networkParameters.networkDistanceSD = 7;
