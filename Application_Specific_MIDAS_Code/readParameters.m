@@ -3,7 +3,7 @@ function [agentParameters, modelParameters, networkParameters, mapParameters] = 
 %All model parameters go here
 modelParameters.dataTimeSteps = 28;
 modelParameters.spinupTime = 10;
-modelParameters.numAgents = 100;
+modelParameters.numAgents = 1000;
 mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
 modelParameters.cycleLength = 1;
@@ -24,7 +24,7 @@ modelParameters.utility_iDiscount = 0.05;
 modelParameters.utility_iYears = 20;
 modelParameters.remitRate = 0;
 modelParameters.creditMultiplier = 0.3;
-modelParameters.movingCostPerMile = 0.00000000000001;
+modelParameters.movingCostPerMile = 0;
 modelParameters.minDistForCost = 5;
 modelParameters.maxDistForCost = 5000;
 networkParameters.networkDistanceSD = 7;

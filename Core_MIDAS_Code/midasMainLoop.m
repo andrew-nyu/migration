@@ -120,60 +120,59 @@ for indexT = 1:modelParameters.timeSteps
         %    end
         %end
         
-% COMMENTING ALL THIS TO SIMPLIFY. LEST'S CHECK WHAT HAPPENS WHEN SOCIAL NETWORKS REMAIN THE SAME        
-%         %draw number to see if agent meets a new agent
-%         if(rand() < currentAgent.pMeetNew)
-%             %%the next bit of code sets up input to the application-specific
-%             %%function that generates likelihoods for new links.  may need to be
-%             %%adjusted depending on application
-%             
-%             %the REASON it isn't totally exported to an
-%             %application-specific function is that passing the large
-%             %network matrix around can be costly
-%             
-%             %create a list of 'shared weighted connections' with other agents;
-%             connectionsWeight = mapVariables.network(currentAgent.id,1:length(agentList))*mapVariables.network(1:length(agentList), 1:length(agentList));
-%             %connectionsWeight = mapVariables.network(currentAgent.id,[livingAgents.id])*mapVariables.network([livingAgents.id], [livingAgents.id]);
-%             
-%             %make a list of existing connections and dead agents, who
-%             %should not have any weight in the calculations
-%             currentConnections = mapVariables.network(currentAgent.id,:) > 0;
-%             %currentConnections2 = mapVariables.network(currentAgent.id,:) > 0;
-%             %currentConnections([agentList.TOD] > 0 | [agentList.DOB] < 0) = true;
-%             %currentConnections2(~aliveList) = true;
-%             
-%            
-%             currentConnections(currentAgent.id) = true;
-%             
-%             %create a list of distances to other agents, based on their location
-%             distanceWeight = mapVariables.distanceMatrix(currentAgent.matrixLocation,agentLocations);
-% 
-%             
-%             %create a list of shared layers (in same location) using
-%             %agentLayers            
-%             sameLocation = agentLocations == currentAgent.matrixLocation;
-%             layerWeight = sparse(ones(sum(sameLocation),1),find(sameLocation), currentAgent.currentPortfolio * agentLayers(sameLocation,:)', 1, length(agentList));
-% 
-%             %identify the new network link using the appropriate function for this
-%             %simulation
-%             newAgentConnection = chooseNewLink(networkParameters, connectionsWeight, distanceWeight, layerWeight, currentConnections, aliveList);
-%             connectedAgent = agentList((newAgentConnection));
-%             
-%             %now update all network parameters
-%             strength = rand();
-%             mapVariables.network(currentAgent.id, connectedAgent.id) = strength;
-%             mapVariables.network(connectedAgent.id, currentAgent.id) = strength;
-%             
-%             currentAgentNetworkSize = length(currentAgent.network);
-%             partnerAgentNetworkSize = length(connectedAgent.network);
-%             currentAgent.myIndexInNetwork(currentAgentNetworkSize+1) = partnerAgentNetworkSize+1;
-%             connectedAgent.myIndexInNetwork(partnerAgentNetworkSize+1) = currentAgentNetworkSize+1;
-%             currentAgent.lastIntendedShareIn(end+1) = 0;
-%             connectedAgent.lastIntendedShareIn(end+1) = 0;
-%             currentAgent.network(end+1) = connectedAgent;
-%             connectedAgent.network(end+1) = currentAgent;
-%             
-%         end
+        %draw number to see if agent meets a new agent
+        if(rand() < currentAgent.pMeetNew)
+            %%the next bit of code sets up input to the application-specific
+            %%function that generates likelihoods for new links.  may need to be
+            %%adjusted depending on application
+            
+            %the REASON it isn't totally exported to an
+            %application-specific function is that passing the large
+            %network matrix around can be costly
+            
+            %create a list of 'shared weighted connections' with other agents;
+            connectionsWeight = mapVariables.network(currentAgent.id,1:length(agentList))*mapVariables.network(1:length(agentList), 1:length(agentList));
+            %connectionsWeight = mapVariables.network(currentAgent.id,[livingAgents.id])*mapVariables.network([livingAgents.id], [livingAgents.id]);
+            
+            %make a list of existing connections and dead agents, who
+            %should not have any weight in the calculations
+            currentConnections = mapVariables.network(currentAgent.id,:) > 0;
+            %currentConnections2 = mapVariables.network(currentAgent.id,:) > 0;
+            %currentConnections([agentList.TOD] > 0 | [agentList.DOB] < 0) = true;
+            %currentConnections2(~aliveList) = true;
+            
+           
+            currentConnections(currentAgent.id) = true;
+            
+            %create a list of distances to other agents, based on their location
+            distanceWeight = mapVariables.distanceMatrix(currentAgent.matrixLocation,agentLocations);
+
+            
+            %create a list of shared layers (in same location) using
+            %agentLayers            
+            sameLocation = agentLocations == currentAgent.matrixLocation;
+            layerWeight = sparse(ones(sum(sameLocation),1),find(sameLocation), currentAgent.currentPortfolio * agentLayers(sameLocation,:)', 1, length(agentList));
+
+            %identify the new network link using the appropriate function for this
+            %simulation
+            newAgentConnection = chooseNewLink(networkParameters, connectionsWeight, distanceWeight, layerWeight, currentConnections, aliveList);
+            connectedAgent = agentList((newAgentConnection));
+            
+            %now update all network parameters
+            strength = rand();
+            mapVariables.network(currentAgent.id, connectedAgent.id) = strength;
+            mapVariables.network(connectedAgent.id, currentAgent.id) = strength;
+            
+            currentAgentNetworkSize = length(currentAgent.network);
+            partnerAgentNetworkSize = length(connectedAgent.network);
+            currentAgent.myIndexInNetwork(currentAgentNetworkSize+1) = partnerAgentNetworkSize+1;
+            connectedAgent.myIndexInNetwork(partnerAgentNetworkSize+1) = currentAgentNetworkSize+1;
+            currentAgent.lastIntendedShareIn(end+1) = 0;
+            connectedAgent.lastIntendedShareIn(end+1) = 0;
+            currentAgent.network(end+1) = connectedAgent;
+            connectedAgent.network(end+1) = currentAgent;
+            
+        end
         
         %draw number to see if agent has social interaction with existing
         %network
