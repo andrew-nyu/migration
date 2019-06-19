@@ -76,10 +76,10 @@ locationList = locationList(iSort([true; diff(bSort)>0]),:);
 totalNumPortfolios = agent.numBestPortfolio + agent.numRandomPortfolio;
 
 
+% dDONT UNDERSTAND THIS PART
 %since we will try to match historical data to the appropriate season,
 %create labels for what part of the cycle our historical data and our
 %evaluation period are
-%DONT UNDERSTAND THIS PART COULD YOU EXPLAIN ANDREW?
 periodInCycleData = mod(1:currentT,modelParameters.cycleLength);
 periodInCycleEvaluation = mod(1:agent.numPeriodsEvaluate,modelParameters.cycleLength);
 
@@ -391,19 +391,14 @@ for indexL = 1:length(locationList)
 end
 
 %now identify the best one.  
-[~,indexSorted] = sort(locationValue,'descend','MissingPlacement','last');
+[~,indexSorted] = sort(locationValue,'descend');
 
 %randomize which of the best is chosen, in the case of a tie
 choice = indexSorted(1);
 if(length(indexSorted) > 1)
-    if( locationValue(indexSorted(1)) == locationValue(indexSorted(2)))
+    if(locationValue(indexSorted(1)) == locationValue(indexSorted(2)))
         temp = find(locationValue == locationValue(indexSorted(1)));
         choice = temp(randperm(length(temp),1));
-    elseif(isnan(locationValue(indexSorted(1))) && isnan(locationValue(indexSorted(2))))
-        temp = find(isnan(locationValue));
-        choice = temp(randperm(length(temp),1));
-        
-        choice = find(locationList == currentLocation);
     end
 end
 

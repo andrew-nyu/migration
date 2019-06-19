@@ -51,18 +51,20 @@ for indexT = 1:modelParameters.timeSteps
         currentAgent.age = currentAgent.age + modelParameters.cyclesPerTimeStep;
         
         %draw number to see if agent survives to this timestep
-        agentSurvives = rand() < interp1(demographicVariables.agePointsSurvival, demographicVariables.survivalRate(currentAgent.matrixLocation,:,currentAgent.gender), currentAgent.age);
-        if(~agentSurvives)
+        
+        % DIEGO: COMMENTING ALL THIS BLOCK SUPRESSES DEATH OF AGENTS
+        %agentSurvives = rand() < interp1(demographicVariables.agePointsSurvival, demographicVariables.survivalRate(currentAgent.matrixLocation,:,currentAgent.gender), currentAgent.age);
+        %if(~agentSurvives)
 
             %don't delete the agent, because we get into a re-indexing
             %nightmare.  just mark it dead, and force all network links to
             %0
-            mapVariables.network(currentAgent.id, [currentAgent.network(:).id]) = 0;
-            mapVariables.network([currentAgent.network(:).id],currentAgent.id) = 0;
-            currentAgent.TOD = indexT;
-            aliveList(currentAgent.id) = false;
-            continue;
-        end
+         %   mapVariables.network(currentAgent.id, [currentAgent.network(:).id]) = 0;
+          %  mapVariables.network([currentAgent.network(:).id],currentAgent.id) = 0;
+           % currentAgent.TOD = indexT;
+            %aliveList(currentAgent.id) = false;
+            %continue;
+        %end
         
         %update any age-specific agent parameters
  
@@ -81,95 +83,97 @@ for indexT = 1:modelParameters.timeSteps
         currentAgent.heardOpening(currentAgent.matrixLocation,currentAgent.currentPortfolio) = utilityVariables.hasOpenSlots(currentAgent.matrixLocation,currentAgent.currentPortfolio);
         currentAgent.timeProbOpeningUpdated(currentAgent.matrixLocation,currentAgent.currentPortfolio) = indexT;
  
+        % DIEGO: COMMENTING ALL THIS BLOCK INHIBITS BITRTHS
         %draw number to see if (for female agents) agent gives birth
-        if(currentAgent.gender == 2 && currentAgent.age >= modelParameters.ageDecision)
-            agentGivesBirth = rand() < interp1(demographicVariables.agePointsFertility, demographicVariables.fertilityRate(currentAgent.matrixLocation,:), currentAgent.age);
-            if(agentGivesBirth)
-                gender = 2 - (rand() > 0.5);  %let it be equally likely to be 1 or 2
-                age = 0;
-                %newBaby = initializeAgent(agentParameters, utilityVariables, age, gender, currentAgent.location, agentList(agentParameters.currentID));
-                newBaby = initializeAgent(agentParameters, utilityVariables, age, gender, currentAgent.location);
-                newBaby.id = agentParameters.currentID;
-                agentList(agentParameters.currentID) = newBaby;
-                agentParameters.currentID = agentParameters.currentID + 1;
-                newBaby.matrixLocation = currentAgent.matrixLocation;
-                newBaby.DOB = indexT;
-                newBaby.moveHistory = [indexT currentAgent.matrixLocation currentAgent.visX currentAgent.visY];
-                newBaby.visX = currentAgent.visX;
-                newBaby.visY = currentAgent.visY;
-                
-                newBaby.network = currentAgent;
-                newBaby.myIndexInNetwork(1) = length(currentAgent.network)+1;
-                currentAgent.network(end+1) = newBaby;
-                currentAgent.myIndexInNetwork(end+1) = 1;
-                currentAgent.lastIntendedShareIn(end+1) = 0;
-                
-                newBaby = assignInitialLayers(newBaby, utilityVariables);
-                
-                mapVariables.network(newBaby.id, currentAgent.id) = 1;
-                mapVariables.network(currentAgent.id, newBaby.id) = 1;
-                aliveList(newBaby.id) = true;
-                                
-                %update this line in the array used to choose new links
-                agentLayers(newBaby.id,:) = newBaby.currentPortfolio;
-                agentLocations(newBaby.id) = newBaby.matrixLocation;
-                
-            end
-        end
+        %if(currentAgent.gender == 2 && currentAgent.age >= modelParameters.ageDecision)
+        %    agentGivesBirth = rand() < interp1(demographicVariables.agePointsFertility, demographicVariables.fertilityRate(currentAgent.matrixLocation,:), currentAgent.age);
+        %    if(agentGivesBirth)
+        %        gender = 2 - (rand() > 0.5);  %let it be equally likely to be 1 or 2
+        %        age = 0;
+        %        %newBaby = initializeAgent(agentParameters, utilityVariables, age, gender, currentAgent.location, agentList(agentParameters.currentID));
+        %        newBaby = initializeAgent(agentParameters, utilityVariables, age, gender, currentAgent.location);
+        %        newBaby.id = agentParameters.currentID;
+        %        agentList(agentParameters.currentID) = newBaby;
+        %        agentParameters.currentID = agentParameters.currentID + 1;
+        %        newBaby.matrixLocation = currentAgent.matrixLocation;
+        %        newBaby.DOB = indexT;
+        %        newBaby.moveHistory = [indexT currentAgent.matrixLocation currentAgent.visX currentAgent.visY];
+        %        newBaby.visX = currentAgent.visX;
+        %        newBaby.visY = currentAgent.visY;
+        %        
+        %        newBaby.network = currentAgent;
+        %        newBaby.myIndexInNetwork(1) = length(currentAgent.network)+1;
+        %        currentAgent.network(end+1) = newBaby;
+        %        currentAgent.myIndexInNetwork(end+1) = 1;
+        %        currentAgent.lastIntendedShareIn(end+1) = 0;
+        %        
+        %        newBaby = assignInitialLayers(newBaby, utilityVariables);
+        %        
+        %        mapVariables.network(newBaby.id, currentAgent.id) = 1;
+        %        mapVariables.network(currentAgent.id, newBaby.id) = 1;
+        %        aliveList(newBaby.id) = true;
+        %                        
+        %        %update this line in the array used to choose new links
+        %        agentLayers(newBaby.id,:) = newBaby.currentPortfolio;
+        %        agentLocations(newBaby.id) = newBaby.matrixLocation;
+        %        
+        %    end
+        %end
         
-        %draw number to see if agent meets a new agent
-        if(rand() < currentAgent.pMeetNew)
-            %%the next bit of code sets up input to the application-specific
-            %%function that generates likelihoods for new links.  may need to be
-            %%adjusted depending on application
-            
-            %the REASON it isn't totally exported to an
-            %application-specific function is that passing the large
-            %network matrix around can be costly
-            
-            %create a list of 'shared weighted connections' with other agents;
-            connectionsWeight = mapVariables.network(currentAgent.id,1:length(agentList))*mapVariables.network(1:length(agentList), 1:length(agentList));
-            %connectionsWeight = mapVariables.network(currentAgent.id,[livingAgents.id])*mapVariables.network([livingAgents.id], [livingAgents.id]);
-            
-            %make a list of existing connections and dead agents, who
-            %should not have any weight in the calculations
-            currentConnections = mapVariables.network(currentAgent.id,:) > 0;
-            %currentConnections2 = mapVariables.network(currentAgent.id,:) > 0;
-            %currentConnections([agentList.TOD] > 0 | [agentList.DOB] < 0) = true;
-            %currentConnections2(~aliveList) = true;
-            
-           
-            currentConnections(currentAgent.id) = true;
-            
-            %create a list of distances to other agents, based on their location
-            distanceWeight = mapVariables.distanceMatrix(currentAgent.matrixLocation,agentLocations);
-
-            
-            %create a list of shared layers (in same location) using
-            %agentLayers            
-            sameLocation = agentLocations == currentAgent.matrixLocation;
-            layerWeight = sparse(ones(sum(sameLocation),1),find(sameLocation), currentAgent.currentPortfolio * agentLayers(sameLocation,:)', 1, length(agentList));
-
-            %identify the new network link using the appropriate function for this
-            %simulation
-            newAgentConnection = chooseNewLink(networkParameters, connectionsWeight, distanceWeight, layerWeight, currentConnections, aliveList);
-            connectedAgent = agentList((newAgentConnection));
-            
-            %now update all network parameters
-            strength = rand();
-            mapVariables.network(currentAgent.id, connectedAgent.id) = strength;
-            mapVariables.network(connectedAgent.id, currentAgent.id) = strength;
-            
-            currentAgentNetworkSize = length(currentAgent.network);
-            partnerAgentNetworkSize = length(connectedAgent.network);
-            currentAgent.myIndexInNetwork(currentAgentNetworkSize+1) = partnerAgentNetworkSize+1;
-            connectedAgent.myIndexInNetwork(partnerAgentNetworkSize+1) = currentAgentNetworkSize+1;
-            currentAgent.lastIntendedShareIn(end+1) = 0;
-            connectedAgent.lastIntendedShareIn(end+1) = 0;
-            currentAgent.network(end+1) = connectedAgent;
-            connectedAgent.network(end+1) = currentAgent;
-            
-        end
+% COMMENTING ALL THIS TO SIMPLIFY. LEST'S CHECK WHAT HAPPENS WHEN SOCIAL NETWORKS REMAIN THE SAME        
+%         %draw number to see if agent meets a new agent
+%         if(rand() < currentAgent.pMeetNew)
+%             %%the next bit of code sets up input to the application-specific
+%             %%function that generates likelihoods for new links.  may need to be
+%             %%adjusted depending on application
+%             
+%             %the REASON it isn't totally exported to an
+%             %application-specific function is that passing the large
+%             %network matrix around can be costly
+%             
+%             %create a list of 'shared weighted connections' with other agents;
+%             connectionsWeight = mapVariables.network(currentAgent.id,1:length(agentList))*mapVariables.network(1:length(agentList), 1:length(agentList));
+%             %connectionsWeight = mapVariables.network(currentAgent.id,[livingAgents.id])*mapVariables.network([livingAgents.id], [livingAgents.id]);
+%             
+%             %make a list of existing connections and dead agents, who
+%             %should not have any weight in the calculations
+%             currentConnections = mapVariables.network(currentAgent.id,:) > 0;
+%             %currentConnections2 = mapVariables.network(currentAgent.id,:) > 0;
+%             %currentConnections([agentList.TOD] > 0 | [agentList.DOB] < 0) = true;
+%             %currentConnections2(~aliveList) = true;
+%             
+%            
+%             currentConnections(currentAgent.id) = true;
+%             
+%             %create a list of distances to other agents, based on their location
+%             distanceWeight = mapVariables.distanceMatrix(currentAgent.matrixLocation,agentLocations);
+% 
+%             
+%             %create a list of shared layers (in same location) using
+%             %agentLayers            
+%             sameLocation = agentLocations == currentAgent.matrixLocation;
+%             layerWeight = sparse(ones(sum(sameLocation),1),find(sameLocation), currentAgent.currentPortfolio * agentLayers(sameLocation,:)', 1, length(agentList));
+% 
+%             %identify the new network link using the appropriate function for this
+%             %simulation
+%             newAgentConnection = chooseNewLink(networkParameters, connectionsWeight, distanceWeight, layerWeight, currentConnections, aliveList);
+%             connectedAgent = agentList((newAgentConnection));
+%             
+%             %now update all network parameters
+%             strength = rand();
+%             mapVariables.network(currentAgent.id, connectedAgent.id) = strength;
+%             mapVariables.network(connectedAgent.id, currentAgent.id) = strength;
+%             
+%             currentAgentNetworkSize = length(currentAgent.network);
+%             partnerAgentNetworkSize = length(connectedAgent.network);
+%             currentAgent.myIndexInNetwork(currentAgentNetworkSize+1) = partnerAgentNetworkSize+1;
+%             connectedAgent.myIndexInNetwork(partnerAgentNetworkSize+1) = currentAgentNetworkSize+1;
+%             currentAgent.lastIntendedShareIn(end+1) = 0;
+%             connectedAgent.lastIntendedShareIn(end+1) = 0;
+%             currentAgent.network(end+1) = connectedAgent;
+%             connectedAgent.network(end+1) = currentAgent;
+%             
+%         end
         
         %draw number to see if agent has social interaction with existing
         %network

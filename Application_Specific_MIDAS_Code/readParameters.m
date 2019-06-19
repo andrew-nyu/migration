@@ -24,7 +24,11 @@ modelParameters.utility_iDiscount = 0.05;
 modelParameters.utility_iYears = 20;
 modelParameters.remitRate = 0;
 modelParameters.creditMultiplier = 0.3;
+<<<<<<< HEAD
 modelParameters.movingCostPerMile = 0;
+=======
+modelParameters.movingCostPerMile = 0.1; %= 0.1 cuts 30% of migrants (wrt 0);
+>>>>>>> 47ce82d0001c1dcb0d0f1d6b45aa8d024cfd91c9
 modelParameters.minDistForCost = 5;
 modelParameters.maxDistForCost = 5000;
 networkParameters.networkDistanceSD = 7;
@@ -61,8 +65,8 @@ agentParameters.incomeShareFractionMean = 0.4;
 agentParameters.incomeShareFractionSD = 0;
 agentParameters.shareCostThresholdMean = 0.3;
 agentParameters.shareCostThresholdSD = 0;
-agentParameters.wealthMean = 50;
-agentParameters.wealthSD = 20;
+agentParameters.wealthMean = 10;
+agentParameters.wealthSD = 5;
 agentParameters.interactMean = 0.8;
 agentParameters.interactSD = 0;
 agentParameters.meetNewMean = 0.1;
