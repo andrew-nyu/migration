@@ -389,7 +389,7 @@ for indexL = 1:length(locationList)
 end
 
 %now identify the best one.  
-[~,indexSorted] = sort(locationValue,'descend');
+[~,indexSorted] = sort(locationValue,'descend','MissingPlacement','last');
 
 %randomize which of the best is chosen, in the case of a tie
 choice = indexSorted(1);
