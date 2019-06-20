@@ -10,7 +10,7 @@ addpath('./Application_Specific_MIDAS_Code');
 rng('shuffle');
 
 runName = 'Whatever you want to call this one';
-series = 'MC_Run_';
+series = 'MC_Run_distcost';
 saveDirectory = './Outputs/';
 
 input = [];
