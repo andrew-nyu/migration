@@ -176,33 +176,33 @@ for indexT = 1:modelParameters.timeSteps
 %         end
         
         %draw number to see if agent has social interaction with existing
-        %network
-        if(rand() < currentAgent.pInteract && currentAgent.age >= modelParameters.ageLearn)
-            if(~isempty(currentAgent.network))
-                
-                %can't talk to dead people
-                potentialPartners = currentAgent.network([currentAgent.network.TOD] < 0);
-                if(~isempty(potentialPartners))
-                    %choose an agent in social network and exchange
-                    
-                    %have to name currentAgent and partner as outputs of the
-                    %function, otherwise MATLAB simply creates a copy of them
-                    %inside the function to do writing, and doesn't write to
-                    %the original
-                    partner = potentialPartners(randperm(length(potentialPartners),1));
-                    
-                    [currentAgent, partner] = interact(currentAgent, partner, indexT);
-                    
-                    
-                    
-                    currentAgent.knowsIncomeLocation = any(currentAgent.incomeLayersHistory,3);
-                    partner.knowsIncomeLocation = any(partner.incomeLayersHistory,3);
-                    
-                    mapVariables.network(currentAgent.id, partner.id) = mapVariables.network(currentAgent.id, partner.id) + networkParameters.interactBump;
-                    mapVariables.network(partner.id, currentAgent.id) = mapVariables.network(partner.id, currentAgent.id) + networkParameters.interactBump;
-                end
-            end
-        end
+%         %network
+%         if(rand() < currentAgent.pInteract && currentAgent.age >= modelParameters.ageLearn)
+%             if(~isempty(currentAgent.network))
+%                 
+%                 %can't talk to dead people
+%                 potentialPartners = currentAgent.network([currentAgent.network.TOD] < 0);
+%                 if(~isempty(potentialPartners))
+%                     %choose an agent in social network and exchange
+%                     
+%                     %have to name currentAgent and partner as outputs of the
+%                     %function, otherwise MATLAB simply creates a copy of them
+%                     %inside the function to do writing, and doesn't write to
+%                     %the original
+%                     partner = potentialPartners(randperm(length(potentialPartners),1));
+%                     
+%                     [currentAgent, partner] = interact(currentAgent, partner, indexT);
+%                     
+%                     
+%                     
+%                     currentAgent.knowsIncomeLocation = any(currentAgent.incomeLayersHistory,3);
+%                     partner.knowsIncomeLocation = any(partner.incomeLayersHistory,3);
+%                     
+%                     mapVariables.network(currentAgent.id, partner.id) = mapVariables.network(currentAgent.id, partner.id) + networkParameters.interactBump;
+%                     mapVariables.network(partner.id, currentAgent.id) = mapVariables.network(partner.id, currentAgent.id) + networkParameters.interactBump;
+%                 end
+%             end
+%         end
         
         %draw number to see if agent learns anything randomly new about
         %income in the world around it
