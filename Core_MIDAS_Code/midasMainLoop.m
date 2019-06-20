@@ -229,7 +229,11 @@ for indexT = 1:modelParameters.timeSteps
             end
             
             %update these line in the arrays used to choose new links
+            try
             agentLayers(currentAgent.id,:) = currentAgent.currentPortfolio;
+            catch
+                f=1;
+            end
             agentLocations(currentAgent.id) = currentAgent.matrixLocation;
         end
        
