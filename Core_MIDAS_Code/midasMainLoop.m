@@ -23,7 +23,8 @@ averageWealth = zeros(modelParameters.timeSteps ,1);
 migrations = zeros(modelParameters.timeSteps,1);
 outMigrations = zeros(numLocations, modelParameters.timeSteps);
 inMigrations = zeros(numLocations, modelParameters.timeSteps);
-migrationMatrix = zeros(numLocations, numLocations, modelParameters.timeSteps);
+migrationMatrix = zeros(numLocations);
+portfolioHistory = cell(numLocations, modelParameters.timeSteps);
 
 %create a list of shared layers, for use in choosing new link
 agentLayers = zeros(length(agentList),size(utilityVariables.utilityLayerFunctions,1));
@@ -221,7 +222,7 @@ for indexT = 1:modelParameters.timeSteps
                 migrations(indexT) = migrations(indexT) + 1;
                 inMigrations(moved(2), indexT) = inMigrations(moved(2), indexT) + 1;
                 outMigrations(moved(1), indexT) = outMigrations(moved(1), indexT) + 1;
-                migrationMatrix(moved(1),moved(2), indexT) = migrationMatrix(moved(1),moved(2),indexT) + 1;
+                migrationMatrix(moved(1),moved(2)) = migrationMatrix(moved(1),moved(2)) + 1;
                 currentAgent.moveHistory = [currentAgent.moveHistory; indexT currentAgent.matrixLocation currentAgent.visX currentAgent.visY];
             end
             
@@ -360,6 +361,11 @@ for indexT = 1:modelParameters.timeSteps
         fprintf([runName ' - Time step ' num2str(indexT) ' of ' num2str(modelParameters.timeSteps) ' - ' num2str(migrations(indexT)) ' migrations.\n']);
     end
 
+    
+    %%update portfolioHistory
+    for indexJ = 1:numLocations
+       portfolioHistory{indexJ, indexT} = {(agentList([agentList.matrixLocation] == indexJ).currentPortfolio)};
+    end
 end %for indexT = 1:modelParameters.timeSteps
 
 %prepare outputs
@@ -371,7 +377,8 @@ outputs.inMigrations = inMigrations;
 outputs.outMigrations = outMigrations;
 outputs.migrationMatrix = migrationMatrix;
 outputs.averageExpectedOpening = averageExpectedOpening;
-outputs.utilityLayersHistory = utilityVariables.utilityHistory;
+outputs.utilityHistory = utilityVariables.utilityHistory;
+outputs.portfolioHistory = portfolioHistory;
 
 agentList = agentList(1:agentParameters.currentID-1);
 agentSummary = table([agentList(:).id]','VariableNames',{'id'});
@@ -391,7 +398,7 @@ agentSummary.discountRate = [agentList(:).discountRate]';
 agentSummary.rValue = [agentList(:).rValue]';
 agentSummary.bList = [agentList(:).bList]';
 agentSummary.TOD = [agentList(:).TOD]';
-agentSummary.personalIncomeHistory = [agentList(:).personalIncomeHistory]';
+agentSummary.trapped = [agentList(:).trapped]';
 
 
 

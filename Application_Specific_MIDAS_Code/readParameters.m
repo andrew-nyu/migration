@@ -2,7 +2,7 @@ function [agentParameters, modelParameters, networkParameters, mapParameters] = 
 
 %All model parameters go here
 modelParameters.spinupTime = 10;
-modelParameters.numAgents = 100;
+modelParameters.numAgents = 2000;
 mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
 modelParameters.cycleLength = 4;
@@ -23,13 +23,14 @@ modelParameters.utility_iDiscount = 0.05;
 modelParameters.utility_iYears = 20;
 modelParameters.remitRate = 0;
 modelParameters.creditMultiplier = 0.3;
+modelParameters.normalFloodMultiplier = 1;
 mapParameters.movingCostPerMile = 0;
 mapParameters.minDistForCost = 50;
 mapParameters.maxDistForCost = 400;
 networkParameters.networkDistanceSD = 7;
 networkParameters.connectionsMean = 2;
 networkParameters.connectionsSD = 2;
-networkParameters.agentPreAllocation = modelParameters.numAgents * 2;
+networkParameters.agentPreAllocation = modelParameters.numAgents * 3;
 networkParameters.nonZeroPreAllocation = networkParameters.agentPreAllocation * 10;
 networkParameters.weightLocation = 3;
 networkParameters.weightNetworkLink = 5;
@@ -111,7 +112,7 @@ if(~isempty(inputs))
    end
 end
 
-modelParameters.timeSteps = modelParameters.spinupTime + 204;  %in this particular experiment only, there are 204 time steps with data
+modelParameters.timeSteps = modelParameters.spinupTime + 404;  %in this particular experiment only, there are 204 time steps with data
 
 
 end

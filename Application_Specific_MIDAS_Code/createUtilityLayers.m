@@ -22,14 +22,14 @@ function [ utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTim
 %file once we're sure.  while they are here, they won't be included in
 %sensitivity testing
 quantiles = 4;
-years = 81;
+years = 101;
 noise = modelParameters.utility_noise;
 iReturn = modelParameters.utility_iReturn;
 iDiscount = modelParameters.utility_iDiscount;
 iYears = modelParameters.utility_iYears;
 leadTime = modelParameters.spinupTime;
 
-scenario = 3;  %HERE WE ARE LOOKING AT BASELINE
+scenario = 1;  %HERE WE ARE LOOKING AT RCP26
 
 load([modelParameters.utilityDataPath '/incomeMats_old']);
 
@@ -305,9 +305,8 @@ nExpected = tempExpected;
 %generate base layers for input; these will be ordered N1Q1 N1Q2 N1Q3 N1Q4
 %N2Q1 N2Q2 N2Q3 N2Q4, etc.  (i.e., all layers for one source in order, then
 %the next source, etc.)
+randYears = rand(years,1);
 
-storeFloods = zeros(64, years);
-normFloodMat = zeros(64,1);
 for indexI = 1:length(locations)
     
     %generate the flood history for this location for the next 101 years
@@ -315,27 +314,25 @@ for indexI = 1:length(locations)
     actualFloods = zeros(years,1);
     for indexJ = 1:years
         if(scenario > 0)
-            randDepth = find(rand() < cumProbsMatYear{scenario, currentLocation, indexJ}, 1);
+            randDepth = find(randYears(indexJ) < cumProbsMatYear{scenario, currentLocation, indexJ}, 1);
             actualFloods(indexJ) = floodDepth(randDepth);
         end
         
-    end
-    
+    end    
     
     %%%define 'normal' flood as the expected flooding in the last year of
     %%%our income data, 2010 (year 11)
     %normalFlood = mean(actualFloods(1:11));
     normalFlood = floodDepth * (cumProbsMatYear{scenario, currentLocation, 11} - [0; cumProbsMatYear{scenario, currentLocation, 11}(1:end-1)]);
 
-    floodShock = actualFloods - normalFlood;
+    floodShock = actualFloods - modelParameters.normalFloodMultiplier * normalFlood;
     floodShock(1:11) = 0;
     floodShock = floodShock / 0.3048; %converting meters to feet
     floodShock(floodShock < 0) = 0;
         
     floodShock_0 = [0; floodShock(1:end-1)];  % this is for adding shock to next year
     
-    storeFloods(indexI,:) = floodShock;
-    normFloodMat(indexI) = normalFlood;
+    
     for indexJ = 1:length(utilityLayerFunctions)
         for indexK = 1:quantiles
             tempMean = zeros(3,1);
@@ -345,14 +342,14 @@ for indexI = 1:length(locations)
             %for RCPs, walking through 2000, 2005, 2010, then onward to
             %2100... randomize the appearance of these 3 periods over 11
             tempExtension = zeros(14,1);
-            for indexL = 1:14
+            for indexL = 1:18
                 tempExtension(indexL) = tempMean(randperm(3,1));
             end
             tempMean = [tempMean; tempExtension];
             
             %expand from 21 periods to 101 years
             tempMean = interp(tempMean,5,1,0.5);
-            tempMean = tempMean(1:81);
+            tempMean = tempMean(1:101);
 
             
             %now add in flood shock as appropriate.  note that at this
@@ -375,23 +372,6 @@ for indexI = 1:length(locations)
         end
     end
 end
-
-
-%%%%%CHECKING HOW THE FLOOD LOOKS!!!!
-banDist = shaperead([modelParameters.utilityDataPath '/ipums_district_level.shp']);
-normFloodCell = num2cell(normFloodMat);
-shockCell = num2cell(mean(storeFloods(:,end-9:end),2));
-[banDist.normFlood] = normFloodCell{:};
-[banDist.shockFlood] = shockCell{:};
-
-figure; 
-subplot(1,2,1);
-axisLimitsColor = [0 5];
-normFloodSpec = makesymbolspec('Polygon', {'normFlood', axisLimitsColor, 'FaceColor', hot});
-mapshow(banDist, 'DisplayType', 'polygon', 'SymbolSpec', normFloodSpec);
-subplot(1,2,2);
-shockSpec = makesymbolspec('Polygon', {'shockFlood', axisLimitsColor, 'FaceColor', hot});
-mapshow(banDist, 'DisplayType', 'polygon', 'SymbolSpec', shockSpec);
 
 %now add some lead time for agents to learn before time actually starts
 %moving
@@ -433,14 +413,6 @@ for indexI = 1:length(localOnly)
 end
 
 
-
-
-%expected, normal flood is whatever you get for 2000-2010
-for indexI = 1:length(cityID_districts)
-
-end
-
-f=1;
 %any hack code for testing ideas can go below here but should be commented
 %when not in use...
 % utilityAccessCosts(1:quantiles * size(locations,1),2) = 0.2 * utilityAccessCosts(1:quantiles * size(locations,1),2);

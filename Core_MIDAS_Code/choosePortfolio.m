@@ -367,6 +367,7 @@ for indexL = 1:length(locationList)
     portfolioAccessCodes(exceedsCreditLimit) = [];
     
     if(~isempty(portfolioSet))
+        agent.trapped = 0;
         %sort them
         [sortedValues,indexSorted] = sort(portfolioValues,'descend');
         
@@ -381,6 +382,7 @@ for indexL = 1:length(locationList)
         locationPortfolio{indexL} = portfolioSet(indexSorted(1),:);
         locationAccessCodes{indexL} = portfolioAccessCodes{indexSorted(1)};
     else
+        agent.trapped = 1;
         if(locationList(indexL) == agent.matrixLocation)
             f=1;
         end
