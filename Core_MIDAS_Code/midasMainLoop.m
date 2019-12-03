@@ -25,6 +25,7 @@ outMigrations = zeros(numLocations, modelParameters.timeSteps);
 inMigrations = zeros(numLocations, modelParameters.timeSteps);
 migrationMatrix = zeros(numLocations);
 portfolioHistory = cell(numLocations, modelParameters.timeSteps);
+trappedHistory = zeros(length(agentList),modelParameters.timeSteps);
 
 %create a list of shared layers, for use in choosing new link
 agentLayers = zeros(length(agentList),size(utilityVariables.utilityLayerFunctions,1));
@@ -327,7 +328,9 @@ for indexT = 1:modelParameters.timeSteps
     %update the system-wide record of whether a layer has open slots or not
     utilityVariables.hasOpenSlots = countAgentsPerLayer(:,:,indexT) < utilityVariables.nExpected & utilityVariables.hardSlotCountYN | ~utilityVariables.hardSlotCountYN;
 
-    
+    %update our time path of trapped agents
+    trappedHistory([agentList(:).trapped] > 0,indexT) = 1;
+   
     if (modelParameters.visualizeYN & mod(indexT, modelParameters.visualizeInterval) == 0)
         
         mapVariables.indexT = indexT;
@@ -379,6 +382,7 @@ outputs.migrationMatrix = migrationMatrix;
 outputs.averageExpectedOpening = averageExpectedOpening;
 outputs.utilityHistory = utilityVariables.utilityHistory;
 outputs.portfolioHistory = portfolioHistory;
+outputs.trappedHistory = trappedHistory;
 
 agentList = agentList(1:agentParameters.currentID-1);
 agentSummary = table([agentList(:).id]','VariableNames',{'id'});
