@@ -3,7 +3,7 @@ function [agentParameters, modelParameters, networkParameters, mapParameters] = 
 %All model parameters go here
 modelParameters.dataTimeSteps = 28;
 modelParameters.spinupTime = 10;
-modelParameters.numAgents = 100000;
+modelParameters.numAgents = 10000;
 mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
 modelParameters.cycleLength = 1;
@@ -24,7 +24,7 @@ modelParameters.utility_iDiscount = 0.05;
 modelParameters.utility_iYears = 20;
 modelParameters.remitRate = 0;
 modelParameters.creditMultiplier = 0.3;
-modelParameters.movingCostPerMile = 0.1; %= 0.1 cuts 30% of migrants (wrt 0);
+modelParameters.movingCostPerMile = 0; %= 0.1 cuts 30% of migrants (wrt 0);
 modelParameters.minDistForCost = 5;
 modelParameters.maxDistForCost = 5000;
 networkParameters.networkDistanceSD = 7;
@@ -49,7 +49,7 @@ mapParameters.position = [300 100 600 600];
 mapParameters.r1 = []; %this will be the spatial reference if we are pulling from a shape file
 mapParameters.filePath = './Data/Global Data/globalData2.shp';
 mapParameters.saveDirectory = './Outputs/';
-modelParameters.popFile = './Data/Global Data/Population_Country2.xlsx';
+modelParameters.popFile = './Data/Global Data/Population_Country4.xlsx';
 modelParameters.survivalFile = [];
 modelParameters.fertilityFile = [];
 modelParameters.agePreferencesFile = [];
