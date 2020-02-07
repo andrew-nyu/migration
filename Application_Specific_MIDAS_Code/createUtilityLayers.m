@@ -31,23 +31,23 @@ leadTime = modelParameters.spinupTime;
 numLayers = 17;
 
 %read in raw utility layer data for use below
-utilityTable.poverty     = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',1);
-utilityTable.food        = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',2);
-utilityTable.health      = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',3);
-utilityTable.education   = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',4);
-utilityTable.gender      = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',5);
-utilityTable.water       = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',6);
-utilityTable.energy      = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',7);
-utilityTable.economy     = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',8);
-utilityTable.innovation  = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',9);
-utilityTable.inequality  = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',10);
-utilityTable.cities      = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',11);
-utilityTable.consumption = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',12);
-utilityTable.climate     = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',13);
-utilityTable.ocean       = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',14);
-utilityTable.land        = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',15);
-utilityTable.peace       = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',16);
-utilityTable.cooperation = readtable([modelParameters.utilityDataPath '/Layers_Country.xlsx'],'Sheet',17);
+utilityTable.poverty     = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',1);
+utilityTable.food        = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',2);
+utilityTable.health      = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',3);
+utilityTable.education   = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',4);
+utilityTable.gender      = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',5);
+utilityTable.water       = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',6);
+utilityTable.energy      = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',7);
+utilityTable.economy     = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',8);
+utilityTable.innovation  = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',9);
+utilityTable.inequality  = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',10);
+utilityTable.cities      = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',11);
+utilityTable.consumption = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',12);
+utilityTable.climate     = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',13);
+utilityTable.ocean       = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',14);
+utilityTable.land        = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',15);
+utilityTable.peace       = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',16);
+utilityTable.cooperation = readtable([modelParameters.utilityDataPath '/Layers_Country2.xlsx'],'Sheet',17);
 
 dataYears = startsWith(utilityTable.poverty.Properties.VariableNames,'x');
 years = sum(dataYears);
@@ -147,20 +147,53 @@ end
 %Define the access costs in two parts - first define specific costs in utilityAccessCosts,
 %then associate them with accessing specific layers in utilityAccessCodesMat. Placeholders as examples
 
+
+% utilityAccessCosts = ...
+%     [1 0;... 
+%      2 25;...
+%      3 50;...
+%      4 75;
+%      5 100;
+%      6 5000 ...
+%     ];  
+
+% utilityAccessCosts = ...
+%     [1 1;... 
+%      2 1;...
+%      3 1;...
+%      4 1;
+%      5 1;
+%      6 5000 ...
+%     ];
+% 
+% utilityAccessCodesMat = false(size(utilityAccessCosts,1),length(utilityLayerFunctions),length(locations));
+% % all costs set to 1 in the line above but more of the code below is needed to capture border policies
+% utilityAccessCodesMat(1,:,[10,11,18,23,26,46,49,54,60,69,71,73,82,98,101,106,108,109,117,119,121,137,140,146,147,148,154,185,188,189,201,202,205,220,231,241,243,251]) = true
+% utilityAccessCodesMat(2,:,[6,16,25,30,33,35,61,64,65,67,76,83,84,92,96,111,112,120,122,135,141,142,150,156,159,163,169,179,191,192,207,216,217,223,230,253,256]) = true
+% utilityAccessCodesMat(3,:,[15,27,32,38,44,45,47,62,66,88,89,93,103,105,129,131,133,144,149,153,160,161,165,171,172,173,174,178,187,196,210,227,229,236,244,245,248,252,263,264]) = true
+% utilityAccessCodesMat(4,:,[3,4,12,17,19,24,39,43,48,56,70,72,91,104,114,126,128,132,136,138,139,151,158,180,181,194,197,209,213,232,238,249,250,254,257]) = true
+% utilityAccessCodesMat(5,:,[2,5,7,22,29,40,41,42,50,55,57,68,74,75,77,113,115,134,145,164,168,182,186,198,206,208,212,214,218,219,222,225,226,235,240,262]) = true
+% utilityAccessCodesMat(6,:,[1,8,9,13,14,20,21,28,31,34,36,37,51,52,53,58,59,63,78,79,80,81,85,86,87,90,94,95,97,99,100,102,107,110,116,118,123,124,125,127,130,143,152,155,157,162,166,167,170,175,176,177,183,184,190,193,195,199,200,203,204,211,215,221,224,228,233,234,237,239,242,246,247,255,258,259,260,261,265]) = true;
+
+%OLD borders implementation
 %
 utilityAccessCosts = ...
     [1 1;... 
      2 25;...
      3 50;...
      4 100 ...
+%      2 1;...
+%      3 1;...
+%      4 1 ...
     ];  
 
 utilityAccessCodesMat = false(size(utilityAccessCosts,1),length(utilityLayerFunctions),length(locations));
-% all costs set to 1 in the line above but more of the code below is needed to capture border policies
 utilityAccessCodesMat(1,:,[9, 10, 17, 22, 25, 45, 48, 53, 59, 68, 70, 72, 81, 97, 100, 105, 107, 108, 110, 118, 120, 136, 145, 146, 147, 153, 184, 187, 188, 190, 200, 201, 204, 215, 219]) = true
 utilityAccessCodesMat(2,:,[29, 32, 34, 37, 63, 64, 104, 121, 128, 155, 162, 164, 171, 177, 195, 209, 228, 235, 243, 252, 262, 263]) = true;
 utilityAccessCodesMat(3,:,[4, 11, 16, 23, 26,38, 44, 46, 47, 61, 65, 69, 71, 87, 88]) = true
 utilityAccessCodesMat(4,:,[2, 3, 5, 6, 7, 14, 15, 18, 21, 24, 27, 28, 31, 39, 40, 41, 42, 43, 49, 54, 55, 56, 60, 66, 67, 73, 74, 75, 76, 79, 82, 83, 91, 93, 95, 96, 111, 112, 114, 116, 117, 119, 131, 133, 134, 135, 139, 140, 141, 143, 144, 149, 158, 160, 163, 167, 168, 170, 178, 179, 180, 181, 185, 191, 193, 197, 203, 205, 206, 207,208, 210, 211, 213, 216,217, 218, 221, 222, 224,225, 229, 230, 234, 239,249, 250, 251, 253, 256, 261]) = true;
+
+
 
 
 %%MORE EXAMPLES

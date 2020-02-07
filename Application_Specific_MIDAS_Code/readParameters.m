@@ -3,7 +3,11 @@ function [agentParameters, modelParameters, networkParameters, mapParameters] = 
 %All model parameters go here
 modelParameters.dataTimeSteps = 28;
 modelParameters.spinupTime = 10;
+<<<<<<< HEAD
 modelParameters.numAgents = 1000;
+=======
+modelParameters.numAgents = 100000;
+>>>>>>> stefano
 mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
 modelParameters.cycleLength = 1;
@@ -49,7 +53,7 @@ mapParameters.position = [300 100 600 600];
 mapParameters.r1 = []; %this will be the spatial reference if we are pulling from a shape file
 mapParameters.filePath = './Data/Global Data/globalData2.shp';
 mapParameters.saveDirectory = './Outputs/';
-modelParameters.popFile = './Data/Global Data/Population_Country.xlsx';
+modelParameters.popFile = './Data/Global Data/Population_Country4.xlsx';
 modelParameters.survivalFile = [];
 modelParameters.fertilityFile = [];
 modelParameters.agePreferencesFile = [];
