@@ -7,7 +7,7 @@ quantileMarker = 0.01;
 
 series = 'MC_Run_'; % change series name in function of which model outputs you want to use to calibrate
 
-saveDirectory = './Outputs_Calibration_1/';
+saveDirectory = './Outputs/';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  empirical data import

@@ -12,7 +12,7 @@ rng('shuffle');
 outputList = {};
 
 series = 'MC_Run_';
-saveDirectory = './Outputs_Calibration_1/';
+saveDirectory = './Outputs/';
 
 %number of runs
 modelRuns = 1000;
