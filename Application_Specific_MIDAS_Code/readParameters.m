@@ -6,7 +6,7 @@ modelParameters.spinupTime = 10;
 <<<<<<< HEAD
 modelParameters.numAgents = 1000;
 =======
-modelParameters.numAgents = 100000;
+modelParameters.numAgents = 10000;
 >>>>>>> stefano
 mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
