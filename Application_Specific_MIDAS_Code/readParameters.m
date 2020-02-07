@@ -3,11 +3,7 @@ function [agentParameters, modelParameters, networkParameters, mapParameters] = 
 %All model parameters go here
 modelParameters.dataTimeSteps = 28;
 modelParameters.spinupTime = 10;
-<<<<<<< HEAD
-modelParameters.numAgents = 1000;
-=======
 modelParameters.numAgents = 10000;
->>>>>>> stefano
 mapParameters.sizeX = 600;
 mapParameters.sizeY = 600;
 modelParameters.cycleLength = 1;
