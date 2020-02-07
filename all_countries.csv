@@ -1,0 +1,265 @@
+Country,matrixID,toinclude
+'??land',1,0
+'Afghanistan',2,1
+'Albania',3,1
+'Algeria',4,1
+'American Samoa',5,0
+'Andorra',6,0
+'Angola',7,1
+'Anguilla',8,0
+'Antigua and Barbuda',10,0
+'Argentina',11,1
+'Armenia',12,1
+'Aruba',13,0
+'Ashmore and Cartier Islands',14,0
+'Australia',15,1
+'Austria',16,1
+'Azerbaijan',17,1
+'Bahamas',18,1
+'Bahrain',19,1
+'Baker Island',20,0
+'Baker Island',21,0
+'Bangladesh',22,1
+'Barbados',23,1
+'Belarus',24,1
+'Belgium',25,1
+'Belize',26,1
+'Benin',27,1
+'Bermuda',28,0
+'Bhutan',29,1
+'Bolivia',30,1
+"'Bonaire, Saint Eustatius and Saba'",31,0
+'Bosnia and Herzegovina',32,1
+'Botswana',33,1
+'Bouvet Island',34,0
+'Brazil',35,1
+'British Indian Ocean Territory',36,0
+'British Virgin Islands',37,0
+'Bulgaria',38,1
+'Burkina Faso',39,1
+'Burma',40,1
+'Burundi',41,1
+'Cambodia',42,1
+'Cameroon',43,1
+'Canada',44,1
+'Cape Verde',45,1
+'Cayman Islands',46,0
+'Central African Republic',47,1
+'Chad',48,1
+'Chile',49,1
+'China',50,1
+'Christmas Island',51,0
+'Clipperton Island',52,0
+'Cocos (Keeling) Islands',53,0
+'Colombia',54,1
+'Comoros',55,1
+'Congo',56,1
+'Congo (Democratic Republic of the)',57,1
+'Cook Islands',58,0
+'Coral Sea Islands',59,0
+'Costa Rica',60,1
+'Croatia',61,1
+'Cuba',62,0
+'Cura??ao',63,0
+'Cyprus',64,1
+'Czech Republic',65,1
+'C??te d''Ivoire',66,1
+'Denmark',67,1
+'Djibouti',68,1
+'Dominica',69,0
+'Dominican Republic',70,1
+'Ecuador',71,1
+'Egypt',72,1
+'El Salvador',73,1
+'Equatorial Guinea',74,1
+'Eritrea',75,1
+'Estonia',76,1
+'Ethiopia',77,1
+'Europa Island',78,0
+'Falkland Islands (Islas Malvinas)',79,0
+'Faroe Islands',80,0
+'Federated States of Micronesia',81,0
+'Fiji',82,1
+'Finland',83,1
+'France',84,1
+'French Guiana',85,0
+'French Polynesia',86,0
+'French Southern and Antarctic Lands',87,0
+'Gabon',88,1
+'Gambia',89,1
+'Gaza Strip',90,0
+'Georgia',91,1
+'Germany',92,1
+'Ghana',93,1
+'Gibraltar',94,0
+'Glorioso Islands',95,0
+'Greece',96,1
+'Greenland',97,0
+'Grenada',98,0
+'Guadeloupe',99,0
+'Guam',100,0
+'Guatemala',101,1
+'Guernsey',102,0
+'Guinea',103,1
+'Guinea-Bissau',104,1
+'Guyana',105,1
+'Haiti',106,1
+'Heard Island and McDonald Islands',107,0
+'Honduras',108,1
+'Hong Kong',109,0
+'Howland Island',110,0
+'Hungary',111,1
+'Iceland',112,1
+'India',113,1
+'Indonesia',114,1
+'Iran',115,1
+'Iraq',116,1
+'Ireland',117,1
+'Isle of Man',118,0
+'Israel',119,1
+'Italy',120,1
+'Jamaica',121,1
+'Japan',122,1
+'Jarvis Island',123,0
+'Jersey',124,0
+'Johnston Atoll',125,0
+'Jordan',126,1
+'Juan De Nova Island',127,0
+'Kazakhstan',128,1
+'Kenya',129,1
+'Kingman Reef',130,0
+'Kiribati',131,0
+'Kuwait',132,1
+'Kyrgyzstan',133,1
+'Laos',134,1
+'Latvia',135,1
+'Lebanon',136,1
+'Lesotho',137,1
+'Liberia',138,1
+'Libya',139,1
+'Liechtenstein',140,0
+'Lithuania',141,1
+'Luxembourg',142,1
+'Macau',143,0
+'Macedonia',144,1
+'Madagascar',145,1
+'Malawi',146,1
+'Malaysia',147,1
+'Maldives',148,1
+'Mali',149,1
+'Malta',150,1
+'Marshall Islands',151,0
+'Martinique',152,0
+'Mauritania',153,1
+'Mauritius',154,1
+'Mayotte',155,0
+'Mexico',156,1
+'Midway Islands',157,0
+'Moldova',158,1
+'Monaco',159,0
+'Mongolia',160,1
+'Montenegro',161,1
+'Montserrat',162,0
+'Morocco',163,1
+'Mozambique',164,1
+'Namibia',165,1
+'Nauru',166,0
+'Navassa Island',167,0
+'Nepal',168,1
+'Netherlands',169,1
+'New Caledonia',170,0
+'New Zealand',171,1
+'Nicaragua',172,1
+'Niger',173,1
+'Nigeria',174,1
+Niue',175,0
+'Norfolk Island',176,0
+'North Korea',177,0
+'Northern Mariana Islands',178,0
+'Norway',179,1
+'Oman',180,1
+'Pakistan',181,1
+'Palau',182,0
+'Palestina',183,0
+'Palmyra Atoll',184,0
+'Panama',185,1
+'Papua New Guinea',186,1
+'Paraguay',187,1
+'Peru',188,1
+'Philippines',189,1
+'Pitcairn Islands',190,0
+'Poland',191,1
+'Portugal',192,1
+'Puerto Rico',193,0
+'Qatar',194,1
+'Reunion',195,0
+'Romania',196,1
+'Russia',197,1
+'Rwanda',198,1
+'Saint Barth??lemy',199,0
+'Saint Helena',200,0
+'Saint Kitts and Nevis',201,0
+'Saint Lucia',202,1
+'Saint Martin',203,0
+'Saint Pierre and Miquelon',204,0
+'Saint Vincent and the Grenadines',205,1
+'Samoa',206,1
+'San Marino',207,0
+'Sao Tome and Principe',208,1
+'Saudi Arabia',209,1
+'Senegal',210,1
+'Serbia',211,0
+'Seychelles',212,0
+'Sierra Leone',213,1
+'Singapore',214,1
+'Sint Maarten',215,0
+'Slovakia',216,0
+'Slovenia',217,1
+'Solomon Islands',218,1
+'Somalia',219,0
+'South Africa',220,1
+'South Georgia and the South Sandwich Isla',221,0
+'South Korea',222,1
+'Spain',223,1
+'Spratly Islands',224,0
+'Sri Lanka',225,1
+'Sudan',226,0
+'Suriname',227,1
+'Svalbard and Jan Mayen',228,0
+'Swaziland',229,1
+'Sweden',230,1
+'Switzerland',231,1
+'Syria',232,0
+'Taiwan',233,0
+'Tajikistan',234,1
+'Tanzania',235,1
+'Thailand',236,1
+'Timor-Leste',237,1
+'Togo',238,1
+'Tokelau',239,0
+'Tonga',240,1
+'Trinidad and Tobago',241,1
+'Tromelin Island',242,0
+'Tunisia',243,1
+'Turkey',244,1
+'Turkmenistan',245,1
+'Turks and Caicas Islands',246,0
+'Tuvalu',247,0
+'Uganda',248,1
+'Ukraine',249,1
+'United Arab Emirates',250,1
+'United Kingdom',251,1
+'United States',252,1
+'Uruguay',253,1
+'Uzbekistan',254,1
+'Vatican City',255,0
+'Venezuela',256,1
+'Vietnam',257,1
+'Virgin Islands',258,0
+'Wake Island',259,0
+'Wallis and Futuna',260,0
+'Western Sahara',261,0
+'Yemen',262,1
+'Zambia',263,1
+'Zimbabwe',264,1
+'Paracel Islands',265,0

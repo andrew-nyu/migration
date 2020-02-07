@@ -13,11 +13,22 @@ saveDirectory = './Outputs/';
 %%  empirical data import
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-migrationData=csvread("raftery_test_prueba.csv");
+migrationData=csvread("A&R1015_264countries_matrixID.csv",1,1);
+countryData=csvread("all_countries4.csv");
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% metric for the evaluation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% assing nans to rows and columns of countries without data
+for indexJ = 1:length(countryData)
+       if countryData(indexJ,2)==0
+           migrationData(indexJ,:)=NaN;
+           migrationData(:,indexJ)=NaN;
+       end    
+end
+% removing nans from raftery data
+migrationData = migrationData(:,~all(isnan(migrationData)));
+migrationData = migrationData(~all(isnan(migrationData),2),:);
 
 %one simple metric is the relative # of migrations per source-destination
 %pair
@@ -26,15 +37,37 @@ fracMigsData = migrationData / sum(sum(migrationData));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% import model outcomes and calculate wieghted pearson
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fileList = dir([saveDirectory series '*'])
+fileList = dir([saveDirectory series '*']);
 
 for indexI = 1:length(fileList)
 
    currentRun = load([saveDirectory fileList(indexI).name]); 
    migrationMatrix=currentRun.output.migrationMatrix;
-    
+   
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   % excluding countries absent from raftery
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   % assing nans to rows and columns of countries without data
+   for indexJ = 1:length(countryData)
+       if countryData(indexJ,2)==0
+           migrationMatrix(indexJ,:)=NaN;
+           migrationMatrix(:,indexJ)=NaN;
+       end    
+   end
+   
+   %removing nans from model output
+   migrationMatrix = migrationMatrix(:,~all(isnan(migrationMatrix)));
+   migrationMatrix = migrationMatrix(~all(isnan(migrationMatrix),2),:);
+   
+   
+   %one simple metric is the relative # of migrations per source-destination
+   %pair
    fracMigsRun = migrationMatrix / sum(sum(migrationMatrix));
-    
+   
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   % all done! now the test
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   
    fracMigs_r2 = weightedPearson(fracMigsRun(:), fracMigsData(:), ones(numel(fracMigsRun),1));
 
    currentOutputRun = table(fracMigs_r2,indexI, ...
