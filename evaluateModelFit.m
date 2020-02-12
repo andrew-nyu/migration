@@ -3,11 +3,12 @@ function evaluateModelFit()
 clear all;
 close all;
 
-quantileMarker = 0.01;
+quantileMarker = 0.02;
 
 series = 'MC_Run_'; % change series name in function of which model outputs you want to use to calibrate
 
 saveDirectory = './Outputs/';
+loadDirectory = './February11/';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  empirical data import
@@ -37,11 +38,11 @@ fracMigsData = migrationData / sum(sum(migrationData));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% import model outcomes and calculate wieghted pearson
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fileList = dir([saveDirectory series '*']);
+fileList = dir([loadDirectory series '*']);
 
 for indexI = 1:length(fileList)
 
-   currentRun = load([saveDirectory fileList(indexI).name]); 
+   currentRun = load([loadDirectory fileList(indexI).name]); 
    migrationMatrix=currentRun.output.migrationMatrix;
    
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -88,7 +89,7 @@ end
 
 for indexI = 1:length(filenames)
     fname=filenames(indexI);
-    currentRun = load([saveDirectory fname{1}]);
+    currentRun = load([loadDirectory fname{1}]);
     successParams = currentRun.input;
     successList{indexI} = successParams;
     
