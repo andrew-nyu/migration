@@ -12,12 +12,12 @@ rng('shuffle');
 outputList = {};
 
 series = 'MC_Run_';
-saveDirectory = './Outputs/';
+saveDirectory = './runsABC/';
 
 %number of runs
 modelRuns = 1000;
 
-try load updatedMCParams
+try mcParams=load('updatedMCParams.mat');
 catch
     
     %define the levels and parameters you will explore, as below
@@ -33,7 +33,7 @@ catch
 %     mcParams = [mcParams; {'modelParameters.utility_iYears', 10, 20, 1}];
 %     mcParams = [mcParams; {'modelParameters.creditMultiplier', 0, 2, 0}];
 %     mcParams = [mcParams; {'modelParameters.remitRate', 0, 20, 0}];
-    mcParams = [mcParams; {'mapParameters.movingCostPerMile', 0, 5000, 0}];
+%    mcParams = [mcParams; {'mapParameters.movingCostPerMile', 0, 5000, 0}];
 %     mcParams = [mcParams; {'mapParameters.minDistForCost', 0, 50, 0}];
 %     mcParams = [mcParams; {'mapParameters.maxDistForCost', 0, 5000, 0}];
 %     mcParams = [mcParams; {'networkParameters.networkDistanceSD', 5, 15, 1}];
