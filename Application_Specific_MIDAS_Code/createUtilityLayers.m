@@ -68,25 +68,47 @@ utilityBaseLayers = -9999 * ones(length(locations),length(utilityLayerFunctions)
 
 
 %In this application, Layers are one indicator per SDG, a total of 17
+%for indexI = 1:length(locations)          
+%    utilityBaseLayers(indexI,1,:)  = table2array(utilityTable.poverty(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,2,:)  = table2array(utilityTable.food(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,3,:)  = table2array(utilityTable.health(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,4,:)  = table2array(utilityTable.education(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,5,:)  = table2array(utilityTable.gender(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,6,:)  = table2array(utilityTable.water(utilityTable.poverty.matrixID == indexI,dataYears));  
+%    utilityBaseLayers(indexI,7,:)  = table2array(utilityTable.energy(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,8,:)  = table2array(utilityTable.economy(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,9,:)  = table2array(utilityTable.innovation(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,10,:) = table2array(utilityTable.inequality(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,11,:) = table2array(utilityTable.cities(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,12,:) = table2array(utilityTable.consumption(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,13,:) = table2array(utilityTable.climate(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,14,:) = table2array(utilityTable.ocean(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,15,:) = table2array(utilityTable.land(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,16,:) = table2array(utilityTable.peace(utilityTable.poverty.matrixID == indexI,dataYears));
+%    utilityBaseLayers(indexI,17,:) = table2array(utilityTable.cooperation(utilityTable.poverty.matrixID == indexI,dataYears));
+%end
+
+% there's 28 years
 for indexI = 1:length(locations)          
-    utilityBaseLayers(indexI,1,:)  = table2array(utilityTable.poverty(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,2,:)  = table2array(utilityTable.food(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,3,:)  = table2array(utilityTable.health(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,4,:)  = table2array(utilityTable.education(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,5,:)  = table2array(utilityTable.gender(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,6,:)  = table2array(utilityTable.water(utilityTable.poverty.matrixID == indexI,dataYears));  
-    utilityBaseLayers(indexI,7,:)  = table2array(utilityTable.energy(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,8,:)  = table2array(utilityTable.economy(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,9,:)  = table2array(utilityTable.innovation(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,10,:) = table2array(utilityTable.inequality(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,11,:) = table2array(utilityTable.cities(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,12,:) = table2array(utilityTable.consumption(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,13,:) = table2array(utilityTable.climate(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,14,:) = table2array(utilityTable.ocean(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,15,:) = table2array(utilityTable.land(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,16,:) = table2array(utilityTable.peace(utilityTable.poverty.matrixID == indexI,dataYears));
-    utilityBaseLayers(indexI,17,:) = table2array(utilityTable.cooperation(utilityTable.poverty.matrixID == indexI,dataYears));
+    utilityBaseLayers(indexI,1,:)  = rand(1,28)*100;
+    utilityBaseLayers(indexI,2,:)  = rand(1,28)*100;
+    utilityBaseLayers(indexI,3,:)  = rand(1,28)*100;
+    utilityBaseLayers(indexI,4,:)  = rand(1,28)*100;
+    utilityBaseLayers(indexI,5,:)  = rand(1,28)*100;
+    utilityBaseLayers(indexI,6,:)  = rand(1,28)*100;
+    utilityBaseLayers(indexI,7,:)  = rand(1,28)*100;
+    utilityBaseLayers(indexI,8,:)  = rand(1,28)*100;
+    utilityBaseLayers(indexI,9,:)  = rand(1,28)*100;
+    utilityBaseLayers(indexI,10,:) = rand(1,28)*100;
+    utilityBaseLayers(indexI,11,:) = rand(1,28)*100;
+    utilityBaseLayers(indexI,12,:) = rand(1,28)*100;
+    utilityBaseLayers(indexI,13,:) = rand(1,28)*100;
+    utilityBaseLayers(indexI,14,:) = rand(1,28)*100;
+    utilityBaseLayers(indexI,15,:) = rand(1,28)*100;
+    utilityBaseLayers(indexI,16,:) = rand(1,28)*100;
+    utilityBaseLayers(indexI,17,:) = rand(1,28)*100;
 end
+
 
 %estimate expected number of agents for each layer, for use in the utility
 %layer function input
