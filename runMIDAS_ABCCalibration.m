@@ -1,29 +1,14 @@
-function runMIDASExperiment()
+function runMIDAS_ABCCalibration()
 
-clear functions
-clear classes
+addpath('./ABC_Calibration_MIDAS_Code');
 
-addpath('./Override_Core_MIDAS_Code');
-addpath('./Application_Specific_MIDAS_Code');
-addpath('./Core_MIDAS_Code');
+saveDirectory = './Calibration_Outputs/';
+experimentDirectory = './MIDAS_Outputs_for_Calibration/' ;
 
-rng('shuffle');
+% first initialize the mcParams that are going to be calibrated and store 
 
-outputList = {};
+mcParams = table([],[],[],[],'VariableNames',{'Name','Lower','Upper','RoundYN'});
 
-series = 'MC_Run_';
-saveDirectory = './MIDAS_Outputs_for_Calibration/';
-
-%number of runs
-modelRuns = 1000;
-
-try 
-    load ./Calibration_Outputs/updatedMCParams;
-catch
-    
-    %define the levels and parameters you will explore, as below
-    mcParams = table([],[],[],[],'VariableNames',{'Name','Lower','Upper','RoundYN'});
-    
 %     mcParams = [mcParams; {'modelParameters.spinupTime', 8, 20, 1}];
 %     mcParams = [mcParams; {'modelParameters.numAgents', 3000, 6000, 1}];
 %     mcParams = [mcParams; {'modelParameters.utility_k', 1, 5, 0}];
@@ -34,7 +19,7 @@ catch
 %     mcParams = [mcParams; {'modelParameters.utility_iYears', 10, 20, 1}];
 %     mcParams = [mcParams; {'modelParameters.creditMultiplier', 0, 2, 0}];
 %     mcParams = [mcParams; {'modelParameters.remitRate', 0, 20, 0}];
-%    mcParams = [mcParams; {'mapParameters.movingCostPerMile', 0, 5000, 0}];
+    mcParams = [mcParams; {'mapParameters.movingCostPerMile', 0, 5000, 0}];
 %     mcParams = [mcParams; {'mapParameters.minDistForCost', 0, 50, 0}];
 %     mcParams = [mcParams; {'mapParameters.maxDistForCost', 0, 5000, 0}];
 %     mcParams = [mcParams; {'networkParameters.networkDistanceSD', 5, 15, 1}];
@@ -91,58 +76,40 @@ catch
 %     mcParams = [mcParams; {'agentParameters.uninformedMaxExpectedProbJoinLayerSD', 0, 0.2, 0}];
 %     mcParams = [mcParams; {'agentParameters.expectationDecayMean', 0.05, 0.2, 0}];
 %     mcParams = [mcParams; {'agentParameters.expectationDecaySD', 0, 0.2, 0}];
-end
-%make the full design
 
-fprintf(['Building Experiment List.\n']);
-for indexI = 1:modelRuns
-    experiment = table([],[],'VariableNames',{'parameterNames','parameterValues'});
-    for indexJ = 1:(height(mcParams))
-        tempName = mcParams.Name{indexJ};
-        tempMin = mcParams.Lower(indexJ);
-        tempMax = mcParams.Upper(indexJ);
-        tempValue = tempMin + (tempMax-tempMin) * rand();
-        if(mcParams.RoundYN(indexJ))
-            tempValue = round(tempValue);
-        end
-        experiment = [experiment;{tempName, tempValue}];
-    end
-    experimentList{indexI} = experiment;
-end
+% diego: changed the save directory for clarity
+save ./Calibration_Outputs/updatedMCParams mcParams;
 
-fprintf(['Saving Experiment List.\n']);
-save([saveDirectory 'experiment_' date '_input_summary'], 'experimentList', 'mcParams');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% buildMigrationData loads Raftery's data, aggregates it by region
+% and calculates the relative number of migrations per source-destination
+% pair. I removed the other metrics from andrew's buildNextRound file
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fracMigsData = buildMigrationData();
 
-runList = zeros(length(experimentList),1);
-%run the model
-for indexI = 1:length(experimentList)
-    if(runList(indexI) == 0)
-        input = experimentList{indexI};
-        
-        %this next line runs MIDAS using the current experimental
-        %parameters
-        output = midasMainLoop(input, ['Experiment Run ' num2str(indexI)]);
-        
-        
-        functionVersions = inmem('-completenames');
-        functionVersions = functionVersions(strmatch(pwd,functionVersions));
-        output.codeUsed = functionVersions;
-        % diego: added saveDirectory to put the run number in the MC_run
-        % file
-        currentFile = [series num2str(length(dir([saveDirectory series '*']))) '_' datestr(now) '.mat'];
-        currentFile = [saveDirectory currentFile];
-        
-        %make the filename compatible across Mac/PC
-        currentFile = strrep(currentFile,':','-');
-        currentFile = strrep(currentFile,' ','_');
+% set the conditions to determine success in the calibration process
+R2=1000;
+R2_old=0;
+R2_diff=0.001;
 
-        saveToFile(input, output, currentFile);
-        runList(indexI) = 1;
-    end
+while abs(R2-R2_old)> R2_diff
+    
+    R2_old=R2;    
+    
+    % run updated simulations
+    runMidasExperiment();
+
+    % build next calibration round
+    R2 = buildNextRound_diego(experimentDirectory,fracMigsData);
+    
 end
 
-end
+% commented this to keep all the generated migration data
+% clearing the temporal directories used for calibration
+% rmdir(experimentDirectory,'s');
 
-function saveToFile(input, output, filename);
-    save(filename,'input', 'output');
-end
+% diego: save the calibration result, containing the best parameter distribution
+% this is actually already saved in same directory in updatedMCParams. I
+% just add a number and date to keep the file, as updatedMCParams can be
+% overwritten
+save([saveDirectory 'calibrationResult_' num2str(length(dir([saveDirectory 'calibrationResult_*']))) datestr(now) '.mat' ], 'mcParams');
