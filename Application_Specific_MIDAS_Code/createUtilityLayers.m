@@ -27,6 +27,11 @@ iReturn = modelParameters.utility_iReturn;
 iDiscount = modelParameters.utility_iDiscount;
 iYears = modelParameters.utility_iYears;
 leadTime = modelParameters.spinupTime;
+% diegob: access costs as parameters
+accessCost1 = modelParameters.accessCost1;
+accessCost2 = modelParameters.accessCost2;
+accessCost3 = modelParameters.accessCost3;
+accessCost4 = modelParameters.accessCost4;
 
 numLayers = 17;
 
@@ -68,46 +73,46 @@ utilityBaseLayers = -9999 * ones(length(locations),length(utilityLayerFunctions)
 
 
 %In this application, Layers are one indicator per SDG, a total of 17
-%for indexI = 1:length(locations)          
-%    utilityBaseLayers(indexI,1,:)  = table2array(utilityTable.poverty(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,2,:)  = table2array(utilityTable.food(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,3,:)  = table2array(utilityTable.health(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,4,:)  = table2array(utilityTable.education(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,5,:)  = table2array(utilityTable.gender(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,6,:)  = table2array(utilityTable.water(utilityTable.poverty.matrixID == indexI,dataYears));  
-%    utilityBaseLayers(indexI,7,:)  = table2array(utilityTable.energy(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,8,:)  = table2array(utilityTable.economy(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,9,:)  = table2array(utilityTable.innovation(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,10,:) = table2array(utilityTable.inequality(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,11,:) = table2array(utilityTable.cities(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,12,:) = table2array(utilityTable.consumption(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,13,:) = table2array(utilityTable.climate(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,14,:) = table2array(utilityTable.ocean(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,15,:) = table2array(utilityTable.land(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,16,:) = table2array(utilityTable.peace(utilityTable.poverty.matrixID == indexI,dataYears));
-%    utilityBaseLayers(indexI,17,:) = table2array(utilityTable.cooperation(utilityTable.poverty.matrixID == indexI,dataYears));
-%end
-
-% there's 28 years
 for indexI = 1:length(locations)          
-    utilityBaseLayers(indexI,1,:)  = rand(1,28)*100;
-    utilityBaseLayers(indexI,2,:)  = rand(1,28)*100;
-    utilityBaseLayers(indexI,3,:)  = rand(1,28)*100;
-    utilityBaseLayers(indexI,4,:)  = rand(1,28)*100;
-    utilityBaseLayers(indexI,5,:)  = rand(1,28)*100;
-    utilityBaseLayers(indexI,6,:)  = rand(1,28)*100;
-    utilityBaseLayers(indexI,7,:)  = rand(1,28)*100;
-    utilityBaseLayers(indexI,8,:)  = rand(1,28)*100;
-    utilityBaseLayers(indexI,9,:)  = rand(1,28)*100;
-    utilityBaseLayers(indexI,10,:) = rand(1,28)*100;
-    utilityBaseLayers(indexI,11,:) = rand(1,28)*100;
-    utilityBaseLayers(indexI,12,:) = rand(1,28)*100;
-    utilityBaseLayers(indexI,13,:) = rand(1,28)*100;
-    utilityBaseLayers(indexI,14,:) = rand(1,28)*100;
-    utilityBaseLayers(indexI,15,:) = rand(1,28)*100;
-    utilityBaseLayers(indexI,16,:) = rand(1,28)*100;
-    utilityBaseLayers(indexI,17,:) = rand(1,28)*100;
+   utilityBaseLayers(indexI,1,:)  = table2array(utilityTable.poverty(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,2,:)  = table2array(utilityTable.food(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,3,:)  = table2array(utilityTable.health(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,4,:)  = table2array(utilityTable.education(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,5,:)  = table2array(utilityTable.gender(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,6,:)  = table2array(utilityTable.water(utilityTable.poverty.matrixID == indexI,dataYears));  
+   utilityBaseLayers(indexI,7,:)  = table2array(utilityTable.energy(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,8,:)  = table2array(utilityTable.economy(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,9,:)  = table2array(utilityTable.innovation(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,10,:) = table2array(utilityTable.inequality(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,11,:) = table2array(utilityTable.cities(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,12,:) = table2array(utilityTable.consumption(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,13,:) = table2array(utilityTable.climate(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,14,:) = table2array(utilityTable.ocean(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,15,:) = table2array(utilityTable.land(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,16,:) = table2array(utilityTable.peace(utilityTable.poverty.matrixID == indexI,dataYears));
+   utilityBaseLayers(indexI,17,:) = table2array(utilityTable.cooperation(utilityTable.poverty.matrixID == indexI,dataYears));
 end
+
+% % there's 28 years
+% for indexI = 1:length(locations)          
+%     utilityBaseLayers(indexI,1,:)  = rand(1,28)*100;
+%     utilityBaseLayers(indexI,2,:)  = rand(1,28)*100;
+%     utilityBaseLayers(indexI,3,:)  = rand(1,28)*100;
+%     utilityBaseLayers(indexI,4,:)  = rand(1,28)*100;
+%     utilityBaseLayers(indexI,5,:)  = rand(1,28)*100;
+%     utilityBaseLayers(indexI,6,:)  = rand(1,28)*100;
+%     utilityBaseLayers(indexI,7,:)  = rand(1,28)*100;
+%     utilityBaseLayers(indexI,8,:)  = rand(1,28)*100;
+%     utilityBaseLayers(indexI,9,:)  = rand(1,28)*100;
+%     utilityBaseLayers(indexI,10,:) = rand(1,28)*100;
+%     utilityBaseLayers(indexI,11,:) = rand(1,28)*100;
+%     utilityBaseLayers(indexI,12,:) = rand(1,28)*100;
+%     utilityBaseLayers(indexI,13,:) = rand(1,28)*100;
+%     utilityBaseLayers(indexI,14,:) = rand(1,28)*100;
+%     utilityBaseLayers(indexI,15,:) = rand(1,28)*100;
+%     utilityBaseLayers(indexI,16,:) = rand(1,28)*100;
+%     utilityBaseLayers(indexI,17,:) = rand(1,28)*100;
+% end
 
 
 %estimate expected number of agents for each layer, for use in the utility
@@ -200,19 +205,16 @@ end
 %OLD borders implementation
 %
 utilityAccessCosts = ...
-    [1 1;... 
-     2 25;...
-     3 50;...
-     4 100 ...
-%      2 1;...
-%      3 1;...
-%      4 1 ...
+    [1 accessCost1;... 
+     2 accessCost2;...
+     3 accessCost3;...
+     4 accessCost4 ...
     ];  
 
 utilityAccessCodesMat = false(size(utilityAccessCosts,1),length(utilityLayerFunctions),length(locations));
-utilityAccessCodesMat(1,:,[9, 10, 17, 22, 25, 45, 48, 53, 59, 68, 70, 72, 81, 97, 100, 105, 107, 108, 110, 118, 120, 136, 145, 146, 147, 153, 184, 187, 188, 190, 200, 201, 204, 215, 219]) = true
+utilityAccessCodesMat(1,:,[9, 10, 17, 22, 25, 45, 48, 53, 59, 68, 70, 72, 81, 97, 100, 105, 107, 108, 110, 118, 120, 136, 145, 146, 147, 153, 184, 187, 188, 190, 200, 201, 204, 215, 219]) = true;
 utilityAccessCodesMat(2,:,[29, 32, 34, 37, 63, 64, 104, 121, 128, 155, 162, 164, 171, 177, 195, 209, 228, 235, 243, 252, 262, 263]) = true;
-utilityAccessCodesMat(3,:,[4, 11, 16, 23, 26,38, 44, 46, 47, 61, 65, 69, 71, 87, 88]) = true
+utilityAccessCodesMat(3,:,[4, 11, 16, 23, 26,38, 44, 46, 47, 61, 65, 69, 71, 87, 88]) = true;
 utilityAccessCodesMat(4,:,[2, 3, 5, 6, 7, 14, 15, 18, 21, 24, 27, 28, 31, 39, 40, 41, 42, 43, 49, 54, 55, 56, 60, 66, 67, 73, 74, 75, 76, 79, 82, 83, 91, 93, 95, 96, 111, 112, 114, 116, 117, 119, 131, 133, 134, 135, 139, 140, 141, 143, 144, 149, 158, 160, 163, 167, 168, 170, 178, 179, 180, 181, 185, 191, 193, 197, 203, 205, 206, 207,208, 210, 211, 213, 216,217, 218, 221, 222, 224,225, 229, 230, 234, 239,249, 250, 251, 253, 256, 261]) = true;
 
 

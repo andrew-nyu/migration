@@ -22,6 +22,12 @@ modelParameters.utility_noise = 0.05;
 modelParameters.utility_iReturn = 0.05;
 modelParameters.utility_iDiscount = 0.05;
 modelParameters.utility_iYears = 20;
+% diegob: including of access costs as model parameters
+modelParameters.accessCost1 = 1;
+modelParameters.accessCost2 = 25;
+modelParameters.accessCost3 = 50;
+modelParameters.accessCost4 = 100;
+%
 modelParameters.remitRate = 0;
 modelParameters.creditMultiplier = 0.3;
 modelParameters.movingCostPerMile = 0;

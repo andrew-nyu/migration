@@ -7,8 +7,8 @@ function fracMigsData = buildMigrationData()
 
 aggregate=1;
 
-migrationData=csvread("../Data/Global_Calibration_Data/A&R1015_264countries_matrixID.csv",1,1);
-countryData=csvread("../Data/Global_Calibration_Data/countriesbyregion.csv");
+migrationData=csvread("./Data/Global_Calibration_Data/A&R1015_264countries_matrixID.csv",1,1);
+countryData=csvread("./Data/Global_Calibration_Data/countriesbyregion.csv");
 
 if aggregate==1
     regionMembership=countryData(:,3);

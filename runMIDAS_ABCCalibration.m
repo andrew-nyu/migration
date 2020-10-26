@@ -3,7 +3,7 @@ function runMIDAS_ABCCalibration()
 addpath('./ABC_Calibration_MIDAS_Code');
 
 saveDirectory = './Calibration_Outputs/';
-experimentDirectory = './MIDAS_Outputs_for_Calibration/' ;
+experimentDirectory = './MIDAS_Outputs_for_Calibration/February 11/' ;
 
 % first initialize the mcParams that are going to be calibrated and store 
 
@@ -17,6 +17,10 @@ mcParams = table([],[],[],[],'VariableNames',{'Name','Lower','Upper','RoundYN'})
 %     mcParams = [mcParams; {'modelParameters.utility_iReturn', 0, 0.2, 0}];
 %     mcParams = [mcParams; {'modelParameters.utility_iDiscount', 0, 0.1, 0}];
 %     mcParams = [mcParams; {'modelParameters.utility_iYears', 10, 20, 1}];
+%    mcParams = [mcParams; {'modelParameters.accessCost1', 1, 1000, 0}];
+%    mcParams = [mcParams; {'modelParameters.accessCost2', 1, 1000, 0}];
+%    mcParams = [mcParams; {'modelParameters.accessCost3', 1, 1000, 0}];
+%    mcParams = [mcParams; {'modelParameters.accessCost4', 1, 1000, 0}];
 %     mcParams = [mcParams; {'modelParameters.creditMultiplier', 0, 2, 0}];
 %     mcParams = [mcParams; {'modelParameters.remitRate', 0, 20, 0}];
     mcParams = [mcParams; {'mapParameters.movingCostPerMile', 0, 5000, 0}];
@@ -97,7 +101,7 @@ while abs(R2-R2_old)> R2_diff
     R2_old=R2;    
     
     % run updated simulations
-    runMidasExperiment();
+    %runMidasExperiment();
 
     % build next calibration round
     R2 = buildNextRound_diego(experimentDirectory,fracMigsData);
@@ -112,4 +116,5 @@ end
 % this is actually already saved in same directory in updatedMCParams. I
 % just add a number and date to keep the file, as updatedMCParams can be
 % overwritten
-save([saveDirectory 'calibrationResult_' num2str(length(dir([saveDirectory 'calibrationResult_*']))) datestr(now) '.mat' ], 'mcParams');
+load ./Calibration_Outputs/updatedMCParams;
+save([saveDirectory 'calibrationResult_' num2str(length(dir([saveDirectory 'calibrationResult_*']))) '_' datestr(now) '.mat' ], 'mcParams');
