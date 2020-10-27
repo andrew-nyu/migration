@@ -116,6 +116,8 @@ bestInputs = inputListRun(outputListRun.fracMigs_r2 >= minR2,:);
 % guess that the experiment* file will be overwritten at each calibration
 % run as long as all experiments are run on the same day... Can we count on
 % that?
+% diego: 27/10/20 update: experimentDirectory changes for each calibration round
+% so that we are sure to always import the correct mcParams
 expList = dir([experimentDirectory 'experiment_*']);
 load([experimentDirectory expList(1).name]);
 

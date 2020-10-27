@@ -40,7 +40,9 @@ demographicVariables.ageDiscountRateFactor = ageDiscountRateFactor;
 %memory
 [utilityLayerFunctions, utilityHistory, utilityAccessCosts, utilityTimeConstraints, utilityAccessCodesMat, utilityPrereqs, utilityBaseLayers, utilityForms, incomeForms, nExpected, hardSlotCountYN] = createUtilityLayers(locations, modelParameters, demographicVariables);
 
-utilityVariables.numForms = max(utilityForms);
+% diego: changing num forms to the number of SDGs==17
+%utilityVariables.numForms = max(utilityForms);
+utilityVariables.numForms = 17;
 utilityVariables.utilityLayerFunctions = utilityLayerFunctions;
 utilityVariables.utilityHistory = utilityHistory;
 utilityVariables.utilityAccessCosts = utilityAccessCosts;

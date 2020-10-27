@@ -33,6 +33,25 @@ accessCost2 = modelParameters.accessCost2;
 accessCost3 = modelParameters.accessCost3;
 accessCost4 = modelParameters.accessCost4;
 
+% diegob: weight coefficients fo each sdg layer
+coeffPoverty = agentParameters.coeffPoverty;
+coeffFood = agentParameters.coeffFood;
+coeffHealth = agentParameters.coeffHealth;
+coeffEducation = agentParameters.coeffEducation;
+coeffGender = agentParameters.coeffGender;
+coeffWater = agentParameters.coeffWater;
+coeffEnergy = agentParameters.coeffEnergy;
+coeffEconomy = agentParameters.coeffEconomy;
+coeffInnovation = agentParameters.coeffInnovation;
+coeffInequality = agentParameters.coeffInequality;
+coeffCities = agentParameters.coeffCities;
+coeffConsumption = agentParameters.coeffConsumption;
+coeffClimate = agentParameters.coeffClimate;
+coeffOcean = agentParameters.coeffOcean;
+coeffLand = agentParameters.coeffLand;
+coeffPeace = agentParameters.coeffPeace;
+coeffCooperation = agentParameters.coeffCooperation;
+
 numLayers = 17;
 
 %read in raw utility layer data for use below
@@ -139,7 +158,25 @@ utilityForms = zeros(length(utilityLayerFunctions),1);
 %Utility form values correspond to the list of utility coefficients in
 %agent utility functions (i.e., numbered 1 to n) ... in this case, all are
 %income (same coefficient)
-utilityForms(1:length(utilityLayerFunctions)) = 2;
+%utilityForms(1:length(utilityLayerFunctions)) = 2;
+% diego: weight of SDG layers for utility calculation 
+utilityForms(1) = coeffPoverty;
+utilityForms(2) = coeffFood;
+utilityForms(3) = coeffHealth;
+utilityForms(4) = coeffEducation;
+utilityForms(5) = coeffGender;
+utilityForms(6) = coeffWater;
+utilityForms(7) = coeffEnergy;
+utilityForms(8) = coeffEconomy;
+utilityForms(9) = coeffInnovation;
+utilityForms(10) = coeffInequality;
+utilityForms(11) = coeffCities;
+utilityForms(12) = coeffConsumption;
+utilityForms(13) = coeffClimate;
+utilityForms(14) = coeffOcean;
+utilityForms(15) = coeffLand;
+utilityForms(16) = coeffPeace;
+utilityForms(17) = coeffCooperation;
 
 %Income form is either 0 or 1 (with 1 meaning income)
 incomeForms = utilityForms == 1;

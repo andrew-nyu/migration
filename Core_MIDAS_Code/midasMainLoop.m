@@ -277,7 +277,6 @@ for indexT = 1:modelParameters.timeSteps
 
             newIncome = sum(utilityVariables.utilityHistory(currentAgent.matrixLocation,currentAgent.currentPortfolio(utilityVariables.incomeForms(currentAgent.currentPortfolio)), indexT));
 
-            
             %add in any income that has been shared in to the agent, to
             %include in sharing-out decision-making
             newIncome = newIncome + currentAgent.currentSharedIn;
