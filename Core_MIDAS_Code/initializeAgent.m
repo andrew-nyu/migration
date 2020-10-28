@@ -27,7 +27,7 @@ fDecay = min(1,max(0,agentParameters.expectationDecayMean + randn() * agentParam
 %bList has elements corresponding to each kind of utility layer present
 %bList = max(0, agentParameters.bListMean + randn(utilityVariables.numForms,1) * agentParameters.bListSD);
 % diegob: blist takes now into account the weight for each sdg layer
-bList = max(0, utilityVariables.utilityForms + randn(utilityVariables.numForms,1) * agentParameters.bListSD); 
+bList = max(0, utilityVariables.utilityForms * (1 + randn(utilityVariables.numForms,1) * agentParameters.bListSD) ); 
 
 if(~isempty(varargin))
     newAgent = varargin{1};

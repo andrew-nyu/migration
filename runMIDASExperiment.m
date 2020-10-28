@@ -1,4 +1,4 @@
-function runMIDASExperiment()
+function runMIDASExperiment(saveDirectory)
 
 clear functions
 clear classes
@@ -12,7 +12,7 @@ rng('shuffle');
 outputList = {};
 
 series = 'MC_Run_';
-saveDirectory = './MIDAS_Outputs_for_Calibration/';
+%saveDirectory = './MIDAS_Outputs_for_Calibration/';
 
 %number of runs
 modelRuns = 1000;

@@ -3,7 +3,19 @@ function runMIDAS_ABCCalibration()
 addpath('./ABC_Calibration_MIDAS_Code');
 
 saveDirectory = './Calibration_Outputs/';
-experimentDirectory = './MIDAS_Outputs_for_Calibration/' ;
+experimentPreDirectory = './MIDAS_Outputs_for_Calibration/' ;
+
+experimentDirectory = [experimentPreDirectory 'Calibration_Exercise_' num2str(length(dir([experimentPreDirectory 'Calibration_Exercise_*']))) '/'];
+
+if ~exist(saveDirectory, 'dir')
+    mkdir(saveDirectory);
+end
+if ~exist(experimentPreDirectory, 'dir')
+    mkdir(experimentPreDirectory);
+end
+if ~exist(experimentDirectory, 'dir')
+    mkdir(experimentDirectory);
+end
 
 % first initialize the mcParams that are going to be calibrated and store 
 
@@ -70,24 +82,24 @@ mcParams = table([],[],[],[],'VariableNames',{'Name','Lower','Upper','RoundYN'})
     mcParams = [mcParams; {'agentParameters.discountRateSD', 0, 0.02, 0}];
     mcParams = [mcParams; {'agentParameters.rValueMean', 0.75, 1.5, 0}];
     mcParams = [mcParams; {'agentParameters.rValueSD', 0.1, 0.4 , 0}];
-    mcParams = [mcParams; {'agentParameters.bListSD', 0, 0.4, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffPoverty', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffFood', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffHealth', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffEducation', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffGender', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffWater', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffEnergy', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffEconomy', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffInnovation', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffInequality', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffCities', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffConsumption', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffClimate', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffOcean', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffLand', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffPeace', 0, 1, 0}];
-    mcParams = [mcParams; {'agentParameters.coeffCooperation', 0, 1, 0}];
+    mcParams = [mcParams; {'agentParameters.bListSD', 0, 0.5, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffPoverty', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffFood', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffHealth', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffEducation', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffGender', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffWater', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffEnergy', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffEconomy', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffInnovation', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffInequality', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffCities', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffConsumption', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffClimate', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffOcean', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffLand', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffPeace', 0, 100, 0}];
+    mcParams = [mcParams; {'agentParameters.coeffCooperation', 0, 100, 0}];
     mcParams = [mcParams; {'agentParameters.prospectLossMean', 1, 2, 0}];
     mcParams = [mcParams; {'agentParameters.prospectLossSD', 0, 0.2, 0}];
     mcParams = [mcParams; {'agentParameters.informedExpectedProbJoinLayerMean', 0.8, 1,0}];
@@ -118,13 +130,13 @@ while abs(R2-R2_old)> R2_diff
     
     R2_old=R2;    
     
-    % run updated simulations
-    runMidasExperiment();
-
     experimentDirectory = [experimentDirectory 'abc_round_' num2str(abc_round) '/'];
     mkdir(experimentDirectory);
     abc_round=abc_round+1;
     
+    % run updated simulations
+    runMIDASExperiment(experimentDirectory);
+
     % build next calibration round
     R2 = buildNextRound_diego(experimentDirectory,fracMigsData);
     
