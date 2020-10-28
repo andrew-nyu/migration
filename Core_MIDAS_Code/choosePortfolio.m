@@ -295,6 +295,9 @@ for indexL = 1:length(locationList)
         %the sum of expected layer income in each period.  
         currentPortfolio = (portfolioSubSet(indexP,:)  * portfolioData);
 
+        %by default, utility on income is bList(1);
+        utilityOnIncome = agent.bList(1);
+        
         %add sharing in from the network
         if(~isempty(agent.network))
             %estimate the gross intention of sharing in from network
@@ -319,7 +322,7 @@ for indexL = 1:length(locationList)
             
             %add the actual expected sharing in to each element in the time
             %series
-            currentPortfolio = currentPortfolio + actualAmounts;
+            currentPortfolio = currentPortfolio + actualAmounts * utilityOnIncome;
         end
         
         %add access costs that would need to be paid in order to access the
@@ -332,11 +335,11 @@ for indexL = 1:length(locationList)
         %add these costs to the first element in the time series, and store
         %the list for later (in case we choose this portfolio and need to
         %actually pay them)
-        currentPortfolio(1) = currentPortfolio(1) - newCosts;
+        currentPortfolio(1) = currentPortfolio(1) - newCosts * utilityOnIncome;
         portfolioAccessCodes{indexP} = accessCostCodes;
         
         %add moving costs appropriate to this location
-        currentPortfolio(1) = currentPortfolio(1) - currentMovingCost;
+        currentPortfolio(1) = currentPortfolio(1) - currentMovingCost * utilityOnIncome;
         
         %identify whether this portfolio is out of reach, due to credit
         %constraint.  Agent has access to credit proportional to its 'human
