@@ -1,4 +1,4 @@
-function minR2 = evaluateModelFit(experimentDirectory, fracMigsData)
+function evaluateModelFit()
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % diego: the function now takes two arguments. experimentDirectory is to
@@ -24,6 +24,8 @@ countryData=csvread("./Data/Global_Calibration_Data/countriesbyregion.csv");
 regionMembership=countryData(:,3);
 regionMembership=regionMembership(regionMembership~=0);
    
+fracMigsData = buildMigrationData();
+experimentDirectory='./MIDAS_Outputs_for_Calibration/Calibration_Exercise_0/';
 
 try
     % diego: evaluationOutputs is not being calculated nor saved, hence 
@@ -127,6 +129,7 @@ for indexI = 1:height(mcParams)
     mcParams.Upper(indexI) = max(table2array(bestInputs(:,tempIndex)));
 end
 
+minR2
 % diego: changed the save directory for clarity
 save ./Calibration_Outputs/updatedMCParams mcParams;
 

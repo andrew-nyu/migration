@@ -1,4 +1,4 @@
-function runMIDAS_ABCCalibration()
+function buildABCCalibrationExercise()
 
 addpath('./ABC_Calibration_MIDAS_Code');
 
@@ -112,41 +112,4 @@ mcParams = table([],[],[],[],'VariableNames',{'Name','Lower','Upper','RoundYN'})
 % diego: changed the save directory for clarity
 save ./Calibration_Outputs/updatedMCParams mcParams;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% buildMigrationData loads Raftery's data, aggregates it by region
-% and calculates the relative number of migrations per source-destination
-% pair. I removed the other metrics from andrew's buildNextRound file
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-% set the conditions to determine success in the calibration process
-R2=1000;
-R2_old=0;
-R2_diff=0.001;
-
-while abs(R2-R2_old)> R2_diff
-    
-    R2_old=R2;    
-    
-    experimentDirectory = [experimentDirectory 'abc_round_' num2str(length(dir([experimentPreDirectory 'abc_round_*']))) '/'];
-    mkdir(experimentDirectory);
-    abc_round=abc_round+1;
-    
-    % run updated simulations
-    %runMIDASExperiment(experimentDirectory);
-
-    % build next calibration round
-    R2 = buildNextRound_diego(experimentDirectory);
-    
 end
-
-% commented this to keep all the generated migration data
-% clearing the temporal directories used for calibration
-% rmdir(experimentDirectory,'s');
-
-% diego: save the calibration result, containing the best parameter distribution
-% this is actually already saved in same directory in updatedMCParams. I
-% just add a number and date to keep the file, as updatedMCParams can be
-% overwritten
-load ./Calibration_Outputs/updatedMCParams;
-save([saveDirectory 'calibrationResult_' num2str(length(dir([saveDirectory 'calibrationResult_*']))) '_' datestr(now) '.mat' ], 'mcParams');
