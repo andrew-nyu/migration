@@ -15,7 +15,7 @@ series = 'MC_Run_';
 saveDirectory = './MIDAS_Outputs_for_Calibration/Calibration_Exercise_0/';
 
 %number of runs
-modelRuns = 1000;
+modelRuns = 1;
 
 try 
     load ./Calibration_Outputs/updatedMCParams;

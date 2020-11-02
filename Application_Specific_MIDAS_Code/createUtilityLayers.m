@@ -34,23 +34,23 @@ accessCost3 = modelParameters.accessCost3;
 accessCost4 = modelParameters.accessCost4;
 
 % diegob: weight coefficients fo each sdg layer
-coeffPoverty = agentParameters.coeffPoverty;
-coeffFood = agentParameters.coeffFood;
-coeffHealth = agentParameters.coeffHealth;
-coeffEducation = agentParameters.coeffEducation;
-coeffGender = agentParameters.coeffGender;
-coeffWater = agentParameters.coeffWater;
-coeffEnergy = agentParameters.coeffEnergy;
-coeffEconomy = agentParameters.coeffEconomy;
-coeffInnovation = agentParameters.coeffInnovation;
-coeffInequality = agentParameters.coeffInequality;
-coeffCities = agentParameters.coeffCities;
-coeffConsumption = agentParameters.coeffConsumption;
-coeffClimate = agentParameters.coeffClimate;
-coeffOcean = agentParameters.coeffOcean;
-coeffLand = agentParameters.coeffLand;
-coeffPeace = agentParameters.coeffPeace;
-coeffCooperation = agentParameters.coeffCooperation;
+coeffPoverty = modelParameters.coeffPoverty;
+coeffFood = modelParameters.coeffFood;
+coeffHealth = modelParameters.coeffHealth;
+coeffEducation = modelParameters.coeffEducation;
+coeffGender = modelParameters.coeffGender;
+coeffWater = modelParameters.coeffWater;
+coeffEnergy = modelParameters.coeffEnergy;
+coeffEconomy = modelParameters.coeffEconomy;
+coeffInnovation = modelParameters.coeffInnovation;
+coeffInequality = modelParameters.coeffInequality;
+coeffCities = modelParameters.coeffCities;
+coeffConsumption = modelParameters.coeffConsumption;
+coeffClimate = modelParameters.coeffClimate;
+coeffOcean = modelParameters.coeffOcean;
+coeffLand = modelParameters.coeffLand;
+coeffPeace = modelParameters.coeffPeace;
+coeffCooperation = modelParameters.coeffCooperation;
 
 numLayers = 17;
 
