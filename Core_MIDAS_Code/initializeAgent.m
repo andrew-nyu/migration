@@ -27,9 +27,31 @@ fDecay = min(1,max(0,agentParameters.expectationDecayMean + randn() * agentParam
 %bList has elements corresponding to each kind of utility layer present
 %bList = max(0, agentParameters.bListMean + randn(utilityVariables.numForms,1) * agentParameters.bListSD);
 % diegob: blist takes now into account the weight for each sdg layer
+% diegob: weight coefficients fo each sdg layer
+coeffPoverty = agentParameters.coeffPoverty;
+coeffFood = agentParameters.coeffFood;
+coeffHealth = agentParameters.coeffHealth;
+coeffEducation = agentParameters.coeffEducation;
+coeffGender = agentParameters.coeffGender;
+coeffWater = agentParameters.coeffWater;
+coeffEnergy = agentParameters.coeffEnergy;
+coeffEconomy = agentParameters.coeffEconomy;
+coeffInnovation = agentParameters.coeffInnovation;
+coeffInequality = agentParameters.coeffInequality;
+coeffCities = agentParameters.coeffCities;
+coeffConsumption = agentParameters.coeffConsumption;
+coeffClimate = agentParameters.coeffClimate;
+coeffOcean = agentParameters.coeffOcean;
+coeffLand = agentParameters.coeffLand;
+coeffPeace = agentParameters.coeffPeace;
+coeffCooperation = agentParameters.coeffCooperation;
 
 
-bList = max(0, utilityVariables.utilityForms + randn(utilityVariables.numForms,1) .* (utilityVariables.utilityForms*agentParameters.bListSD) );
+sdgCoeffs=[coeffPoverty, coeffFood, coeffHealth, coeffEducation, coeffGender, coeffWater, coeffEnergy, coeffEconomy, ...
+    coeffInnovation, coeffInequality, coeffCities, coeffConsumption, coeffClimate, coeffOcean, coeffLand, ...
+    coeffPeace, coeffCooperation];
+
+bList = max(0, sdgCoeffs + randn(utilityVariables.numForms,1) .* (sdgCoeffs*agentParameters.bListSD) );
 
 if(~isempty(varargin))
     newAgent = varargin{1};

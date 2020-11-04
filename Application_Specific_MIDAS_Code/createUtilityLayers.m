@@ -33,25 +33,6 @@ accessCost2 = modelParameters.accessCost2;
 accessCost3 = modelParameters.accessCost3;
 accessCost4 = modelParameters.accessCost4;
 
-% diegob: weight coefficients fo each sdg layer
-coeffPoverty = modelParameters.coeffPoverty;
-coeffFood = modelParameters.coeffFood;
-coeffHealth = modelParameters.coeffHealth;
-coeffEducation = modelParameters.coeffEducation;
-coeffGender = modelParameters.coeffGender;
-coeffWater = modelParameters.coeffWater;
-coeffEnergy = modelParameters.coeffEnergy;
-coeffEconomy = modelParameters.coeffEconomy;
-coeffInnovation = modelParameters.coeffInnovation;
-coeffInequality = modelParameters.coeffInequality;
-coeffCities = modelParameters.coeffCities;
-coeffConsumption = modelParameters.coeffConsumption;
-coeffClimate = modelParameters.coeffClimate;
-coeffOcean = modelParameters.coeffOcean;
-coeffLand = modelParameters.coeffLand;
-coeffPeace = modelParameters.coeffPeace;
-coeffCooperation = modelParameters.coeffCooperation;
-
 numLayers = 17;
 
 %read in raw utility layer data for use below
@@ -160,23 +141,23 @@ utilityForms = zeros(length(utilityLayerFunctions),1);
 %income (same coefficient)
 %utilityForms(1:length(utilityLayerFunctions)) = 2;
 % diego: weight of SDG layers for utility calculation 
-utilityForms(1) = coeffPoverty;
-utilityForms(2) = coeffFood;
-utilityForms(3) = coeffHealth;
-utilityForms(4) = coeffEducation;
-utilityForms(5) = coeffGender;
-utilityForms(6) = coeffWater;
-utilityForms(7) = coeffEnergy;
-utilityForms(8) = coeffEconomy;
-utilityForms(9) = coeffInnovation;
-utilityForms(10) = coeffInequality;
-utilityForms(11) = coeffCities;
-utilityForms(12) = coeffConsumption;
-utilityForms(13) = coeffClimate;
-utilityForms(14) = coeffOcean;
-utilityForms(15) = coeffLand;
-utilityForms(16) = coeffPeace;
-utilityForms(17) = coeffCooperation;
+utilityForms(1) = 1;
+utilityForms(2) = 2;
+utilityForms(3) = 3;
+utilityForms(4) = 4;
+utilityForms(5) = 5;
+utilityForms(6) = 6;
+utilityForms(7) = 7;
+utilityForms(8) = 8;
+utilityForms(9) = 9;
+utilityForms(10) = 10;
+utilityForms(11) = 11;
+utilityForms(12) = 12;
+utilityForms(13) = 13;
+utilityForms(14) = 14;
+utilityForms(15) = 15;
+utilityForms(16) = 16;
+utilityForms(17) = 17;
 
 %Income form is either 0 or 1 (with 1 meaning income)
 %diego: our coeffs during the calibration exercise can take any value
