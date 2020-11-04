@@ -47,11 +47,11 @@ coeffPeace = agentParameters.coeffPeace;
 coeffCooperation = agentParameters.coeffCooperation;
 
 
-sdgCoeffs=[coeffPoverty, coeffFood, coeffHealth, coeffEducation, coeffGender, coeffWater, coeffEnergy, coeffEconomy, ...
+sdgCoeffs=transpose([coeffPoverty, coeffFood, coeffHealth, coeffEducation, coeffGender, coeffWater, coeffEnergy, coeffEconomy, ...
     coeffInnovation, coeffInequality, coeffCities, coeffConsumption, coeffClimate, coeffOcean, coeffLand, ...
-    coeffPeace, coeffCooperation];
+    coeffPeace, coeffCooperation]);
 
-bList = max(0, sdgCoeffs + randn(utilityVariables.numForms,1) .* (sdgCoeffs*agentParameters.bListSD) );
+bList = max(0, sdgCoeffs + randn(utilityVariables.numForms,1) .* (sdgCoeffs*agentParameters.bListSD) )
 
 if(~isempty(varargin))
     newAgent = varargin{1};
