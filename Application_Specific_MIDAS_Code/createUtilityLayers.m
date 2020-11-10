@@ -160,9 +160,7 @@ utilityForms(16) = 16;
 utilityForms(17) = 17;
 
 %Income form is either 0 or 1 (with 1 meaning income)
-%diego: our coeffs during the calibration exercise can take any value
-%between 0 and 1000, hence 1 is allowed. It is extremely unlikely that 1 is randomly
-%drawn but just in case i do this to be extra safe 
+% to be sure to avoid incomeForms
 incomeForms = utilityForms == -1;
 
 %Consider the meaning of time constraints for this application.  No layers

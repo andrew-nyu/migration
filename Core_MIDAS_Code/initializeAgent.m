@@ -51,7 +51,7 @@ sdgCoeffs=transpose([coeffPoverty, coeffFood, coeffHealth, coeffEducation, coeff
     coeffInnovation, coeffInequality, coeffCities, coeffConsumption, coeffClimate, coeffOcean, coeffLand, ...
     coeffPeace, coeffCooperation]);
 
-bList = max(0, sdgCoeffs + randn(utilityVariables.numForms,1) .* (sdgCoeffs*agentParameters.bListSD) )
+bList = max(0, sdgCoeffs + randn(utilityVariables.numForms,1) .* (sdgCoeffs*agentParameters.bListSD) );
 
 if(~isempty(varargin))
     newAgent = varargin{1};
